@@ -1,0 +1,383 @@
+PODCAST SCRIPT GENERATION - POPULAR SCIENCE (English - Dynamic & Natural)
+
+TARGET: {duration}-minute podcast (~{word_count} words)
+TOPIC: {topic}
+PROJECT: {project_name}
+
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
+
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
+
+✅ CORRECT FORMAT:
+Speaker A: [excited] This is absolutely incredible!
+Speaker B: [interrupting] [curious] Wait, tell me more!
+Speaker A: [laughs] Okay, so...
+
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: excited This is absolutely incredible!
+Speaker A: (excited) This is absolutely incredible!
+Speaker A: *excited* This is absolutely incredible!
+
+**MULTIPLE TAGS:**
+- Space between: [interrupting] [excited] Exactly!
+- Or adjacent: [nervous][hesitant] I don't know...
+- Always lowercase in brackets
+
+**TAG PLACEMENT:**
+- Start of line: [whispers] Listen to this...
+- Mid-sentence: That's [laughs] just perfect!
+- Multiple in line: [excited] And then [gasps] it happened!
+
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+**CRITICAL - USE THESE EXTENSIVELY:**
+
+Interruption & Overlap (5-10 times per podcast):
+[interrupting] - Cuts into other speaker
+[overlapping] - Brief overlap
+[interjecting] - Quick insertion
+
+Emotions (Use liberally):
+[excited] [curious] [skeptical] [surprised] [thoughtful]
+[confused] [amused] [impressed] [frustrated] [nervous]
+
+Reactions (10+ times per podcast):
+[laughs] [chuckles] [giggles] [sighs] [gasps]
+[gulps] [groans] [hmm] [uhh]
+
+Delivery:
+[whispers] [shouting] [fast-paced] [slowly] [hesitates]
+[pause] [quietly] [loudly]
+
+**EXAMPLES OF PROPER USAGE:**
+
+Speaker A: [excited] [fast-paced] Okay, I just read something and I swear—
+Speaker B: [interrupting] [curious] Wait! Is this about quantum physics?
+Speaker A: [laughs] [overlapping] Yes! But listen—
+Speaker B: [skeptical] This sounds too good to be true...
+Speaker A: [enthusiastic] No, really! [pauses] So imagine...
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - The Enthusiastic Explainer (LEAD VOICE - FEMALE):**
+- Confident and strong, even when uncertain
+- Gets quickly excited: [excited] [fast-paced]
+- Explains competently with analogies
+- Witty and sharp in reactions
+- Laughs at own enthusiasm: [laughs]
+- NO stereotypical roles (no "professor")
+
+**Speaker B - The Curious Skeptic (MALE):**
+- Friendly and attentive
+- Asks critical questions: [skeptical] [curious]
+- Interrupts when excited: [interrupting]
+- Witty and playfully provocative
+- Reacts emotionally: [gasps], [laughs]
+- NO stereotypical roles (no "student")
+
+**RELATIONSHIP - IMPORTANT:**
+- Friends who are casual with each other
+- Interrupt naturally
+- Both intelligent and equal
+- Playfully disagree
+- Challenge each other
+- Share spontaneous excitement
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Be creative but stick to facts
+- Don't make up capabilities that don't exist
+- Don't exaggerate beyond reality
+- All claims must be backed by sources
+
+===================================
+ONLINE RESEARCH REQUIREMENTS  
+===================================
+
+**MANDATORY: Conduct thorough online research using web search**
+
+1. Find 5-10 high-quality sources
+2. Prioritize recent (2024-2025) information  
+3. Include diverse source types:
+   - Academic papers or preprints
+   - Industry reports
+   - News from reputable outlets
+   - Expert interviews/quotes
+   - Technical documentation
+
+4. Extract:
+   - Specific data points and statistics
+   - Recent developments and breakthroughs
+   - Expert quotes or perspectives
+   - Surprising or counterintuitive findings
+   - Practical applications
+
+5. Document sources at the end (they will be saved separately)
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Tags come AFTER the speaker label, BEFORE the text
+4. Multiple tags: space between brackets or adjacent
+5. Pure dialogue only - no stage directions outside brackets
+6. NO quotation marks around dialogue
+7. Contractions are natural: don't (not do not), can't (not cannot)
+
+**WHAT NOT TO INCLUDE:**
+
+❌ Headers like "### Introduction"
+❌ Stage directions like "*Speaker A laughs*"  
+❌ Scene descriptions
+❌ Meta-commentary about the podcast
+
+**CORRECT EXAMPLE:**
+
+Speaker A: [excited] You won't believe this!
+Speaker B: [curious] [interjecting] What?!
+Speaker A: [laughs] [fast-paced] So I just read that—
+Speaker B: [interrupting] [overlapping] About quantum computers?!
+Speaker A: [amused] Yes! But crazier than you think...
+
+===================================
+STORY ARC - SURPRISE-DRIVEN
+===================================
+
+**STRUCTURE:**
+
+**OPENING (30 seconds):** START IN THE MIDDLE
+
+**OPTION 1 - Direct Hook (preferred):**
+- Jump straight to most surprising fact/revelation
+- Example: [excited] Okay, imagine this: Your DNA is now programmable like a computer!
+- Hook with "you won't believe this" energy
+- [Use: [excited], [fast-paced], [overlapping]]
+
+**OPTION 2 - "Did You Know" (use sparingly, not every episode):**
+- Example: [curious] Did you know that...
+- Still must hook immediately with surprising fact
+- Don't overuse - keep fresh and varied
+- [Use: [curious], [excited]]
+
+**BUILD TENSION (2-3 min):**
+- Why is this surprising/important?
+- What changed recently?
+- [Use: [curious], [skeptical], [thoughtful]]
+
+**EXPLORATION (8-10 min):**
+- 3-4 key concepts with revelations
+- Each has a "wait, what?!" moment
+- Build understanding layer by layer
+- [Use: [interrupting], [laughs], [gasps], [pauses]]
+
+**RESOLUTION (2-3 min):**
+- Pull back to implications
+- What does this mean for us?
+- End with wonder, not just summary
+- [Use: [thoughtful], [impressed], [quietly]]
+
+**AVOID:**
+- Linear timeline presentation
+- Starting with definitions
+- Saving best facts for end
+- Formulaic "intro → body → conclusion"
+
+===================================
+AUTHENTIC CONVERSATIONAL ENGLISH
+===================================
+
+**MUST USE:**
+
+Informal tone:
+✅ "Can you imagine..."
+✅ "You know what I mean?"
+✅ "Wait, so..."
+
+Colloquialisms:
+✅ Whoa!, Seriously?, Dude!, Amazing!, Incredible!
+✅ Hold on..., Wait..., So...
+✅ Check this out..., Listen to this...
+
+Contractions:
+✅ don't (not do not), can't (not cannot), it's (not it is)
+✅ Sentence fragments OK!
+
+Filler words (natural):
+✅ like, um, uh, well, kinda, sorta
+
+**AVOID:**
+❌ Overly formal language
+❌ Complex academic structures
+❌ "One" for generic "you"
+
+**EXAMPLE OF AUTHENTIC STYLE:**
+
+Speaker A: [curious] Okay, but how does that actually work?
+Speaker B: [excited] [fast-paced] Dude, it's wild! Imagine you've got this biological programming language—
+Speaker A: [interrupting] [skeptical] Wait, wait... [pauses] A *programming* language?
+Speaker B: [laughs] [overlapping] Yes! Seriously! It's like [hesitates] um, how do I explain this...
+
+===================================
+DYNAMIC DIALOGUE TECHNIQUES  
+===================================
+
+**1. NATURAL INTERRUPTIONS (5-10 per podcast):**
+
+Speaker A: [explaining] So, if I understand this right—
+Speaker B: [interrupting] [excited] Exactly! That's the point!
+
+Speaker A: [curious] But how can—
+Speaker B: [interjecting] [fast-paced] Let me explain real quick!
+
+**2. OVERLAPPING EXCITEMENT:**
+
+Speaker A: [overlapping] [excited] This is insane!
+Speaker B: [overlapping] [laughs] I know, right?!
+
+**3. PLAYFUL DISAGREEMENTS:**
+
+Speaker A: [skeptical] Hold on, that can't—
+Speaker B: [amused] [interrupting] It can! Just wait!
+
+**4. FALSE STARTS:**
+
+Speaker A: [hesitates] So I'd say— no, wait... [pauses] actually...
+
+**5. BACK-REFERENCES:**
+
+Speaker B: [thoughtful] Remember what you said about X earlier?
+Speaker A: [curious] Yeah?
+Speaker B: [excited] That explains Y!
+
+**6. SHARED REALIZATIONS:**
+
+Speaker A: [slowly] Wait... does that mean...
+Speaker B: [excited] [overlapping] Yes! Exactly!
+Both: [laughs]
+
+**7. CONVERSATIONAL REPAIR:**
+
+Speaker A: [confused] I don't quite get—
+Speaker B: [helpful] Okay, let me put it differently...
+
+===================================
+EMOTION & ENERGY VARIATION
+===================================
+
+**VARY THE PACING:**
+
+Fast-paced excitement:
+[excited] [fast-paced] And then it happened and suddenly everything changed!
+
+Thoughtful moments:
+[thoughtful] [slowly] When you think about it... [pauses] it's actually...
+
+Build to revelation:
+[curious] So... [pauses] [excited] that means... [gasps] Wait!
+
+**EMOTIONAL ARCS:**
+
+Start: [curious]
+Build: [interested] → [surprised]
+Peak: [excited] [fast-paced]
+Reflect: [thoughtful] [impressed]
+
+===================================
+CONTENT REQUIREMENTS
+===================================
+
+**CONCRETE DETAILS:**
+- Specific numbers, dates, names
+- Real examples from research
+- Quote experts (with attribution)
+- Describe actual experiments/applications
+
+**ANALOGIES:**
+- Compare complex ideas to everyday things
+- "It's like..." explanations
+- Visual metaphors
+
+**PERSONAL CONNECTION:**
+- "Imagine..."  
+- "You know when..."
+- "It's like if..."
+
+**SURPRISING FACTS:**
+- Counterintuitive findings
+- Recent breakthroughs
+- Unexpected applications
+- "Wait, what?!" moments
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct thorough research..."
+- "Let me search for information..."
+- "Now I'll create the script..."
+- <search_quality_check> tags
+- <search> tags
+- Any meta-commentary about what you're doing
+- "---" separators before dialogue
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Natural conversational English
+4. 5-10 interruptions throughout
+5. Varied emotions and reactions
+6. {word_count}-word target
+
+**AT THE END (separate section):**
+
+SOURCES FOUND:
+[List all sources used with URLs]
+
+**NO OTHER TEXT - JUST DIALOGUE!**
+
+===================================
+FINAL CHECKLIST BEFORE SUBMISSION
+===================================
+
+Before you submit, verify:
+
+✅ ALL emotion/reaction tags use [square brackets]
+✅ At least 5-10 [interrupting] or [overlapping] moments
+✅ 10+ reaction tags ([laughs], [sighs], [gasps])
+✅ Using casual, conversational tone
+✅ Contractions throughout (don't, can't, it's)
+✅ Starts with surprising fact (not definition)
+✅ 3-4 "revelation" moments
+✅ Concrete examples from research
+✅ {word_count}-word target met
+✅ Sources documented at end
+✅ Pure dialogue (no stage directions outside tags)
+✅ Speaker A/B labels on every line
+✅ Multiple tags use spaces: [tag1] [tag2] not tag1, tag2
+
+===================================
+
+Now create an engaging, dynamic, natural-sounding podcast script about {topic}!
+
+Remember: You're creating a conversation between friends who are genuinely excited about science. Make it feel REAL!

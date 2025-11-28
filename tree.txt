@@ -1,0 +1,83 @@
+.
+├── config
+│   └── podcast_config.json
+├── INSTALL.md
+├── podcast_config.json
+├── podcast_pipeline.py
+├── projects
+│   ├── nodered
+│   │   ├── audio
+│   │   │   └── nodered_nodered in professional building automation_de_2025-11-28_PROTOTYPE.mp3
+│   │   ├── debug
+│   │   │   ├── chunk_1_content.json
+│   │   │   ├── chunk_2_content.json
+│   │   │   ├── chunk_3_content.json
+│   │   │   └── chunk_4_content.json
+│   │   ├── prompts
+│   │   │   ├── nodered_professional_test_01.txt
+│   │   │   └── temp_prompt.txt
+│   │   ├── scripts
+│   │   │   └── nodered_2025-11-28_draft1.txt
+│   │   └── sources
+│   │       ├── research_context.txt
+│   │       └── sources_list.txt
+│   ├── protocols
+│   │   ├── audio
+│   │   ├── prompts
+│   │   │   └── temp_prompt.txt
+│   │   ├── scripts
+│   │   │   ├── protocols_2025-11-26_draft1.txt
+│   │   │   └── protocols_sources.txt
+│   │   └── sources
+│   │       ├── research_context.txt
+│   │       └── sources_list.txt
+│   ├── protocols2
+│   │   ├── audio
+│   │   │   └── protocols2_2025-11-28_PROTOTYPE.mp3
+│   │   ├── debug
+│   │   │   ├── chunk_1_content.json
+│   │   │   ├── chunk_2_content.json
+│   │   │   └── chunk_3_content.json
+│   │   ├── prompts
+│   │   │   ├── Building Automation protocols v3.txt
+│   │   │   └── temp_prompt.txt
+│   │   ├── scripts
+│   │   │   ├── protocols2_2025-11-26_draft1.txt
+│   │   │   ├── protocols2_2025-11-27_draft1.txt
+│   │   │   ├── protocols2_2025-11-28_draft1.txt
+│   │   │   └── protocols2_sources.txt
+│   │   └── sources
+│   │       ├── research_context.txt
+│   │       └── sources_list.txt
+│   └── protocols2_BAK
+│       ├── audio
+│       ├── debug
+│       │   └── chunk_1_content.json
+│       ├── prompts
+│       │   └── temp_prompt.txt
+│       ├── scripts
+│       │   ├── protocols2_2025-11-26_draft1.txt
+│       │   └── protocols2_sources.txt
+│       └── sources
+│           ├── research_context.txt
+│           └── sources_list.txt
+├── README.md
+├── requirements.txt
+├── SETUP_AND_UPDATE.md
+├── smart_update.sh
+├── technical_deep_dive_dutch.txt
+├── templates
+│   ├── news_brief_dutch.txt
+│   ├── news_brief_english.txt
+│   ├── news_brief_german.txt
+│   ├── popular_science_dutch_dynamic.txt
+│   ├── popular_science_english_dynamic.txt
+│   ├── popular_science_german_dynamic.txt
+│   ├── research_contexts
+│   │   └── default.txt
+│   ├── technical_deep_dive_dutch.txt
+│   ├── technical_deep_dive_english.txt
+│   └── technical_deep_dive_german.txt
+└── tree.txt
+
+28 directories, 53 files

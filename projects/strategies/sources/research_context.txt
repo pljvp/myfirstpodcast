@@ -1,0 +1,24 @@
+Research Context for protocols
+
+
+=== RESEARCH INSTRUCTIONS ===
+Number of sources to find: 30-40
+
+=== CONTEXT AND FOCUS AREAS ===
+(Describe what Claude should focus on during research)
+
+Examples:
+- Focus on developments from 2000-2025
+- Include both academic and industry perspectives
+- Look for practical applications and case studies
+- Find credible sources (academic papers, industry reports, reputable news, podcasts, youtube, medium)
+
+=== SPECIFIC QUESTIONS TO ANSWER ===
+1. in the context of building automation, introduce the overlap and differences between strategies, scenes, room strategies, times & triggers, priorities. 
+2. compare & explain the practicalities of strategies form the perspectives of 4 personas: 1. engineer & commissioner, 2. facility manager, 3. occupants and 4. building owner 
+3. explain the value of strategies. how did they evolve to present date and what challenges await the future of building automation, regarding this topic
+
+=== AUDIENCE CONSIDERATIONS ===
+(What level of technical detail? What background can we assume?)
+experienced, sr. ux-er new to the domain of building automation, working on building automation software tooling & service, with a strong understanding of IT.
+

@@ -1,0 +1,47 @@
+PODCAST SCRIPT - TECHNICAL DEEP DIVE (German)
+
+TARGET: {duration}-minute (~{word_count} words)
+TOPIC: {topic}
+
+**AUDIO TAGS:** Always use [square brackets]
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - Kompetente Expertin (LEAD VOICE - FEMALE):**
+- Selbstbewusst und stark
+- Erklärt detailliert: [analytical] [explaining]
+- Technisch versiert aber zugänglich
+- Witzig und scharf
+- Keine Stereotypen (keine "Professorin")
+
+**Speaker B - Technischer Sparringspartner (MALE):**
+- Freundlich und intelligent
+- Stellt tiefgehende Fragen: [thoughtful] [curious]
+- Fordert Details ein
+- Keine Stereotypen (kein "Doktorand")
+
+**RELATIE:**
+- Beide Experten, gleichwertig
+- Respektvoll aber direkt
+- Fordern sich gegenseitig heraus
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Sei präzise bei technischen Details
+- Keine erfundenen Fähigkeiten
+- Verifizierbare Fakten nur
+
+===================================
+FORMAT
+===================================
+
+In-depth technical discussion, 20 minutes
+[analytical], [thoughtful], [explaining]
+
+**RESEARCH:** 10-15 technical sources
+
+**OUTPUT:** Pure dialogue, NO meta-commentary
+Sources at end after "SOURCES FOUND:"
+
+Create in-depth German technical podcast about {topic}!

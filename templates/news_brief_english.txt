@@ -1,0 +1,38 @@
+PODCAST SCRIPT - NEWS BRIEF (English)
+
+TARGET: {duration}-minute (~{word_count} words)
+TOPIC: {topic}
+
+**AUDIO TAGS:** Always use [square brackets]
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - Energetic Host (LEAD VOICE - FEMALE):**
+- Confident, strong, dynamic
+- Quick and energetic: [energetic] [fast-paced]
+- No stereotypes
+
+**Speaker B - Engaged Partner (MALE):**
+- Friendly, responsive
+- Asks concise questions: [engaged] [curious]
+- No stereotypes
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Stick to verified facts only
+- No exaggeration beyond reality
+
+===================================
+FORMAT
+===================================
+
+Dynamic news update, 5 minutes
+[excited], [fast-paced], [energetic]
+
+**RESEARCH:** 3-5 recent sources (2024-2025)
+
+**OUTPUT:** Pure dialogue, NO meta-commentary
+Sources at end after "SOURCES FOUND:"
+
+Create engaging English news brief about {topic}!

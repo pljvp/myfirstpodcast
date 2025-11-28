@@ -1,0 +1,38 @@
+PODCAST SCRIPT - NEWS BRIEF (German)
+
+TARGET: {duration}-minute (~{word_count} words)
+TOPIC: {topic}
+
+**AUDIO TAGS:** Always use [square brackets]
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - Energische Moderatorin (LEAD VOICE - FEMALE):**
+- Selbstbewusst, stark, dynamisch
+- Schnell und energisch: [energetic] [fast-paced]
+- Keine Stereotypen
+
+**Speaker B - Aufmerksamer Gesprächspartner (MALE):**
+- Freundlich, reagiert schnell
+- Stellt prägnante Fragen: [engaged] [curious]
+- Keine Stereotypen
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Stick to verified facts only
+- No exaggeration beyond reality
+
+===================================
+FORMAT
+===================================
+
+Dynamic news update, 5 minutes
+[excited], [fast-paced], [energetic]
+
+**RESEARCH:** 3-5 recent sources (2024-2025)
+
+**OUTPUT:** Pure dialogue, NO meta-commentary
+Sources at end after "SOURCES FOUND:"
+
+Create engaging German news brief about {topic}!

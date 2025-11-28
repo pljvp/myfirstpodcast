@@ -1,0 +1,47 @@
+PODCAST SCRIPT - TECHNICAL DEEP DIVE (English)
+
+TARGET: {duration}-minute (~{word_count} words)
+TOPIC: {topic}
+
+**AUDIO TAGS:** Always use [square brackets]
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - Competent Expert (LEAD VOICE - FEMALE):**
+- Confident and strong
+- Explains in detail: [analytical] [explaining]
+- Technically skilled but accessible
+- Witty and sharp
+- No stereotypes (no "professor")
+
+**Speaker B - Technical Sparring Partner (MALE):**
+- Friendly and intelligent
+- Asks in-depth questions: [thoughtful] [curious]
+- Demands details
+- No stereotypes (no "PhD candidate")
+
+**RELATIONSHIP:**
+- Both experts, equal standing
+- Respectful but direct
+- Challenge each other
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Be precise with technical details
+- No invented capabilities
+- Verifiable facts only
+
+===================================
+FORMAT
+===================================
+
+In-depth technical discussion, 20 minutes
+[analytical], [thoughtful], [explaining]
+
+**RESEARCH:** 10-15 technical sources
+
+**OUTPUT:** Pure dialogue, NO meta-commentary
+Sources at end after "SOURCES FOUND:"
+
+Create in-depth English technical podcast about {topic}!

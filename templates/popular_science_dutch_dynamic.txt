@@ -1,0 +1,213 @@
+PODCAST SCRIPT GENERATION - POPULAR SCIENCE (Dutch - Dynamic & Natural)
+
+TARGET: {duration}-minute podcast (~{word_count} words)
+TOPIC: {topic}
+PROJECT: {project_name}
+
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
+
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
+
+✅ CORRECT FORMAT:
+Speaker A: [excited] Dit is ongelooflijk!
+Speaker B: [interrupting] [curious] Wacht, vertel me meer!
+Speaker A: [laughs] Oké, dus...
+
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: excited Dit is ongelooflijk!
+Speaker A: (excited) Dit is ongelooflijk!
+Speaker A: *excited* Dit is ongelooflijk!
+
+**MULTIPLE TAGS:**
+- Space between: [interrupting] [excited] Precies!
+- Or adjacent: [nervous][hesitant] Ik weet het niet...
+- Always lowercase in brackets
+
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+Interruption & Overlap (5-10 times per podcast):
+[interrupting] [overlapping] [interjecting]
+
+Emotions:
+[excited] [curious] [skeptical] [surprised] [thoughtful]
+[confused] [amused] [impressed] [frustrated] [nervous]
+
+Reactions:
+[laughs] [chuckles] [giggles] [sighs] [gasps]
+[gulps] [groans] [hmm] [uhh]
+
+Delivery:
+[whispers] [shouting] [fast-paced] [slowly] [hesitates]
+[pause] [quietly] [loudly]
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - De Enthousiaste Uitlegger (HOOFDSTEM - VROUWELIJK):**
+- Zelfverzekerd en sterk, ook bij onzekerheid
+- Wordt snel enthousiast: [excited] [fast-paced]
+- Legt deskundig uit met analogieën
+- Geestig en scherp in reacties
+- Lacht om eigen enthousiasme: [laughs]
+- GEEN stereotypen (geen "professor")
+
+**Speaker B - De Nieuwsgierige Scepticus (MANNELIJK):**
+- Vriendelijk en aandachtig
+- Stelt kritische vragen: [skeptical] [curious]
+- Onderbreekt bij enthousiasme: [interrupting]
+- Geestig en speels provocerend
+- Reageert emotioneel: [gasps], [laughs]
+- GEEN stereotypen (geen "student")
+
+**RELATIE - BELANGRIJK:**
+- Vrienden die elkaar tutoyeren
+- Onderbreken natuurlijk
+- Beide intelligent en gelijkwaardig
+- Spreken elkaar speels tegen
+- Dagen elkaar uit
+- Delen spontaan enthousiasme
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Wees creatief maar blijf bij de feiten
+- Verzin geen mogelijkheden die niet bestaan
+- Overdrijf niet voorbij de realiteit
+- Alle beweringen moeten met bronnen onderbouwd kunnen worden
+
+===================================
+ONLINE RESEARCH REQUIREMENTS  
+===================================
+
+**MANDATORY: Conduct thorough online research using web search**
+
+1. Find 5-10 high-quality sources
+2. Prioritize recent (2024-2025) information  
+3. Include diverse source types
+4. Extract specific data and statistics
+5. Document sources at the end
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Pure dialogue only
+4. NO quotation marks
+5. Contractions are natural
+
+===================================
+STORY ARC - SURPRISE-DRIVEN
+===================================
+
+**OPENING (30 seconds):** START IN THE MIDDLE
+
+**OPTIE 1 - Directe Hook (voorkeur):**
+- Spring meteen naar het meest verrassende feit
+- Voorbeeld: [excited] Oké, stel je voor: Je DNA is nu programmeerbaar zoals een computer!
+- Hook met "dit ga je niet geloven" energie
+- [Use: [excited], [fast-paced], [overlapping]]
+
+**OPTIE 2 - "Wist Je Dat" (spaarzaam gebruiken, niet elke aflevering):**
+- Voorbeeld: [curious] Wist je dat...
+- Moet nog steeds direct haken met verrassend feit
+- Niet te vaak gebruiken - houd het fris en gevarieerd
+- [Use: [curious], [excited]]
+
+**BUILD TENSION (2-3 min):**
+- Why is this surprising?
+- [Use: [curious], [skeptical], [thoughtful]]
+
+**EXPLORATION (8-10 min):**
+- 3-4 key concepts
+- "Wacht, wat?!" moments
+- [Use: [interrupting], [laughs], [gasps]]
+
+**RESOLUTION (2-3 min):**
+- Pull back to implications
+- [Use: [thoughtful], [impressed], [quietly]]
+
+===================================
+AUTHENTIC DUTCH LANGUAGE STYLE
+===================================
+
+**MUST USE:**
+
+Informal tone:
+✅ "Kun je je voorstellen..."
+✅ "Snap je wat ik bedoel?"
+✅ "Wacht, dus..."
+
+Colloquialisms:
+✅ Wow!, Echt waar?, Gaaf!, Geweldig!, Ongelooflijk!
+✅ Wacht even..., Luister...
+
+Contractions:
+✅ 't (het), 'm (hem), z'n (zijn)
+✅ Sentence fragments OK!
+
+Filler words:
+✅ eh, um, nou, gewoon, eigenlijk
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct thorough research..."
+- "Let me search for information..."
+- <search_quality_check> tags
+- <search> tags
+- Any meta-commentary
+- "---" separators before dialogue
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Natural conversational Dutch
+4. 5-10 interruptions throughout
+5. {word_count}-word target
+
+**AT THE END (separate section):**
+
+SOURCES FOUND:
+[List all sources used with URLs]
+
+**NO OTHER TEXT - JUST DIALOGUE!**
+
+===================================
+FINAL CHECKLIST
+===================================
+
+✅ ALL emotion/reaction tags use [square brackets]
+✅ At least 5-10 [interrupting] or [overlapping] moments
+✅ 10+ reaction tags
+✅ Using casual, conversational Dutch
+✅ Contractions throughout
+✅ Starts with surprising fact
+✅ 3-4 "revelation" moments
+✅ {word_count}-word target met
+✅ Sources documented at end
+✅ Pure dialogue only
+✅ Speaker A/B labels on every line
+
+===================================
+
+Now create an engaging Dutch podcast script about {topic}!

@@ -1,0 +1,19 @@
+PODCAST SCRIPT - TECHNICAL DEEP DIVE (Dutch)
+
+TARGET: {duration}-minute (~{word_count} words)
+TOPIC: {topic}
+
+**AUDIO TAGS:** Always use [square brackets]
+
+**FORMAT:**
+Speaker A: [analytical] Technical question
+Speaker B: [explaining] Detailed answer
+(In-depth, expert-level, 20 minutes)
+
+**RESEARCH:** 10-15 technical sources
+
+**STYLE:** Detailed technical discussion, [thoughtful], [explaining]
+
+**OUTPUT:** Pure dialogue, NO meta-commentary, sources at end
+
+Create in-depth Dutch technical podcast about {topic}!

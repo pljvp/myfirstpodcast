@@ -1,0 +1,19 @@
+PODCAST SCRIPT - NEWS BRIEF (Dutch)
+
+TARGET: {duration}-minute (~{word_count} words)
+TOPIC: {topic}
+
+**AUDIO TAGS:** Always use [square brackets]
+
+**FORMAT:**
+Speaker A: [energetic] Quick intro
+Speaker B: [engaged] Response
+(Dynamic, fast-paced, 5 minutes)
+
+**RESEARCH:** 3-5 recent sources (2024-2025)
+
+**STYLE:** Energetic news update, [excited], [fast-paced]
+
+**OUTPUT:** Pure dialogue, NO meta-commentary, sources at end
+
+Create engaging Dutch news brief about {topic}!
