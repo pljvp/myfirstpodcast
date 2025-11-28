@@ -33,6 +33,6 @@ Dynamic news update, 5 minutes
 **RESEARCH:** 3-5 recent sources (2024-2025)
 
 **OUTPUT:** Pure dialogue, NO meta-commentary
-Sources at end after "SOURCES FOUND:"
+Sources at end after "**SOURCES FOUND:**"
 
 Create engaging English news brief about {topic}!

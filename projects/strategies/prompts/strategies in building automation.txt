@@ -1,8 +1,8 @@
 PODCAST SCRIPT GENERATION - POPULAR SCIENCE (German - Dynamic & Natural)
 
-TARGET: {duration}-minute podcast (~{word_count} words)
-TOPIC: {topic}
-PROJECT: {project_name}
+TARGET: 20-minute podcast (~3000 words)
+TOPIC: strategies in building automation
+PROJECT: strategies
 
 ===================================
 CRITICAL: ELEVENLABS V3 AUDIO TAGS
@@ -336,8 +336,7 @@ OUTPUT FORMAT
 - <search_quality_check> tags
 - <search> tags
 - Any meta-commentary about what you're doing
-- "---" separators (not before, not after dialogue)
-- Line breaks with dashes (---)
+- "---" separators before dialogue
 
 ✅ **START IMMEDIATELY WITH:**
 Speaker A: [emotion tags] First line of dialogue...
@@ -349,11 +348,11 @@ Speaker A: [emotion tags] First line of dialogue...
 3. Natural German with Du-form
 4. 5-10 interruptions throughout
 5. Varied emotions and reactions
-6. {word_count}-word target
+6. 3000-word target
 
 **AT THE END (separate section):**
 
-**SOURCES FOUND:**
+SOURCES FOUND:
 [List all sources used with URLs]
 
 **NO OTHER TEXT - JUST DIALOGUE!**
@@ -372,7 +371,7 @@ Before you submit, verify:
 ✅ Starts with surprising fact (not definition)
 ✅ 3-4 "revelation" moments
 ✅ Concrete examples from research
-✅ {word_count}-word target met
+✅ 3000-word target met
 ✅ Sources documented at end
 ✅ Pure dialogue (no stage directions outside tags)
 ✅ Speaker A/B labels on every line
@@ -380,6 +379,37 @@ Before you submit, verify:
 
 ===================================
 
-Now create an engaging, dynamic, natural-sounding podcast script about {topic}!
+Now create an engaging, dynamic, natural-sounding podcast script about strategies in building automation!
 
 Remember: You're creating a conversation between friends who are genuinely excited about science. Make it feel REAL!
+
+
+=== RESEARCH CONTEXT AND INSTRUCTIONS ===
+
+Research Context for protocols
+
+
+=== RESEARCH INSTRUCTIONS ===
+Number of sources to find: 30-40
+
+=== CONTEXT AND FOCUS AREAS ===
+(Describe what Claude should focus on during research)
+
+Examples:
+- Focus on developments from 2000-2025
+- Include both academic and industry perspectives
+- Look for practical applications and case studies
+- Find credible sources (academic papers, industry reports, reputable news, podcasts, youtube, medium)
+
+=== SPECIFIC QUESTIONS TO ANSWER ===
+1. in the context of building automation, introduce the overlap and differences between strategies, scenes, room strategies, times & triggers, priorities. 
+2. compare & explain the practicalities of strategies form the perspectives of 4 personas: 1. engineer & commissioner, 2. facility manager, 3. occupants and 4. building owner 
+3. explain the value of strategies. how did they evolve to present date and what challenges await the future of building automation, regarding this topic
+
+=== AUDIENCE CONSIDERATIONS ===
+(What level of technical detail? What background can we assume?)
+experienced, sr. ux-er new to the domain of building automation, working on building automation software tooling & service, with a strong understanding of IT.
+
+
+
+IMPORTANT: Follow the research instructions above. Conduct thorough online research using web search. Find and analyze the specified number of sources. Document your sources at the end of the script.
