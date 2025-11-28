@@ -26,7 +26,7 @@ config/.env
 # Project Data (User-specific, all ignored)
 # Projects contain user topics, generated scripts, audio, uploaded documents
 # All of this is private and should not be synced to GitHub
-# projects/
+projects/
 
 # Backup Files
 .backup/
