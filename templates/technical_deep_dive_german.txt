@@ -42,6 +42,6 @@ In-depth technical discussion, 20 minutes
 **RESEARCH:** 10-15 technical sources
 
 **OUTPUT:** Pure dialogue, NO meta-commentary
-Sources at end after "SOURCES FOUND:"
+Sources at end after "**SOURCES FOUND:**"
 
 Create in-depth German technical podcast about {topic}!

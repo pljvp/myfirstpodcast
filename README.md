@@ -5,7 +5,7 @@ Generate podcasts with Claude research + ElevenLabs audio.
 ## File Structure
 
 ```
-myfirstpodcast_v3/
+myfirstpodcast/
 ├── podcast_pipeline.py          # Main script
 ├── smart_update.sh               # Update automation (chmod +x)
 ├── requirements.txt              # Dependencies
@@ -72,9 +72,18 @@ myfirstpodcast_v3/
 
 7. **Review prompt:** Edit or confirm
 
-8. **Claude generates:** Script with web research
+8. **Source documents (NEW):**
+   ```
+   1. Proceed (use existing documents if any)
+   2. List and read current documents
+   3. Add new source files
+   ```
+   - Add your PDFs, Word docs, PowerPoints to `projects/{project}/sources/`
+   - Claude uses them alongside web research
 
-9. **Review script:**
+9. **Claude generates:** Script with web research + your documents
+
+10. **Review script:**
    ```
    1. Open script in text editor to review
    2. Approve script and proceed to audio
@@ -84,22 +93,33 @@ myfirstpodcast_v3/
    6. Cancel
    ```
 
-10. **Generate audio:** ElevenLabs creates MP3
+11. **Generate audio:** ElevenLabs creates MP3
 
-11. **Output:** `projects/{project}/{project}_{topic}_{lang}_{date}_{MODE}.mp3`
+12. **Output:** `projects/{project}/{project}_{topic}_{lang}_{date}_{MODE}.mp3`
 
 ## Quick Reference
 
-**Setup:** See [SETUP_UPDATE.md](computer:///mnt/user-data/outputs/SETUP_UPDATE.md)
+**Setup:** See [SETUP_UPDATE.md](SETUP_UPDATE.md)
 
 **Key Features:**
 - `[audio tags]` for emotions ([excited], [laughs], etc.)
 - Research contexts (default + project-specific)
+- **Source documents** - Add PDFs/Word/PowerPoint to research
 - Auto-saves sources separately (not in audio)
 - Debug chunks for troubleshooting
 - Smart updates preserve everything
 - Multi-language support (DE/EN/NL)
 - Template selection (popular science, technical, news)
+
+**Post-Processing Tools:**
+- `translate_script.py` - Translate scripts to another language
+- `tune_audio.py` - Adjust speaker speeds independently
+
+**Supported Source Documents:**
+- Text: `.txt`, `.md`
+- Documents: `.docx`
+- PDF: `.pdf`
+- Presentations: `.pptx`
 
 **Audio Files:**
 - Prototype: 64k bitrate, downsampled (testing)

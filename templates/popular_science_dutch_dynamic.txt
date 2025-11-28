@@ -172,7 +172,8 @@ OUTPUT FORMAT
 - <search_quality_check> tags
 - <search> tags
 - Any meta-commentary
-- "---" separators before dialogue
+- "---" separators (not before, not after dialogue)
+- Line breaks with dashes (---)
 
 ✅ **START IMMEDIATELY WITH:**
 Speaker A: [emotion tags] First line of dialogue...
@@ -187,7 +188,7 @@ Speaker A: [emotion tags] First line of dialogue...
 
 **AT THE END (separate section):**
 
-SOURCES FOUND:
+**SOURCES FOUND:**
 [List all sources used with URLs]
 
 **NO OTHER TEXT - JUST DIALOGUE!**

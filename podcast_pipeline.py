@@ -17,6 +17,25 @@ from dotenv import load_dotenv
 from anthropic import Anthropic
 import requests
 
+# Document reading libraries (optional - graceful fallback if not installed)
+try:
+    from docx import Document as DocxDocument
+    DOCX_AVAILABLE = True
+except ImportError:
+    DOCX_AVAILABLE = False
+
+try:
+    import PyPDF2
+    PDF_AVAILABLE = True
+except ImportError:
+    PDF_AVAILABLE = False
+
+try:
+    from pptx import Presentation
+    PPTX_AVAILABLE = True
+except ImportError:
+    PPTX_AVAILABLE = False
+
 # Load environment variables
 config_path = Path(__file__).parent / 'config' / '.env'
 load_dotenv(config_path)
@@ -251,22 +270,43 @@ def clean_script_for_audio(script):
     script = re.sub(r"(?:^|\n)Let me (?:conduct|create|generate|search).*?(?=Speaker [AB]:|$)", '', script, flags=re.DOTALL|re.IGNORECASE)
     script = re.sub(r"(?:^|\n)Now I'?ll? (?:conduct|create|generate).*?(?=Speaker [AB]:|$)", '', script, flags=re.DOTALL|re.IGNORECASE)
     
-    # Remove "---" separators that Claude adds
+    # CRITICAL: Remove sources section FIRST - CUT EVERYTHING after "SOURCES FOUND:"
+    # This must happen BEFORE removing "---" because there's often a "---" before sources
+    print("[DEBUG] Checking for sources section...")
+    
+    sources_removed = False
+    for pattern in [r'\n\s*SOURCES FOUND:', r'\n\s*\*\*SOURCES FOUND:\*\*', r'\n\s*##\s*SOURCES FOUND:']:
+        match = re.search(pattern, script, re.IGNORECASE)
+        if match:
+            before_length = len(script)
+            # Cut everything from the match position onwards
+            script = script[:match.start()]
+            after_length = len(script)
+            print(f"[INFO] ✓ CUT SOURCES: Removed {before_length - after_length} chars after 'SOURCES FOUND:'")
+            sources_removed = True
+            break
+    
+    if not sources_removed:
+        print("[WARNING] No 'SOURCES FOUND:' marker detected - check if script has sources section")
+        # Try to find if there are numbered sources like "1. **Source**"
+        if re.search(r'\n\d+\.\s+\*\*.*?\*\*', script):
+            print("[WARNING] Found numbered sources but no 'SOURCES FOUND:' marker - may include sources in audio!")
+    else:
+        # Double-check sources are gone
+        if re.search(r'\n\d+\.\s+\*\*.*?\*\*', script):
+            print("[ERROR] Sources still present after removal! Check script format.")
+        else:
+            print("[INFO] ✓ Verified: No sources in cleaned script")
+    
+    # NOW remove "---" separators (often appear before sources section)
     script = re.sub(r'^-{3,}$', '', script, flags=re.MULTILINE)
+    print("[DEBUG] Removed separator lines (---)")
     
     # Remove markdown headers
     script = re.sub(r'^#+\s+.*$', '', script, flags=re.MULTILINE)
     
     # Remove stage directions (but NOT audio tags!)
     script = re.sub(r'^\*[^\[]*\*$', '', script, flags=re.MULTILINE)
-    
-    # Remove sources section - CUT EVERYTHING after "SOURCES FOUND:"
-    # Find the marker and cut to end of string
-    for pattern in [r'\n\s*SOURCES FOUND:', r'\n\s*\*\*SOURCES FOUND:\*\*', r'\n\s*##\s*SOURCES FOUND:']:
-        if re.search(pattern, script, re.IGNORECASE):
-            script = re.split(pattern, script, flags=re.IGNORECASE)[0]
-            print(f"[INFO] Cut sources section from audio")
-            break
     
     # Remove word counts
     script = re.sub(r'(?:Total|Approximately)?\s*\d+\s*words?', '', script, flags=re.IGNORECASE)
@@ -591,6 +631,192 @@ def generate_audio(script, config, language_code, mode='prototype', speed=1.0, p
     return audio_data, total_length
 
 
+def read_text_file(filepath):
+    """Read plain text file"""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        return f"[Error reading {filepath}: {str(e)}]"
+
+
+def read_docx_file(filepath):
+    """Read DOCX file"""
+    if not DOCX_AVAILABLE:
+        return "[python-docx not installed - run: pip install python-docx]"
+    
+    try:
+        doc = DocxDocument(filepath)
+        text = []
+        for para in doc.paragraphs:
+            if para.text.strip():
+                text.append(para.text)
+        return '\n'.join(text)
+    except Exception as e:
+        return f"[Error reading {filepath}: {str(e)}]"
+
+
+def read_pdf_file(filepath):
+    """Read PDF file"""
+    if not PDF_AVAILABLE:
+        return "[PyPDF2 not installed - run: pip install PyPDF2]"
+    
+    try:
+        text = []
+        with open(filepath, 'rb') as f:
+            reader = PyPDF2.PdfReader(f)
+            for page in reader.pages:
+                page_text = page.extract_text()
+                if page_text.strip():
+                    text.append(page_text)
+        return '\n'.join(text)
+    except Exception as e:
+        return f"[Error reading {filepath}: {str(e)}]"
+
+
+def read_pptx_file(filepath):
+    """Read PPTX file"""
+    if not PPTX_AVAILABLE:
+        return "[python-pptx not installed - run: pip install python-pptx]"
+    
+    try:
+        prs = Presentation(filepath)
+        text = []
+        for slide_num, slide in enumerate(prs.slides, 1):
+            text.append(f"[Slide {slide_num}]")
+            for shape in slide.shapes:
+                if hasattr(shape, "text") and shape.text.strip():
+                    text.append(shape.text)
+        return '\n'.join(text)
+    except Exception as e:
+        return f"[Error reading {filepath}: {str(e)}]"
+
+
+def read_source_document(filepath):
+    """Read document based on file extension"""
+    path = Path(filepath)
+    ext = path.suffix.lower()
+    
+    if ext in ['.txt', '.md']:
+        return read_text_file(filepath)
+    elif ext == '.docx':
+        return read_docx_file(filepath)
+    elif ext == '.pdf':
+        return read_pdf_file(filepath)
+    elif ext == '.pptx':
+        return read_pptx_file(filepath)
+    else:
+        return f"[Unsupported file type: {ext}]"
+
+
+def list_source_files(project_name):
+    """List available source files in project sources folder"""
+    sources_path = Path(f"./projects/{project_name}/sources")
+    if not sources_path.exists():
+        return []
+    
+    supported_exts = ['.txt', '.md', '.docx', '.pdf', '.pptx']
+    files = []
+    for ext in supported_exts:
+        files.extend(sources_path.glob(f"*{ext}"))
+    
+    return sorted([f for f in files if f.name not in ['research_context.txt', 'sources_list.txt']])
+
+
+def process_source_documents(project_name):
+    """Check and process source documents before script generation"""
+    sources_path = Path(f"./projects/{project_name}/sources")
+    sources_path.mkdir(parents=True, exist_ok=True)
+    
+    while True:
+        print("\n" + "="*60)
+        print("SOURCE DOCUMENTS CHECK")
+        print("="*60)
+        
+        files = list_source_files(project_name)
+        
+        if files:
+            print(f"Found {len(files)} document(s) in sources folder:")
+            for f in files:
+                print(f"  - {f.name}")
+        else:
+            print("No source documents found in sources folder.")
+        
+        print("\nOptions:")
+        print("  1. Proceed (use existing documents if any)")
+        print("  2. List and read current documents")
+        print("  3. Add new source files")
+        
+        choice = input("\nChoice (1-3, default=1): ").strip() or "1"
+        
+        if choice == "1":
+            # Read all documents and return combined text
+            if not files:
+                print("\n[INFO] No source documents - proceeding with web research only")
+                return ""
+            
+            print("\n[INFO] Reading source documents...")
+            combined_text = []
+            success_count = 0
+            
+            for file in files:
+                print(f"  Reading: {file.name}...")
+                content = read_source_document(file)
+                if not content.startswith("[Error") and not content.startswith("["):
+                    combined_text.append(f"\n\n### SOURCE: {file.name}\n\n{content}")
+                    success_count += 1
+                    print(f"    ✓ Successfully read ({len(content)} chars)")
+                else:
+                    print(f"    ✗ {content}")
+            
+            print(f"\n[INFO] Successfully read {success_count}/{len(files)} documents")
+            return '\n'.join(combined_text) if combined_text else ""
+        
+        elif choice == "2":
+            # List and show preview of documents
+            if not files:
+                print("\n[INFO] No documents to list")
+                continue
+            
+            print("\n" + "="*60)
+            print("DOCUMENT CONTENTS")
+            print("="*60)
+            
+            for file in files:
+                print(f"\n### {file.name}")
+                content = read_source_document(file)
+                if not content.startswith("[Error") and not content.startswith("["):
+                    preview = content[:500] + "..." if len(content) > 500 else content
+                    print(f"{preview}")
+                    print(f"[{len(content)} characters total]")
+                else:
+                    print(content)
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "3":
+            # Provide instructions for adding files
+            print("\n" + "="*60)
+            print("ADD SOURCE DOCUMENTS")
+            print("="*60)
+            print(f"\nLocation: {sources_path.absolute()}")
+            print("\nSupported formats:")
+            print("  - Text: .txt, .md")
+            print("  - Documents: .docx")
+            print("  - PDF: .pdf")
+            print("  - Presentations: .pptx")
+            print("\nInstructions:")
+            print("  1. Copy your files to the sources folder above")
+            print("  2. Press Enter when done")
+            print("\nNote: Files named 'research_context.txt' and 'sources_list.txt'")
+            print("      are reserved and will be ignored.")
+            
+            input("\nPress Enter when files are ready...")
+        
+        else:
+            print("Invalid choice")
+
+
 def save_audio(audio_data, project_name, topic, language_code, mode):
     """Save audio file with project name, topic, and language"""
     date = datetime.now().strftime('%Y-%m-%d')
@@ -829,6 +1055,21 @@ IMPORTANT: Follow the research instructions above. Conduct thorough online resea
         print("Cancelled")
         return
     
+    # 7b. Check and process source documents
+    source_documents = process_source_documents(project_name)
+    if source_documents:
+        prompt = f"""{prompt}
+
+=== USER-PROVIDED SOURCE DOCUMENTS ===
+
+The following documents were provided by the user. Reference and cite them where relevant alongside your web research:
+
+{source_documents}
+
+===================================
+"""
+        print(f"\n[INFO] Added {len(source_documents)} characters from source documents to prompt")
+    
     # 8. Generate script
     script, claude_usage = generate_script(prompt, anthropic_key)
     if not script:
@@ -954,6 +1195,30 @@ Please provide the improved script maintaining all manual edits and improvements
         return
     
     script_for_audio = clean_script_for_audio(script)
+    
+    # FINAL SAFETY CHECK - Guarantee sources not in audio
+    print("\n[FINAL CHECK] Verifying cleaned script...")
+    if 'SOURCES FOUND' in script_for_audio.upper():
+        print("[ERROR] ❌ SOURCES STILL IN SCRIPT!")
+        print("Attempting emergency removal...")
+        # Emergency fallback - find any variant and cut
+        idx = script_for_audio.upper().find('SOURCES FOUND')
+        if idx > 0:
+            script_for_audio = script_for_audio[:idx]
+            print(f"[INFO] Emergency cut at position {idx}")
+    
+    if re.search(r'\n\d+\.\s+\*\*', script_for_audio):
+        print("[WARNING] ⚠️ Numbered list detected - may be sources!")
+        print("First 200 chars of end of script:")
+        print(script_for_audio[-200:])
+        print("\nLast 50 chars:")
+        print(repr(script_for_audio[-50:]))
+        confirm = input("\nSources may be in audio. Continue anyway? (y/N): ")
+        if confirm.lower() != 'y':
+            print("Aborted - fix script manually")
+            return
+    else:
+        print("[INFO] ✓ Verified clean - no sources detected")
     
     audio_data, elevenlabs_chars = generate_audio(script_for_audio, config, language_code, mode, speed, project_name)
     if not audio_data:
