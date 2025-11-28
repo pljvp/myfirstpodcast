@@ -1,0 +1,23 @@
+Research Context for protocols
+
+
+=== RESEARCH INSTRUCTIONS ===
+Number of sources to find: 5-10
+
+=== CONTEXT AND FOCUS AREAS ===
+(Describe what Claude should focus on during research)
+
+Examples:
+- Focus on developments from 2000-2025
+- Include both academic and industry perspectives
+- Look for practical applications and case studies
+- Find credible sources (academic papers, industry reports, reputable news, podcasts, youtube, medium)
+
+=== SPECIFIC QUESTIONS TO ANSWER ===
+1. write haiku about lost-in-translation
+2.
+3.
+
+=== AUDIENCE CONSIDERATIONS ===
+(What level of technical detail? What background can we assume?)
+

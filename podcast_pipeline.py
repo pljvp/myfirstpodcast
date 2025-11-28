@@ -218,10 +218,11 @@ def extract_and_save_sources(script, project_name):
     return script
 
 
-def save_script(script, project_name, draft_number):
-    """Save script with versioned filename"""
-    date = datetime.now().strftime('%Y-%m-%d')
-    filename = f"{project_name}_{date}_draft{draft_number}.txt"
+def save_script(script, project_name, draft_number, language_code='EN'):
+    """Save script with versioned filename including language code and timestamp"""
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
+    lang_upper = language_code.upper()
+    filename = f"{project_name}_{lang_upper}_{timestamp}_draft{draft_number}.txt"
     path = Path(f"./projects/{project_name}/scripts/{filename}")
     with open(path, 'w', encoding='utf-8') as f:
         f.write(script)
@@ -479,12 +480,20 @@ def generate_audio(script, config, language_code, mode='prototype', speed=1.0, p
         print("ERROR: ELEVENLABS_API_KEY not found in environment")
         return None
     
-    language = 'german' if language_code == 'de' else 'english'
+    # Map language codes to config keys for ALL supported languages
+    language_map = {
+        'de': 'german',
+        'en': 'english',
+        'nl': 'dutch'
+    }
+    language = language_map.get(language_code, 'english')
+    
     voice_ids = {
         'speaker_a': config['languages'][language]['elevenlabs_voices']['speaker_a_female'],
         'speaker_b': config['languages'][language]['elevenlabs_voices']['speaker_b_male']
     }
     
+    print(f"[DEBUG] Language: {language.upper()} ({language_code})")
     print(f"[DEBUG] Using voices: Speaker A = {voice_ids['speaker_a']}, Speaker B = {voice_ids['speaker_b']}")
     
     dialogue = parse_script_to_dialogue(script, voice_ids)
@@ -632,32 +641,41 @@ def generate_audio(script, config, language_code, mode='prototype', speed=1.0, p
 
 
 def read_text_file(filepath):
-    """Read plain text file"""
+    """Read plain text file with verbose feedback"""
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
-            return f.read()
+            content = f.read()
+        
+        lines = content.split('\n')
+        print(f"      [Text file: {len(lines)} lines, {len(content)} chars]")
+        return content
     except Exception as e:
         return f"[Error reading {filepath}: {str(e)}]"
 
 
 def read_docx_file(filepath):
-    """Read DOCX file"""
+    """Read DOCX file with verbose feedback"""
     if not DOCX_AVAILABLE:
         return "[python-docx not installed - run: pip install python-docx]"
     
     try:
         doc = DocxDocument(filepath)
+        num_paragraphs = len(doc.paragraphs)
+        print(f"      [DOCX: {num_paragraphs} paragraphs detected]")
+        
         text = []
         for para in doc.paragraphs:
             if para.text.strip():
                 text.append(para.text)
+        
+        print(f"      [Extracted {len(text)} non-empty paragraphs]")
         return '\n'.join(text)
     except Exception as e:
         return f"[Error reading {filepath}: {str(e)}]"
 
 
 def read_pdf_file(filepath):
-    """Read PDF file"""
+    """Read PDF file with verbose feedback"""
     if not PDF_AVAILABLE:
         return "[PyPDF2 not installed - run: pip install PyPDF2]"
     
@@ -665,28 +683,42 @@ def read_pdf_file(filepath):
         text = []
         with open(filepath, 'rb') as f:
             reader = PyPDF2.PdfReader(f)
-            for page in reader.pages:
+            num_pages = len(reader.pages)
+            print(f"      [PDF: {num_pages} pages detected]")
+            
+            for page_num, page in enumerate(reader.pages, 1):
                 page_text = page.extract_text()
                 if page_text.strip():
                     text.append(page_text)
+                    print(f"      [Page {page_num}/{num_pages}: {len(page_text)} chars]", end='\r')
+            
+            print()  # New line after progress
         return '\n'.join(text)
     except Exception as e:
         return f"[Error reading {filepath}: {str(e)}]"
 
 
 def read_pptx_file(filepath):
-    """Read PPTX file"""
+    """Read PPTX file with verbose feedback"""
     if not PPTX_AVAILABLE:
         return "[python-pptx not installed - run: pip install python-pptx]"
     
     try:
         prs = Presentation(filepath)
+        num_slides = len(prs.slides)
+        print(f"      [PPTX: {num_slides} slides detected]")
+        
         text = []
         for slide_num, slide in enumerate(prs.slides, 1):
             text.append(f"[Slide {slide_num}]")
+            shape_count = 0
             for shape in slide.shapes:
                 if hasattr(shape, "text") and shape.text.strip():
                     text.append(shape.text)
+                    shape_count += 1
+            print(f"      [Slide {slide_num}/{num_slides}: {shape_count} text elements]", end='\r')
+        
+        print()  # New line after progress
         return '\n'.join(text)
     except Exception as e:
         return f"[Error reading {filepath}: {str(e)}]"
@@ -744,7 +776,7 @@ def process_source_documents(project_name):
         
         print("\nOptions:")
         print("  1. Proceed (use existing documents if any)")
-        print("  2. List and read current documents")
+        print("  2. List current documents")
         print("  3. Add new source files")
         
         choice = input("\nChoice (1-3, default=1): ").strip() or "1"
@@ -773,25 +805,22 @@ def process_source_documents(project_name):
             return '\n'.join(combined_text) if combined_text else ""
         
         elif choice == "2":
-            # List and show preview of documents
+            # List documents (filenames only, no content)
             if not files:
                 print("\n[INFO] No documents to list")
                 continue
             
             print("\n" + "="*60)
-            print("DOCUMENT CONTENTS")
+            print("DOCUMENTS IN SOURCES FOLDER")
             print("="*60)
+            print(f"\nLocation: {sources_path.absolute()}\n")
             
-            for file in files:
-                print(f"\n### {file.name}")
-                content = read_source_document(file)
-                if not content.startswith("[Error") and not content.startswith("["):
-                    preview = content[:500] + "..." if len(content) > 500 else content
-                    print(f"{preview}")
-                    print(f"[{len(content)} characters total]")
-                else:
-                    print(content)
+            for i, file in enumerate(files, 1):
+                file_size = file.stat().st_size
+                size_kb = file_size / 1024
+                print(f"  {i}. {file.name} ({size_kb:.1f} KB)")
             
+            print(f"\nTotal: {len(files)} document(s)")
             input("\nPress Enter to continue...")
         
         elif choice == "3":
@@ -1029,11 +1058,37 @@ def main():
 
 IMPORTANT: Follow the research instructions above. Conduct thorough online research using web search. Find and analyze the specified number of sources. Document your sources at the end of the script."""
     
-    # 7. Review prompt
+    # 7a. Check and process source documents BEFORE prompt review
+    source_documents = process_source_documents(project_name)
+    if source_documents:
+        prompt = f"""{prompt}
+
+=== USER-PROVIDED SOURCE DOCUMENTS ===
+
+The following documents were provided by the user. Reference and cite them where relevant alongside your web research:
+
+{source_documents}
+
+===================================
+"""
+        print(f"\n[INFO] Added {len(source_documents)} characters from source documents to prompt")
+    
+    # 7b. Review final prompt (including source documents if added)
     print("\n" + "="*60)
     print("PROMPT REVIEW")
     print("="*60)
-    print(prompt[:500] + "..." if len(prompt) > 500 else prompt)
+    print(f"Topic: {topic}")
+    print(f"Duration: {duration} minutes (~{word_count} words)")
+    print(f"Style: {config['style_templates'][template_key]['title']}")
+    print(f"Language: {config['languages'][selected_language]['name']}")
+    if source_documents:
+        doc_count = len([s for s in source_documents.split('### SOURCE:') if s.strip()])
+        print(f"Source Documents: {doc_count} document(s) attached")
+    else:
+        print(f"Source Documents: None (web research only)")
+    print("="*60)
+    print("\nFull prompt saved for your review if needed.")
+    print(f"Location: {Path(f'./projects/{project_name}/prompts/temp_prompt.txt').absolute()}")
     print("="*60)
     
     temp_prompt_path = Path(f"./projects/{project_name}/prompts/temp_prompt.txt")
@@ -1055,21 +1110,6 @@ IMPORTANT: Follow the research instructions above. Conduct thorough online resea
         print("Cancelled")
         return
     
-    # 7b. Check and process source documents
-    source_documents = process_source_documents(project_name)
-    if source_documents:
-        prompt = f"""{prompt}
-
-=== USER-PROVIDED SOURCE DOCUMENTS ===
-
-The following documents were provided by the user. Reference and cite them where relevant alongside your web research:
-
-{source_documents}
-
-===================================
-"""
-        print(f"\n[INFO] Added {len(source_documents)} characters from source documents to prompt")
-    
     # 8. Generate script
     script, claude_usage = generate_script(prompt, anthropic_key)
     if not script:
@@ -1079,7 +1119,7 @@ The following documents were provided by the user. Reference and cite them where
     script = extract_and_save_sources(script, project_name)
     
     draft_num = 1
-    script_path = save_script(script, project_name, draft_num)
+    script_path = save_script(script, project_name, draft_num, language_code)
     print(f"Script generated! ({len(script.split())} words)")
     print(f"Saved to: {script_path}")
     
@@ -1126,7 +1166,7 @@ The following documents were provided by the user. Reference and cite them where
             if revised:
                 script = extract_and_save_sources(revised, project_name)
                 draft_num += 1
-                script_path = save_script(script, project_name, draft_num)
+                script_path = save_script(script, project_name, draft_num, language_code)
                 print(f"✓ Revised script saved to: {script_path}")
             else:
                 print("✗ Revision failed")
@@ -1161,7 +1201,7 @@ Please provide the improved script maintaining all manual edits and improvements
             if regenerated:
                 script = extract_and_save_sources(regenerated, project_name)
                 draft_num += 1
-                script_path = save_script(script, project_name, draft_num)
+                script_path = save_script(script, project_name, draft_num, language_code)
                 print(f"✓ Regenerated script saved to: {script_path}")
             else:
                 print("✗ Regeneration failed")

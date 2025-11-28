@@ -45,6 +45,16 @@ def list_scripts(project_name):
     return sorted(scripts, key=lambda x: x.stat().st_mtime, reverse=True)
 
 
+def extract_language_from_filename(filename):
+    """Extract language code from filename like 'project_DE_2025-11-28_draft1.txt'"""
+    parts = filename.split('_')
+    # Look for 2-letter uppercase code
+    for part in parts:
+        if len(part) == 2 and part.isupper() and part in ['DE', 'EN', 'NL']:
+            return part.lower()
+    return 'en'  # Default to English if not found
+
+
 def translate_script(script, target_language, anthropic_key):
     """Translate script using Claude API"""
     
@@ -96,15 +106,6 @@ Original script:
         return None, None
 
 
-def generate_audio(script, config, language_code, speed, project_name):
-    """Generate audio using existing generate_audio logic"""
-    # Import from main pipeline
-    sys.path.insert(0, str(Path(__file__).parent))
-    from podcast_pipeline import generate_audio as gen_audio, save_audio
-    
-    return gen_audio(script, config, language_code, 'production', speed, project_name)
-
-
 def main():
     """Main translation workflow"""
     print("=== Translate Script ===\n")
@@ -112,6 +113,7 @@ def main():
     # Load config
     config = load_config()
     anthropic_key = os.getenv('ANTHROPIC_API_KEY')
+    elevenlabs_key = os.getenv('ELEVENLABS_API_KEY')
     
     if not anthropic_key:
         print("ERROR: ANTHROPIC_API_KEY not found in config/.env")
@@ -158,7 +160,12 @@ def main():
     with open(script_path, 'r', encoding='utf-8') as f:
         original_script = f.read()
     
-    print(f"\nLoaded: {script_path.name} ({len(original_script)} chars)")
+    # Extract source language from filename
+    source_lang = extract_language_from_filename(script_path.name)
+    
+    print(f"\nLoaded: {script_path.name}")
+    print(f"Detected source language: {source_lang.upper()}")
+    print(f"Script length: {len(original_script)} chars")
     
     # Select target language
     print("\nAvailable languages:")
@@ -175,8 +182,9 @@ def main():
         return
     
     # Confirm
-    print(f"\nTranslate '{script_path.name}' to {target_language.upper()}?")
-    confirm = input("Continue? (y/N): ").strip().lower()
+    print(f"\nTranslate '{script_path.name}'")
+    print(f"  From: {source_lang.upper()} → To: {target_language.upper()}")
+    confirm = input("\nContinue? (y/N): ").strip().lower()
     if confirm != 'y':
         print("Cancelled")
         return
@@ -187,9 +195,10 @@ def main():
         print("Translation failed")
         return
     
-    # Save translated script
-    timestamp = datetime.now().strftime('%Y-%m-%d')
-    translated_filename = f"{project_name}_{target_language}_{timestamp}_translated.txt"
+    # Save translated script with proper naming
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
+    lang_upper = target_language.upper()
+    translated_filename = f"{project_name}_{lang_upper}_{timestamp}_draft1.txt"
     translated_path = Path(f"./projects/{project_name}/scripts/{translated_filename}")
     
     with open(translated_path, 'w', encoding='utf-8') as f:
@@ -199,12 +208,33 @@ def main():
     print(f"  ({len(translated_script)} chars)")
     
     # Ask if user wants to generate audio
+    if not elevenlabs_key:
+        print("\n[INFO] ELEVENLABS_API_KEY not found - skipping audio generation option")
+        print("Done!")
+        return
+    
     print("\nGenerate audio for translated script?")
     audio_choice = input("(y/N): ").strip().lower()
     
     if audio_choice == 'y':
+        # Select mode
+        print("\nSelect audio mode:")
+        print("  1. Prototype (lower quality, faster, testing)")
+        print("  2. Production (high quality, final)")
+        
+        mode_input = input("\nMode (1-2, default=1): ").strip() or "1"
+        mode = 'prototype' if mode_input == '1' else 'production'
+        
         # Get speed
-        default_speed = config['languages'].get(target_language, {}).get('speed', 1.0)
+        # FIXED: Proper language mapping including Dutch
+        language_key_map = {
+            'de': 'german',
+            'en': 'english',
+            'nl': 'dutch'
+        }
+        language_key = language_key_map.get(target_language, 'english')
+        
+        default_speed = config['languages'].get(language_key, {}).get('speed', 1.0)
         speed_input = input(f"\nSpeech speed (0.7-1.2, default {default_speed}, Enter to use default): ").strip()
         
         if speed_input:
@@ -216,7 +246,7 @@ def main():
         else:
             speed = default_speed
         
-        print(f"\n[INFO] Generating audio with speed {speed}...")
+        print(f"\n[INFO] Generating audio with speed {speed} in {mode.upper()} mode...")
         
         # Import and use generate_audio from main pipeline
         sys.path.insert(0, str(Path(__file__).parent))
@@ -226,13 +256,21 @@ def main():
         cleaned_script = clean_script_for_audio(translated_script)
         
         # Generate audio
-        audio_data, chars = generate_audio(cleaned_script, config, target_language, 'production', speed, project_name)
+        audio_data, chars = generate_audio(cleaned_script, config, target_language, mode, speed, project_name)
         
         if audio_data:
-            # Save audio
-            audio_path = save_audio(audio_data, project_name, f"translated_{target_language}", target_language, 'production')
+            # FIXED: Proper filename format with language code in capitals
+            audio_timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
+            audio_filename = f"{project_name}_{lang_upper}_{audio_timestamp}_{mode.upper()}.mp3"
+            audio_path = Path(f"./projects/{project_name}/audio/{audio_filename}")
+            
+            with open(audio_path, 'wb') as f:
+                f.write(audio_data)
+            
             print(f"\n✓ Audio saved: {audio_path}")
             print(f"  Characters: {chars}")
+            print(f"  Mode: {mode.upper()}")
+            print(f"  Speed: {speed}")
         else:
             print("\n✗ Audio generation failed")
     

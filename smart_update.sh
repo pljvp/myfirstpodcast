@@ -99,6 +99,50 @@ else
 fi
 
 echo ""
+echo "Looking for utility scripts:"
+echo "  - translate_script.py"
+echo "  - tune_audio.py"
+echo ""
+
+UTILITIES_UPDATED=0
+
+# Handle translate_script.py
+if [ -f "translate_script.py" ]; then
+    echo "  ✓ FOUND: translate_script.py"
+    if [ -f "./translate_script.py" ] && [ ! -L "./translate_script.py" ]; then
+        # Backup existing if it's a real file (not a new install)
+        if [ -s "./translate_script.py" ]; then
+            OLD_BACKUP=".backup/translate_script_backup_$(date +%Y%m%d_%H%M%S).py"
+            cp ./translate_script.py "$OLD_BACKUP" 2>/dev/null
+            echo "    (backed up to $OLD_BACKUP)"
+        fi
+    fi
+    chmod +x translate_script.py
+    echo "  ✓ INSTALLED: translate_script.py (executable)"
+    UTILITIES_UPDATED=$((UTILITIES_UPDATED + 1))
+fi
+
+# Handle tune_audio.py
+if [ -f "tune_audio.py" ]; then
+    echo "  ✓ FOUND: tune_audio.py"
+    if [ -f "./tune_audio.py" ] && [ ! -L "./tune_audio.py" ]; then
+        # Backup existing if it's a real file
+        if [ -s "./tune_audio.py" ]; then
+            OLD_BACKUP=".backup/tune_audio_backup_$(date +%Y%m%d_%H%M%S).py"
+            cp ./tune_audio.py "$OLD_BACKUP" 2>/dev/null
+            echo "    (backed up to $OLD_BACKUP)"
+        fi
+    fi
+    chmod +x tune_audio.py
+    echo "  ✓ INSTALLED: tune_audio.py (executable)"
+    UTILITIES_UPDATED=$((UTILITIES_UPDATED + 1))
+fi
+
+if [ $UTILITIES_UPDATED -eq 0 ]; then
+    echo "  (No utility scripts found - this is optional)"
+fi
+
+echo ""
 echo "Processing template files..."
 
 # Handle template files with _FIXED suffix
@@ -182,6 +226,11 @@ if [ "$PIPELINE_UPDATED" = true ]; then
 else
     echo "  ❌ Pipeline script (not found)"
 fi
+if [ $UTILITIES_UPDATED -gt 0 ]; then
+    echo "  ✅ $UTILITIES_UPDATED utility script(s) (translate/tune)"
+else
+    echo "  ➖ Utility scripts (not found - optional)"
+fi
 echo "  ✅ API keys preserved"
 echo "  ✅ Voice config preserved"
 echo "  ✅ Templates preserved"
@@ -192,6 +241,9 @@ fi
 echo ""
 if [ "$PIPELINE_UPDATED" = true ]; then
     echo "✓ Ready to run: python podcast_pipeline.py"
+    if [ $UTILITIES_UPDATED -gt 0 ]; then
+        echo "✓ New utilities available: translate_script.py, tune_audio.py"
+    fi
 else
     echo "⚠️  Pipeline not updated - download podcast_pipeline_FIXED.py first!"
 fi
