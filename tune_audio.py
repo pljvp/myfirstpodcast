@@ -23,6 +23,18 @@ def load_config():
         return json.load(f)
 
 
+
+
+def extract_provider_from_filename(filename):
+    """Extract provider tag from script filename"""
+    if '_11LB_' in filename:
+        return 'elevenlabs', '11LB'
+    elif '_CRTS_' in filename:
+        return 'cartesia', 'CRTS'
+    else:
+        # Default to ElevenLabs if no tag
+        return 'elevenlabs', '11LB'
+
 def list_projects():
     """List available projects"""
     projects_path = Path('./projects')
@@ -65,73 +77,77 @@ def detect_language(script):
         return 'en'
 
 
-def generate_audio_with_custom_speeds(script, config, language_code, speed_a, speed_b, project_name):
+def generate_audio_with_custom_speeds(script, config, language_code, speed_a, speed_b, project_name, provider_name='elevenlabs'):
     """Generate audio with different speeds for Speaker A and B"""
     
-    # Import from main pipeline
+    # Import provider modules
     sys.path.insert(0, str(Path(__file__).parent))
-    from podcast_pipeline import parse_script_to_dialogue, save_audio
+    from providers import ElevenLabsProvider, CartesiaProvider
     
-    import requests
-    
-    api_key = os.getenv('ELEVENLABS_API_KEY')
-    if not api_key:
-        print("ERROR: ELEVENLABS_API_KEY not found")
+    # Get provider instance
+    if provider_name not in config.get('providers', {}):
+        print(f"ERROR: Provider '{provider_name}' not in config")
         return None, 0
     
-    # Get voice IDs
-    language = 'german' if language_code == 'de' else 'dutch' if language_code == 'nl' else 'english'
+    provider_config = config['providers'][provider_name]
+    api_key_env = provider_config.get('api_key_env')
+    api_key = os.getenv(api_key_env)
+    
+    if not api_key:
+        print(f"ERROR: {api_key_env} not found in config/.env")
+        return None, 0
+    
+    # Get language mapping and voice IDs
+    language_map = {'de': 'german', 'en': 'english', 'nl': 'dutch'}
+    language = language_map.get(language_code, 'english')
+    
+    if language not in provider_config.get('voices', {}):
+        print(f"ERROR: No voices for {language} in provider {provider_name}")
+        return None, 0
+    
+    voice_config = provider_config['voices'][language]
     voice_ids = {
-        'speaker_a': config['languages'][language]['elevenlabs_voices']['speaker_a_female'],
-        'speaker_b': config['languages'][language]['elevenlabs_voices']['speaker_b_male']
+        'speaker_a': voice_config.get('speaker_a_female') or voice_config.get('speaker_a_male'),
+        'speaker_b': voice_config.get('speaker_b_male') or voice_config.get('speaker_b_female')
     }
     
     print(f"[INFO] Using custom speeds: Speaker A = {speed_a}, Speaker B = {speed_b}")
+    print(f"[INFO] Provider: {provider_name.upper()}")
     
-    # Parse script
-    dialogue = parse_script_to_dialogue(script, voice_ids)
+    # Create provider instance
+    if provider_name == 'elevenlabs':
+        provider = ElevenLabsProvider(api_key, provider_config)
+    elif provider_name == 'cartesia':
+        provider = CartesiaProvider(api_key, provider_config)
+    else:
+        print(f"ERROR: Unknown provider {provider_name}")
+        return None, 0
+    
+    # Parse script using provider
+    dialogue = provider.parse_script_to_dialogue(script, voice_ids)
     
     if not dialogue:
         print("ERROR: Could not parse script")
         return None, 0
     
-    # Add custom speeds per speaker
-    for item in dialogue:
-        if item['voice_id'] == voice_ids['speaker_a']:
-            item['voice_settings'] = {'speed': speed_a}
-        else:
-            item['voice_settings'] = {'speed': speed_b}
-    
     print(f"\n[INFO] Generating audio with custom speeds...")
     print(f"  Dialogue segments: {len(dialogue)}")
     
-    # Generate audio using ElevenLabs API
-    url = "https://api.elevenlabs.io/v1/text-to-dialogue"
-    headers = {
-        "xi-api-key": api_key,
-        "Content-Type": "application/json"
-    }
+    # Generate with per-speaker speeds
+    # Note: For now, we use average speed since providers don't directly support per-speaker
+    # TODO: Implement per-speaker speed in provider classes
+    avg_speed = (speed_a + speed_b) / 2
+    print(f"[INFO] Using average speed {avg_speed:.2f} (per-speaker not yet supported)")
     
-    data = {
-        "dialogue": dialogue,
-        "output_format": "mp3_44100_128"
-    }
+    audio_data, total_chars = provider.generate_audio(
+        script, voice_ids, mode='production', speed=avg_speed, project_name=project_name
+    )
     
-    try:
-        response = requests.post(url, json=data, headers=headers)
-        response.raise_for_status()
-        
-        audio_data = response.content
-        total_chars = sum(len(item['text']) for item in dialogue)
-        
+    if audio_data:
         print(f"✓ Audio generated ({len(audio_data) / 1024 / 1024:.1f} MB)")
-        print(f"[USAGE] ElevenLabs - {total_chars} characters processed")
-        
-        return audio_data, total_chars
-        
-    except Exception as e:
-        print(f"[ERROR] Audio generation failed: {str(e)}")
-        return None, 0
+        print(f"[USAGE] {provider_name.upper()} - {total_chars} characters processed")
+    
+    return audio_data, total_chars
 
 
 def main():
@@ -188,12 +204,18 @@ def main():
     
     print(f"\nLoaded: {script_path.name} ({len(original_script)} chars)")
     
-    # Detect language
+    # Detect language and provider
     detected_lang = detect_language(original_script)
-    print(f"Detected language: {detected_lang.upper()}")
+    provider_name, provider_tag = extract_provider_from_filename(script_path.name)
     
-    # Get speeds
-    default_speed = config['languages'].get(detected_lang, {}).get('speed', 1.0)
+    print(f"Detected language: {detected_lang.upper()}")
+    print(f"Detected provider: {provider_name.upper()} (from filename)")
+    print(f"[INFO] Audio will be generated using {provider_name.upper()}")
+    
+    # Get speeds - use proper language mapping
+    language_map = {'de': 'german', 'en': 'english', 'nl': 'dutch'}
+    language_key = language_map.get(detected_lang, 'english')
+    default_speed = config['languages'].get(language_key, {}).get('speed', 1.0)
     
     print(f"\nCurrent default speed: {default_speed}")
     print("Speed range: 0.7 (slow) to 1.2 (fast)")

@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 """
 AI Podcast Pipeline v3.0 - Enhanced Debug Mode
 - Better error logging
 - Shows WHY retry is happening
 - Verbose mode for troubleshooting
 """
-
 import os
 import json
 import subprocess
@@ -16,6 +14,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 from anthropic import Anthropic
 import requests
+
+# TTS Provider modules
+from providers import ElevenLabsProvider, CartesiaProvider
 
 # Document reading libraries (optional - graceful fallback if not installed)
 try:
@@ -471,7 +472,39 @@ def chunk_dialogue(inputs, max_chars=4500):
     return chunks
 
 
-def generate_audio(script, config, language_code, mode='prototype', speed=1.0, project_name=None):
+def generate_audio(script, config, language_code, provider_name, mode='prototype', speed=1.0, project_name=None):
+    """Generate audio using specified TTS provider"""
+    
+    # Get provider instance
+    provider = get_provider_instance(provider_name, config)
+    if not provider:
+        return None, 0
+    
+    # Get language mapping
+    language_map = {'de': 'german', 'en': 'english', 'nl': 'dutch'}
+    language = language_map.get(language_code, 'english')
+    
+    # Get voice IDs from provider config
+    provider_config = config['providers'][provider_name]
+    if language not in provider_config.get('voices', {}):
+        print(f"ERROR: No voices for {language} in provider {provider_name}")
+        return None, 0
+    
+    voice_config = provider_config['voices'][language]
+    voice_ids = {
+        'speaker_a': voice_config.get('speaker_a_female') or voice_config.get('speaker_a_male'),
+        'speaker_b': voice_config.get('speaker_b_male') or voice_config.get('speaker_b_female')
+    }
+    
+    print(f"[DEBUG] Voice A: {voice_ids['speaker_a']}")
+    print(f"[DEBUG] Voice B: {voice_ids['speaker_b']}")
+    
+    # Generate using provider
+    return provider.generate_audio(script, voice_ids, mode, speed, project_name)
+
+
+# Original generate_audio function preserved for backward compatibility
+def generate_audio_legacy(script, config, language_code, mode='prototype', speed=1.0, project_name=None):
     """Call ElevenLabs Text-to-Dialogue API with enhanced error logging"""
     print(f"\nGenerating audio in {mode.upper()} mode...")
     
@@ -846,16 +879,71 @@ def process_source_documents(project_name):
             print("Invalid choice")
 
 
-def save_audio(audio_data, project_name, topic, language_code, mode):
-    """Save audio file with project name, topic, and language"""
+def save_audio(audio_data, project_name, topic, language_code, provider_tag, mode):
+    """Save audio file with project name, topic, language, and provider tag"""
     date = datetime.now().strftime('%Y-%m-%d')
     safe_topic = topic.replace('/', '-').replace('\\', '-')
-    filename = f"{project_name}_{safe_topic}_{language_code}_{date}_{mode.upper()}.mp3"
+    filename = f"{project_name}_{safe_topic}_{language_code}_{date}_{provider_tag}_{mode.upper()}.mp3"
     path = Path(f"./projects/{project_name}/audio/{filename}")
+    
+    # Ensure directory exists
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
     with open(path, 'wb') as f:
         f.write(audio_data)
+    
+    print(f"[DEBUG] Saved {len(audio_data)} bytes to {path}")
     return path
 
+
+
+
+def extract_provider_from_filename(filename):
+    """Extract provider tag from script filename"""
+    if '_11LB_' in filename:
+        return 'elevenlabs', '11LB'
+    elif '_CRTS_' in filename:
+        return 'cartesia', 'CRTS'
+    else:
+        return 'elevenlabs', '11LB'  # Default
+
+
+def get_provider_instance(provider_name, config):
+    """Get TTS provider instance"""
+    if provider_name not in config.get('providers', {}):
+        print(f"ERROR: Provider '{provider_name}' not in config")
+        return None
+    
+    provider_config = config['providers'][provider_name]
+    api_key_env = provider_config.get('api_key_env')
+    api_key = os.getenv(api_key_env)
+    
+    if not api_key:
+        print(f"ERROR: {api_key_env} not found in config/.env")
+        return None
+    
+    if provider_name == 'elevenlabs':
+        return ElevenLabsProvider(api_key, provider_config)
+    elif provider_name == 'cartesia':
+        return CartesiaProvider(api_key, provider_config)
+    else:
+        print(f"ERROR: Unknown provider '{provider_name}'")
+        return None
+
+
+def inject_provider_instructions(template_content, provider_instance):
+    """Inject provider-specific instructions into template"""
+    provider_instructions = provider_instance.get_template_instructions()
+    
+    # Inject after the CRITICAL section
+    marker = "===================================\nAVAILABLE AUDIO TAGS"
+    if marker in template_content:
+        template_content = template_content.replace(
+            marker,
+            provider_instructions + "\n" + marker
+        )
+    
+    return template_content
 
 def main():
     """Main pipeline orchestration"""
@@ -872,7 +960,7 @@ def main():
         return
     
     # 1. Project setup
-    project_name = get_user_input("Enter project name (alphanumeric, for folders/filenames)").replace(' ', '_').lower()
+    project_name = get_user_input("Enter project name (alphanumeric, for folders/filenames)").replace(' ', '_')
     topic = get_user_input("Enter podcast topic")
     
     while True:
@@ -899,6 +987,30 @@ def main():
     selected_language = languages[lang_idx]
     language_code = config['languages'][selected_language]['code']
     
+    # TTS Provider selection (NEW)
+    print("\n" + "="*60)
+    print("TTS PROVIDER SELECTION")
+    print("="*60)
+    provider_options = [
+        "ElevenLabs (full emotion dynamics, interruptions)",
+        "Cartesia (faster generation, emotion-optimized)"
+    ]
+    provider_idx = get_user_input("\nSelect TTS provider", provider_options)
+    selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
+    provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+    
+    print(f"\n[INFO] Selected: {selected_provider.upper()}")
+    print(f"[INFO] Scripts will be tagged with: {provider_tag}")
+
+    # Mode selection
+    if selected_provider == 'elevenlabs':
+        print("\n[INFO] ElevenLabs supports quality tiers:")
+        print("  - Prototype: 64kbps (lower cost, testing)")
+        print("  - Production: 128kbps+ (full quality)")
+    elif selected_provider == 'cartesia':
+        print("\n[INFO] Cartesia note: Always generates full quality")
+        print("  (API does not support quality tiers)")
+
     mode_idx = get_user_input("\nSelect mode", [
         "Prototype (lower quality, reduced cost for testing)",
         "Production (full quality)"
@@ -925,297 +1037,341 @@ def main():
     project_path = create_project_structure(project_name)
     print(f"  ✓ Created subdirectories")
     
-    # 5b. Research context
-    research_context_file = project_path / "sources" / "research_context.txt"
-    print(f"\n✓ Research context file: {research_context_file}")
+    # 5b. CHECK FOR EXISTING SCRIPTS
+    existing_scripts = sorted(
+        list(Path(f"./projects/{project_name}/scripts").glob(f"{project_name}_{language_code.upper()}_*_{provider_tag}_draft*.txt")),
+        key=lambda x: x.stat().st_mtime,
+        reverse=True
+    )
     
-    # Show what's being used
-    default_template = Path("templates/research_contexts/default.txt")
-    if default_template.exists() and not (project_path / "sources" / "research_context.txt").exists():
-        print("  (Using default template from templates/research_contexts/default.txt)")
-    elif (project_path / "sources" / "research_context.txt").exists():
-        # Check if it's different from default (i.e., project-specific)
-        with open(project_path / "sources" / "research_context.txt", 'r') as f:
-            current_content = f.read()
+    script_ready = False
+    
+    if existing_scripts:
+        print(f"\n⚠️  Found {len(existing_scripts)} existing script(s) with {provider_tag} tag:")
         
-        is_customized = "{project_name}" not in current_content  # Simple check
-        if is_customized:
-            print("  (Using project-specific research context)")
-        else:
-            print("  (Using default template)")
-    
-    # Offer choices
-    edit_choice = get_user_input("\nResearch context options", [
-        "Use as-is (proceed with current context)",
-        "Edit current context (customize for this project)",
-        "Reset to default template (if you made mistakes)",
-        "Show current context"
-    ])
-    
-    if edit_choice == 1:
-        print("\nOpening research context in your text editor...")
-        subprocess.run([os.environ.get('EDITOR', 'nano'), str(research_context_file)])
-        print("✓ Research context updated (now project-specific)")
-    elif edit_choice == 2:
-        if default_template.exists():
-            print("\nResetting to default template...")
-            with open(default_template, 'r') as f:
-                template_content = f.read()
-            with open(research_context_file, 'w') as f:
-                f.write(template_content.replace("{project_name}", project_name))
-            print("✓ Reset to default template")
-        else:
-            print("⚠ No default template found at templates/research_contexts/default.txt")
-    elif edit_choice == 3:
-        print("\n" + "="*60)
-        with open(research_context_file, 'r') as f:
-            print(f.read())
-        print("="*60)
-        input("\nPress Enter to continue...")
-    
-    with open(research_context_file, 'r', encoding='utf-8') as f:
-        research_context = f.read()
-    
-    # 6. Prompt handling
-    variables = {
-        'duration': duration,
-        'word_count': word_count,
-        'topic': topic,
-        'project_name': project_name
-    }
-    
-    prompt_choice = get_user_input("\nPrompt template options", [
-        f"Use default template ({selected_style} / {selected_language})",
-        "Load existing template from this project's prompts folder",
-        "Copy template from templates folder to project and customize",
-        "Edit the chosen template before generating",
-        "Start with blank prompt"
-    ])
-    
-    if prompt_choice == 0:
-        # Use default template
-        template_file = config['styles'][selected_style]['default_template_file']
-        template_file = template_file.replace('{language}', selected_language)
-        if Path(template_file).exists():
-            prompt = load_template(template_file, variables)
-        else:
-            print(f"WARNING: Template {template_file} not found")
-            prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            
-    elif prompt_choice == 1:
-        # Load existing from project
-        project_prompts = list(Path(f"./projects/{project_name}/prompts/").glob("*.txt"))
-        if project_prompts:
-            prompt_names = [p.name for p in project_prompts]
-            prompt_idx = get_user_input("Select prompt file", prompt_names)
-            prompt = load_template(project_prompts[prompt_idx], variables)
-        else:
-            print("No saved prompts found in project")
-            prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            
-    elif prompt_choice == 2:
-        # Copy global template to project
-        templates = list(Path("./templates/").glob("*.txt"))
-        if templates:
-            template_names = [t.name for t in templates]
-            template_idx = get_user_input("Select template to copy", template_names)
-            prompt = load_template(templates[template_idx], variables)
-            save_prompt(prompt, project_name, "copied_template.txt")
-            print(f"Template copied to project")
-        else:
-            prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            
-    elif prompt_choice == 3:
-        # Edit template before generating
-        template_file = config['styles'][selected_style]['default_template_file']
-        template_file = template_file.replace('{language}', selected_language)
-        if Path(template_file).exists():
-            prompt = load_template(template_file, variables)
-        else:
-            prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+        # Show all scripts
+        for i, script_file in enumerate(existing_scripts, 1):
+            print(f"    {i}. {script_file.name}")
         
-        save_prompt(prompt, project_name, "edited_prompt.txt")
-        prompt_file = Path(f"./projects/{project_name}/prompts/edited_prompt.txt")
-        print(f"\nOpening {prompt_file} for editing...")
-        subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
-        with open(prompt_file, 'r', encoding='utf-8') as f:
-            prompt = f.read()
-            
-    else:
-        # Start with blank
-        prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-        save_prompt(prompt, project_name, "blank_prompt.txt")
-        prompt_file = Path(f"./projects/{project_name}/prompts/blank_prompt.txt")
-        subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
-        with open(prompt_file, 'r', encoding='utf-8') as f:
-            prompt = f.read()
-    
-    prompt = f"""{prompt}
-
-=== RESEARCH CONTEXT AND INSTRUCTIONS ===
-
-{research_context}
-
-IMPORTANT: Follow the research instructions above. Conduct thorough online research using web search. Find and analyze the specified number of sources. Document your sources at the end of the script."""
-    
-    # 7a. Check and process source documents BEFORE prompt review
-    source_documents = process_source_documents(project_name)
-    if source_documents:
-        prompt = f"""{prompt}
-
-=== USER-PROVIDED SOURCE DOCUMENTS ===
-
-The following documents were provided by the user. Reference and cite them where relevant alongside your web research:
-
-{source_documents}
-
-===================================
-"""
-        print(f"\n[INFO] Added {len(source_documents)} characters from source documents to prompt")
-    
-    # 7b. Review final prompt (including source documents if added)
-    print("\n" + "="*60)
-    print("PROMPT REVIEW")
-    print("="*60)
-    print(f"Topic: {topic}")
-    print(f"Duration: {duration} minutes (~{word_count} words)")
-    print(f"Style: {config['style_templates'][template_key]['title']}")
-    print(f"Language: {config['languages'][selected_language]['name']}")
-    if source_documents:
-        doc_count = len([s for s in source_documents.split('### SOURCE:') if s.strip()])
-        print(f"Source Documents: {doc_count} document(s) attached")
-    else:
-        print(f"Source Documents: None (web research only)")
-    print("="*60)
-    print("\nFull prompt saved for your review if needed.")
-    print(f"Location: {Path(f'./projects/{project_name}/prompts/temp_prompt.txt').absolute()}")
-    print("="*60)
-    
-    temp_prompt_path = Path(f"./projects/{project_name}/prompts/temp_prompt.txt")
-    save_prompt(prompt, project_name, "temp_prompt.txt")
-    
-    confirm = get_user_input("\nOptions", [
-        "Confirm and send to Claude",
-        "Edit prompt in text editor",
-        "Cancel"
-    ])
-    
-    if confirm == 1:
-        print(f"\nOpening prompt in your text editor...")
-        subprocess.run([os.environ.get('EDITOR', 'nano'), str(temp_prompt_path)])
-        with open(temp_prompt_path, 'r', encoding='utf-8') as f:
-            prompt = f.read()
-        print("✓ Prompt updated")
-    elif confirm == 2:
-        print("Cancelled")
-        return
-    
-    # 8. Generate script
-    script, claude_usage = generate_script(prompt, anthropic_key)
-    if not script:
-        print("Failed to generate script")
-        return
-    
-    script = extract_and_save_sources(script, project_name)
-    
-    draft_num = 1
-    script_path = save_script(script, project_name, draft_num, language_code)
-    print(f"Script generated! ({len(script.split())} words)")
-    print(f"Saved to: {script_path}")
-    
-    # 9. Review and revision loop
-    while True:
-        print("\n" + "="*60)
-        print("SCRIPT REVIEW")
-        print("="*60)
-        print(f"Script location: {script_path}")
-        print("="*60)
+        # Build options list
+        options = [f"Use script #{i+1}" for i in range(len(existing_scripts))]
+        options.append("Generate new script (continue with research/prompt setup)")
+        options.append("Cancel")
         
-        action = get_user_input("\nWhat would you like to do?", [
-            "Open script in text editor to review",
-            "Approve script and proceed to audio",
-            "Ask Claude to revise (provide guidance)",
-            "Edit script file manually, then regenerate from edits",
-            "Save prompt variant to project",
-            "Cancel"
-        ])
+        action = get_user_input("", options)
         
-        if action == 0:
-            print(f"\nOpening {script_path} in your text editor...")
-            subprocess.run([os.environ.get('EDITOR', 'nano'), str(script_path)])
-            print("\n✓ Editor closed")
+        # User selected an existing script (indices 0 to len-1)
+        if action < len(existing_scripts):
+            selected_script = existing_scripts[action]
+            print(f"\n[INFO] Loading: {selected_script.name}")
+            with open(selected_script, 'r', encoding='utf-8') as f:
+                script = f.read()
+            script_path = selected_script
+            script_ready = True
+            print("[INFO] Skipping to audio generation...\n")
             
-        elif action == 1:
-            if not validate_template_quality(script):
-                continue
-            break
+        # User selected "Generate new script"
+        elif action == len(existing_scripts):
+            print("\n[INFO] Continuing with new script generation...\n")
+            script_ready = False
             
-        elif action == 2:
-            print("\nProvide specific guidance for what to change.")
-            print("Examples:")
-            print("  - Add more interruptions and overlapping dialogue")
-            print("  - Make it more casual - use 'Du' form and colloquialisms")
-            print("  - Add more emotional reactions ([excited], [laughs], etc.)")
-            guidance = input("\nRevision guidance: ")
-            
-            if not guidance.strip():
-                print("No guidance provided, skipping revision")
-                continue
-                
-            revised = revise_script(script, guidance, anthropic_key)
-            if revised:
-                script = extract_and_save_sources(revised, project_name)
-                draft_num += 1
-                script_path = save_script(script, project_name, draft_num, language_code)
-                print(f"✓ Revised script saved to: {script_path}")
-            else:
-                print("✗ Revision failed")
-                
-        elif action == 3:
-            print(f"\n1. Edit {script_path} in your text editor")
-            print("2. Save your changes")
-            print("3. Come back here and we'll regenerate with Claude")
-            input("\nPress Enter when you're ready to regenerate...")
-            
-            with open(script_path, 'r', encoding='utf-8') as f:
-                edited_script = f.read()
-            
-            print("\nWhat changes did you make? (This helps Claude understand context)")
-            context = input("Your changes: ")
-            
-            regenerate_prompt = f"""I have a podcast script that was manually edited. Please review it and generate an improved version that:
-1. Maintains the edits and improvements that were made
-2. Ensures consistent dialogue format with Speaker A: and Speaker B: labels
-3. Improves any rough transitions or formatting issues
-4. Keeps the same overall structure and content
-
-User's notes on their edits: {context}
-
-Here is the edited script:
-
-{edited_script}
-
-Please provide the improved script maintaining all manual edits and improvements."""
-            
-            regenerated = generate_script(regenerate_prompt, anthropic_key)
-            if regenerated:
-                script = extract_and_save_sources(regenerated, project_name)
-                draft_num += 1
-                script_path = save_script(script, project_name, draft_num, language_code)
-                print(f"✓ Regenerated script saved to: {script_path}")
-            else:
-                print("✗ Regeneration failed")
-                
-        elif action == 4:
-            filename = input("Enter filename for prompt variant: ")
-            if not filename.endswith('.txt'):
-                filename += '.txt'
-            save_prompt(prompt, project_name, filename)
-            print(f"✓ Prompt saved to: ./projects/{project_name}/prompts/{filename}")
-            
+        # User selected "Cancel"
         else:
             print("Cancelled")
             return
+    
+    # 5c. Research context (only if generating new)
+    if not script_ready:
+    
+        research_context_file = project_path / "sources" / "research_context.txt"
+        print(f"\n✓ Research context file: {research_context_file}")
+        # Show what's being used
+        default_template = Path("templates/research_contexts/default.txt")
+        if default_template.exists() and not (project_path / "sources" / "research_context.txt").exists():
+            print("  (Using default template from templates/research_contexts/default.txt)")
+        elif (project_path / "sources" / "research_context.txt").exists():
+            # Check if it's different from default (i.e., project-specific)
+            with open(project_path / "sources" / "research_context.txt", 'r') as f:
+                current_content = f.read()
+        
+            is_customized = "{project_name}" not in current_content  # Simple check
+            if is_customized:
+                print("  (Using project-specific research context)")
+            else:
+                print("  (Using default template)")
+    
+        # Offer choices
+        edit_choice = get_user_input("\nResearch context options", [
+            "Use as-is (proceed with current context)",
+            "Edit current context (customize for this project)",
+            "Reset to default template (if you made mistakes)",
+            "Show current context"
+        ])
+    
+        if edit_choice == 1:
+            print("\nOpening research context in your text editor...")
+            subprocess.run([os.environ.get('EDITOR', 'nano'), str(research_context_file)])
+            print("✓ Research context updated (now project-specific)")
+        elif edit_choice == 2:
+            if default_template.exists():
+                print("\nResetting to default template...")
+                with open(default_template, 'r') as f:
+                    template_content = f.read()
+                with open(research_context_file, 'w') as f:
+                    f.write(template_content.replace("{project_name}", project_name))
+                print("✓ Reset to default template")
+            else:
+                print("⚠ No default template found at templates/research_contexts/default.txt")
+        elif edit_choice == 3:
+            print("\n" + "="*60)
+            with open(research_context_file, 'r') as f:
+                print(f.read())
+            print("="*60)
+            input("\nPress Enter to continue...")
+    
+        with open(research_context_file, 'r', encoding='utf-8') as f:
+            research_context = f.read()
+    
+        # 6. Prompt handling
+        variables = {
+            'duration': duration,
+            'word_count': word_count,
+            'topic': topic,
+            'project_name': project_name
+        }
+    
+        prompt_choice = get_user_input("\nPrompt template options", [
+            f"Use default template ({selected_style} / {selected_language})",
+            "Load existing template from this project's prompts folder",
+            "Copy template from templates folder to project and customize",
+            "Edit the chosen template before generating",
+            "Start with blank prompt"
+        ])
+    
+        if prompt_choice == 0:
+            # Use default template
+            template_file = config['styles'][selected_style]['default_template_file']
+            template_file = template_file.replace('{language}', selected_language)
+            if Path(template_file).exists():
+                prompt = load_template(template_file, variables)
+            else:
+                print(f"WARNING: Template {template_file} not found")
+                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            
+        elif prompt_choice == 1:
+            # Load existing from project
+            project_prompts = list(Path(f"./projects/{project_name}/prompts/").glob("*.txt"))
+            if project_prompts:
+                prompt_names = [p.name for p in project_prompts]
+                prompt_idx = get_user_input("Select prompt file", prompt_names)
+                prompt = load_template(project_prompts[prompt_idx], variables)
+            else:
+                print("No saved prompts found in project")
+                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            
+        elif prompt_choice == 2:
+            # Copy global template to project
+            templates = list(Path("./templates/").glob("*.txt"))
+            if templates:
+                template_names = [t.name for t in templates]
+                template_idx = get_user_input("Select template to copy", template_names)
+                prompt = load_template(templates[template_idx], variables)
+                save_prompt(prompt, project_name, "copied_template.txt")
+                print(f"Template copied to project")
+            else:
+                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            
+        elif prompt_choice == 3:
+            # Edit template before generating
+            template_file = config['styles'][selected_style]['default_template_file']
+            template_file = template_file.replace('{language}', selected_language)
+            if Path(template_file).exists():
+                prompt = load_template(template_file, variables)
+            else:
+                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+        
+            save_prompt(prompt, project_name, "edited_prompt.txt")
+            prompt_file = Path(f"./projects/{project_name}/prompts/edited_prompt.txt")
+            print(f"\nOpening {prompt_file} for editing...")
+            subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
+            with open(prompt_file, 'r', encoding='utf-8') as f:
+                prompt = f.read()
+            
+        else:
+            # Start with blank
+            prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            save_prompt(prompt, project_name, "blank_prompt.txt")
+            prompt_file = Path(f"./projects/{project_name}/prompts/blank_prompt.txt")
+            subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
+            with open(prompt_file, 'r', encoding='utf-8') as f:
+                prompt = f.read()
+    
+        prompt = f"""{prompt}
+
+    === RESEARCH CONTEXT AND INSTRUCTIONS ===
+
+    {research_context}
+
+    IMPORTANT: Follow the research instructions above. Conduct thorough online research using web search. Find and analyze the specified number of sources. Document your sources at the end of the script."""
+    
+        # 7a. Check and process source documents BEFORE prompt review
+        source_documents = process_source_documents(project_name)
+        if source_documents:
+            prompt = f"""{prompt}
+
+    === USER-PROVIDED SOURCE DOCUMENTS ===
+
+    The following documents were provided by the user. Reference and cite them where relevant alongside your web research:
+
+    {source_documents}
+
+    ===================================
+    """
+            print(f"\n[INFO] Added {len(source_documents)} characters from source documents to prompt")
+    
+        # 7b. Review final prompt (including source documents if added)
+        print("\n" + "="*60)
+        print("PROMPT REVIEW")
+        print("="*60)
+        print(f"Topic: {topic}")
+        print(f"Duration: {duration} minutes (~{word_count} words)")
+        print(f"Style: {config['styles'][selected_style]['description']}")
+        print(f"Language: {config['languages'][selected_language]['name']}")
+        if source_documents:
+            doc_count = len([s for s in source_documents.split('### SOURCE:') if s.strip()])
+            print(f"Source Documents: {doc_count} document(s) attached")
+        else:
+            print(f"Source Documents: None (web research only)")
+        print("="*60)
+        print("\nFull prompt saved for your review if needed.")
+        print(f"Location: {Path(f'./projects/{project_name}/prompts/temp_prompt.txt').absolute()}")
+        print("="*60)
+    
+        temp_prompt_path = Path(f"./projects/{project_name}/prompts/temp_prompt.txt")
+        save_prompt(prompt, project_name, "temp_prompt.txt")
+    
+        confirm = get_user_input("\nOptions", [
+            "Confirm and send to Claude",
+            "Edit prompt in text editor",
+            "Cancel"
+        ])
+    
+        if confirm == 1:
+            print(f"\nOpening prompt in your text editor...")
+            subprocess.run([os.environ.get('EDITOR', 'nano'), str(temp_prompt_path)])
+            with open(temp_prompt_path, 'r', encoding='utf-8') as f:
+                prompt = f.read()
+            print("✓ Prompt updated")
+        elif confirm == 2:
+            print("Cancelled")
+            return
+    
+        # 8. Generate script
+        script, claude_usage = generate_script(prompt, anthropic_key)
+        if not script:
+            print("Failed to generate script")
+            return
+    
+        script = extract_and_save_sources(script, project_name)
+    
+        draft_num = 1
+        script_path = save_script(script, project_name, draft_num, language_code)
+        print(f"Script generated! ({len(script.split())} words)")
+        print(f"Saved to: {script_path}")
+    
+        # 9. Review and revision loop
+        while True:
+            print("\n" + "="*60)
+            print("SCRIPT REVIEW")
+            print("="*60)
+            print(f"Script location: {script_path}")
+            print("="*60)
+        
+            action = get_user_input("\nWhat would you like to do?", [
+                "Open script in text editor to review",
+                "Approve script and proceed to audio",
+                "Ask Claude to revise (provide guidance)",
+                "Edit script file manually, then regenerate from edits",
+                "Save prompt variant to project",
+                "Cancel"
+            ])
+        
+            if action == 0:
+                print(f"\nOpening {script_path} in your text editor...")
+                subprocess.run([os.environ.get('EDITOR', 'nano'), str(script_path)])
+                print("\n✓ Editor closed")
+            
+            elif action == 1:
+                if not validate_template_quality(script):
+                    continue
+                break
+            
+            elif action == 2:
+                print("\nProvide specific guidance for what to change.")
+                print("Examples:")
+                print("  - Add more interruptions and overlapping dialogue")
+                print("  - Make it more casual - use 'Du' form and colloquialisms")
+                print("  - Add more emotional reactions ([excited], [laughs], etc.)")
+                guidance = input("\nRevision guidance: ")
+            
+                if not guidance.strip():
+                    print("No guidance provided, skipping revision")
+                    continue
+                
+                revised = revise_script(script, guidance, anthropic_key)
+                if revised:
+                    script = extract_and_save_sources(revised, project_name)
+                    draft_num += 1
+                    script_path = save_script(script, project_name, draft_num, language_code)
+                    print(f"✓ Revised script saved to: {script_path}")
+                else:
+                    print("✗ Revision failed")
+                
+            elif action == 3:
+                print(f"\n1. Edit {script_path} in your text editor")
+                print("2. Save your changes")
+                print("3. Come back here and we'll regenerate with Claude")
+                input("\nPress Enter when you're ready to regenerate...")
+            
+                with open(script_path, 'r', encoding='utf-8') as f:
+                    edited_script = f.read()
+            
+                print("\nWhat changes did you make? (This helps Claude understand context)")
+                context = input("Your changes: ")
+            
+                regenerate_prompt = f"""I have a podcast script that was manually edited. Please review it and generate an improved version that:
+    1. Maintains the edits and improvements that were made
+    2. Ensures consistent dialogue format with Speaker A: and Speaker B: labels
+    3. Improves any rough transitions or formatting issues
+    4. Keeps the same overall structure and content
+
+    User's notes on their edits: {context}
+
+    Here is the edited script:
+
+    {edited_script}
+
+    Please provide the improved script maintaining all manual edits and improvements."""
+            
+                regenerated = generate_script(regenerate_prompt, anthropic_key)
+                if regenerated:
+                    script = extract_and_save_sources(regenerated, project_name)
+                    draft_num += 1
+                    script_path = save_script(script, project_name, draft_num, language_code)
+                    print(f"✓ Regenerated script saved to: {script_path}")
+                else:
+                    print("✗ Regeneration failed")
+                
+            elif action == 4:
+                filename = input("Enter filename for prompt variant: ")
+                if not filename.endswith('.txt'):
+                    filename += '.txt'
+                save_prompt(prompt, project_name, filename)
+                print(f"✓ Prompt saved to: ./projects/{project_name}/prompts/{filename}")
+            
+            else:
+                print("Cancelled")
+                return
     
     # 10. Generate audio
     print("\n" + "="*60)
@@ -1260,7 +1416,7 @@ Please provide the improved script maintaining all manual edits and improvements
     else:
         print("[INFO] ✓ Verified clean - no sources detected")
     
-    audio_data, elevenlabs_chars = generate_audio(script_for_audio, config, language_code, mode, speed, project_name)
+    audio_data, elevenlabs_chars = generate_audio(script_for_audio, config, language_code, selected_provider, mode, speed, project_name)
     if not audio_data:
         print("\n" + "="*60)
         print("AUDIO GENERATION FAILED")
@@ -1278,7 +1434,20 @@ Please provide the improved script maintaining all manual edits and improvements
         print("="*60)
         return
     
-    audio_path = save_audio(audio_data, project_name, topic, language_code, mode)
+    try:
+        audio_path = save_audio(audio_data, project_name, topic, language_code, provider_tag, mode)
+        print(f"[DEBUG] Audio saved to: {audio_path}")
+    except Exception as e:
+        print(f"[ERROR] Failed to save audio: {e}")
+        print(f"[DEBUG] Attempted path: projects/{project_name}/audio/")
+        return
+
+    # Cleanup debug files after successful generation
+    debug_dir = Path(f"./projects/{project_name}/debug")
+    if debug_dir.exists():
+        for debug_file in debug_dir.glob("chunk_*_content.json"):
+            debug_file.unlink()
+        print("[INFO] ✓ Cleaned up debug files")
     
     # 11. Display results
     print("\n" + "="*60)
@@ -1288,23 +1457,16 @@ Please provide the improved script maintaining all manual edits and improvements
     print(f"Size: {len(audio_data) / 1024 / 1024:.1f} MB")
     print(f"Mode: {mode.upper()}")
     print("="*60)
-    print("USAGE SUMMARY:")
-    print(f"  Claude API:")
-    print(f"    - Input tokens: {claude_usage.input_tokens:,}")
-    print(f"    - Output tokens: {claude_usage.output_tokens:,}")
-    print(f"    - Total tokens: {claude_usage.input_tokens + claude_usage.output_tokens:,}")
-    print(f"  ElevenLabs API:")
-    print(f"    - Characters: {elevenlabs_chars:,}")
-    print("="*60)
     
-    # 12. Save prompt
-    save = input("\nSave final prompt to project? (Y/n): ")
-    if save.lower() != 'n':
-        filename = input("Enter filename: ")
-        if not filename.endswith('.txt'):
-            filename += '.txt'
-        save_prompt(prompt, project_name, filename)
-        print(f"Prompt saved to: ./projects/{project_name}/prompts/{filename}")
+    # 12. Save prompt (only if new script was generated)
+    if not script_ready:  # Script was generated, not loaded
+        save = input("\nSave final prompt to project? (Y/n): ")
+        if save.lower() != 'n':
+            filename = input("Enter filename: ")
+            if not filename.endswith('.txt'):
+                filename += '.txt'
+            save_prompt(prompt, project_name, filename)
+            print(f"Prompt saved to: ./projects/{project_name}/prompts/{filename}")
     
     # 13. Project summary
     print("\n" + "="*60)

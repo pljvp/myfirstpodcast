@@ -1,38 +1,300 @@
-PODCAST SCRIPT - NEWS BRIEF (German)
+PODCAST SCRIPT GENERATION - NEWS BRIEF (German - Fast & Dynamic)
 
-TARGET: {duration}-minute (~{word_count} words)
+TARGET: {duration}-minute podcast (~{word_count} words)
 TOPIC: {topic}
+PROJECT: {project_name}
 
-**AUDIO TAGS:** Always use [square brackets]
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
+
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
+
+✅ CORRECT FORMAT:
+Speaker A: [energetic] Das sind brandaktuelle News!
+Speaker B: [interrupting] [excited] Warte, erzähl mehr!
+Speaker A: [fast-paced] Also, heute morgen...
+
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: energetic Das sind brandaktuelle News!
+Speaker A: (energetic) Das sind brandaktuelle News!
+Speaker A: *energetic* Das sind brandaktuelle News!
+
+**MULTIPLE TAGS:**
+- Space between: [interrupting] [excited] Genau!
+- Or adjacent: [nervous][hesitant] Ich weiß nicht...
+- Always lowercase in brackets
+
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+Interruption & Overlap (USE FREQUENTLY - news is fast!):
+[interrupting] [overlapping] [interjecting]
+
+Emotions (Energy-focused):
+[energetic] [excited] [curious] [surprised] [shocked]
+[concerned] [skeptical] [impressed] [urgent]
+
+Reactions:
+[laughs] [gasps] [sighs] [wow] [hmm]
+
+Delivery (CRITICAL for news pacing):
+[fast-paced] - Rapid delivery (USE OFTEN!)
+[urgently] - Breaking news energy
+[dramatically] - Big reveals
+[quietly] - Serious moments
+[loudly] - Emphasis
 
 ===================================
 CHARACTER DYNAMICS
 ===================================
 
-**Speaker A - Energische Moderatorin (LEAD VOICE - FEMALE):**
-- Selbstbewusst, stark, dynamisch
+**Speaker A - Die Energische Nachrichtenmoderatorin (LEAD VOICE - FEMALE):**
+- Selbstbewusst, dynamisch, stark
 - Schnell und energisch: [energetic] [fast-paced]
-- Keine Stereotypen
+- Bringt Nachrichten mit Schwung
+- Witzig bei passenden Momenten
+- KEINE Stereotypen
 
-**Speaker B - Aufmerksamer Gesprächspartner (MALE):**
-- Freundlich, reagiert schnell
-- Stellt prägnante Fragen: [engaged] [curious]
-- Keine Stereotypen
+**Speaker B - Der Aufmerksame Reaktionspartner (MALE):**
+- Freundlich, schnell reagierend
+- Stellt prägnante Fragen: [curious] [surprised]
+- Bringt Perspektive ein
+- Emotional engagiert
+- KEINE Stereotypen
+
+**BEZIEHUNG:**
+- Duzen sich (NIE "Sie"!)
+- Schneller Schlagabtausch
+- Beide intelligent
+- Teilen Überraschung über News
 
 **CRITICAL: DON'T INVENT THE IMPOSSIBLE**
-- Stick to verified facts only
-- No exaggeration beyond reality
+- Nur verifizierte, aktuelle Fakten
+- Keine Übertreibung
+- Alle Claims belegbar
 
 ===================================
-FORMAT
+ONLINE RESEARCH REQUIREMENTS  
 ===================================
 
-Dynamic news update, 5 minutes
-[excited], [fast-paced], [energetic]
+**MANDATORY: Aktuelle Nachrichten recherchieren**
 
-**RESEARCH:** 3-5 recent sources (2024-2025)
+1. Finde 3-5 hochwertige, AKTUELLE Quellen
+2. Priorität: Letzte 7 Tage (breaking news!)
+3. Quellentypen:
+   - Nachrichtenagenturen (dpa, Reuters, AP)
+   - Fachmedien
+   - Offizielle Statements
+   - Expertenkommentare
 
-**OUTPUT:** Pure dialogue, NO meta-commentary
-Sources at end after "**SOURCES FOUND:**"
+4. Extrahiere:
+   - Konkrete Zahlen und Daten
+   - Zeitpunkte (heute, gestern, diese Woche)
+   - Aktuelle Entwicklungen
+   - Reaktionen und Kommentare
+   - Nächste Schritte
 
-Create engaging German news brief about {topic}!
+5. Dokumentiere Quellen am Ende
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Pure dialogue only
+4. NO quotation marks
+5. Contractions natural: hab, bin, 's
+
+===================================
+STORY ARC - NEWS FORMAT
+===================================
+
+**OPENING (15-20 seconds):** BREAKING NEWS ENERGY
+
+**Start with the headline:**
+Speaker A: [energetic] [fast-paced] Okay, das musst du gehört haben!
+Speaker B: [curious] [excited] Was denn?
+Speaker A: [urgently] Also, heute morgen wurde bekannt...
+
+[Use: [energetic], [fast-paced], [urgently]]
+
+**BUILD (1-2 min):**
+- Was ist passiert?
+- Wann und wo?
+- Wer ist betroffen?
+[Use: [explaining], [surprised], [concerned]]
+
+**CONTEXT (1-2 min):**
+- Warum ist das wichtig?
+- Was war vorher?
+- Einordnung
+[Use: [thoughtful], [analytical]]
+
+**IMPACT (30-60 sec):**
+- Was bedeutet das?
+- Nächste Schritte
+- Ausblick
+[Use: [impressed], [concerned], [hopeful]]
+
+**SCHNELLER ABSCHLUSS:**
+- Zusammenfassung in 1-2 Sätzen
+- "Wir halten euch auf dem Laufenden"
+
+===================================
+AUTHENTIC GERMAN NEWS STYLE
+===================================
+
+**MUST USE:**
+
+Du-Form:
+✅ "Hast du das mitbekommen?"
+✅ "Weißt du was das bedeutet?"
+❌ "Haben Sie das mitbekommen?" (NEVER!)
+
+News-Sprache:
+✅ Breaking!, Krass!, Wow!, Heftig!, Wahnsinn!
+✅ Moment mal..., Warte..., Schau mal...
+✅ Grade eben..., Heute morgen..., Gerade bestätigt...
+
+Zeitbezüge (WICHTIG!):
+✅ heute, gestern, diese Woche
+✅ vor einer Stunde, gerade eben
+✅ seit heute morgen
+
+Contractions:
+✅ hab, bin, 's, geht's
+✅ Sentence fragments OK!
+
+**FAST-PACED STYLE:**
+
+Speaker A: [fast-paced] Also, pass auf—heute morgen, kurz nach neun, wurde bekannt...
+Speaker B: [interrupting] [surprised] Echt jetzt?
+Speaker A: [energetic] Ja! Und das Krasse ist...
+
+===================================
+DYNAMIC DIALOGUE TECHNIQUES  
+===================================
+
+**1. RAPID-FIRE QUESTIONS:**
+
+Speaker A: [fast-paced] Die Zahlen sind grad reingekommen—
+Speaker B: [interrupting] [urgently] Wie viel?
+Speaker A: [dramatically] 50 Prozent mehr als erwartet!
+
+**2. SHARED SHOCK:**
+
+Speaker A: [shocked] Und rate mal, wer das gesagt hat...
+Speaker B: [gasps] Nicht etwa—
+Speaker A: [overlapping] [excited] Doch!
+
+**3. BREAKING NEWS ENERGY:**
+
+Speaker A: [urgently] [fast-paced] Okay, halt dich fest!
+Speaker B: [energetic] Was ist los?!
+
+**4. QUICK CONTEXT:**
+
+Speaker B: [curious] Aber warum jetzt?
+Speaker A: [explaining] Kurz erklärt: ...
+
+===================================
+ENERGY & PACING
+===================================
+
+**FAST THROUGHOUT:**
+
+High energy opening:
+[energetic] [fast-paced] Also, DAS musst du hören!
+
+Maintain momentum:
+[excited] Und dann—hör zu—dann kam raus...
+
+Build to reveals:
+[dramatically] Und jetzt kommt's... [pauses] [shocked] 
+
+Keep it tight:
+- Short sentences
+- Quick back-and-forth
+- Minimal pauses
+- Forward momentum
+
+===================================
+CONTENT REQUIREMENTS
+===================================
+
+**THE 5 W's:**
+- WAS ist passiert?
+- WER ist betroffen?
+- WANN war das?
+- WO fand es statt?
+- WARUM ist das wichtig?
+
+**RECENCY:**
+- Datum/Uhrzeit erwähnen
+- "Heute", "gestern", "diese Woche"
+- Aktualität betonen
+
+**FACTS:**
+- Konkrete Zahlen
+- Namen und Organisationen
+- Offizielle Statements
+- Verifizierte Info
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct research..."
+- Meta-commentary
+- <search> tags
+- "---" separators
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Fast-paced German with Du-form
+4. News-appropriate energy
+5. {word_count}-word target (keep tight!)
+
+**AT THE END:**
+
+**SOURCES FOUND:**
+[List all sources with URLs and dates]
+
+===================================
+FINAL CHECKLIST
+===================================
+
+✅ ALL emotion tags use [square brackets]
+✅ 5-10 [interrupting] or [overlapping] moments
+✅ Heavy use of [fast-paced], [energetic], [urgently]
+✅ Du-form throughout
+✅ Recent sources (within 7 days if possible)
+✅ All 5 W's covered
+✅ Dates/times mentioned
+✅ {word_count}-word target
+✅ Sources documented
+✅ Fast-paced, news-appropriate energy
+
+===================================
+
+Now create a dynamic, current, engaging German news brief about {topic}!
+
+Remember: This is BREAKING NEWS energy—fast, excited, informative!
