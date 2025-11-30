@@ -1,4 +1,41 @@
 {
+  "providers": {
+    "elevenlabs": {
+      "api_key_env": "ELEVENLABS_API_KEY",
+      "voices": {
+        "german": {
+          "speaker_a_female": "HKUbFf0kZdG11lOEhRi2",
+          "speaker_b_male": "dnSxHmjp9jQffMRfRzwo"
+        },
+        "english": {
+          "speaker_a_female": "Nhs7eitvQWFTQBsf0yiT",
+          "speaker_b_male": "oTQK6KgOJHp8UGGZjwUu"
+        },
+        "dutch": {
+          "speaker_a_female": "ANHrhmaFeVN0QJaa0PhL",
+          "speaker_b_male": "eWrnzOwO7JvyjacVxTzV"
+        }
+      }
+    },
+    "cartesia": {
+      "api_key_env": "CARTESIA_API_KEY",
+      "model": "sonic-english",
+      "voices": {
+        "german": {
+          "speaker_a_female": "38aabb6a-f52b-4fb0-a3d1-988518f4dc06",
+          "speaker_b_male": "e00dd3df-19e7-4cd4-827a-7ff6687b6954"
+        },
+        "english": {
+          "speaker_a_female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b",
+          "speaker_b_male": "5cad89c9-d88a-4832-89fb-55f2f16d13d3"
+        },
+        "dutch": {
+          "speaker_a_female": "0eb213fe-4658-45bc-9442-33a48b24b133",
+          "speaker_b_male": "af482421-80f4-4379-b00c-a118def29cde"
+        }
+      }
+    }
+  },
   "styles": {
     "popular_scientific": {
       "description": "Dynamic, friendly science communication (v3 - natural dialogue)",

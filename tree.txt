@@ -2,9 +2,22 @@
 ├── config
 │   └── podcast_config.json
 ├── INSTALL.md
-├── podcast_config.json
 ├── podcast_pipeline.py
 ├── projects
+│   ├── BACnet
+│   │   ├── audio
+│   │   ├── debug
+│   │   │   └── chunk_1_CRTS_content.json
+│   │   ├── prompts
+│   │   │   └── temp_prompt.txt
+│   │   ├── scripts
+│   │   │   ├── BACnet_DE_2025-11-29_19-23_draft1.txt
+│   │   │   ├── BACnet_DE_2025-11-29_19-39_draft1.txt
+│   │   │   └── BACnet_sources.txt
+│   │   └── sources
+│   │       ├── BACnet_outlines.txt
+│   │       ├── research_context.txt
+│   │       └── sources_list.txt
 │   ├── nodered
 │   │   ├── audio
 │   │   │   └── nodered_nodered in professional building automation_de_2025-11-28_PROTOTYPE.mp3
@@ -49,23 +62,55 @@
 │   │   └── sources
 │   │       ├── research_context.txt
 │   │       └── sources_list.txt
-│   └── protocols2_BAK
+│   ├── readme.txt
+│   ├── strategies
+│   │   ├── audio
+│   │   │   ├── strategies_strategies in building automation_de_2025-11-28_PROTOTYPE.mp3
+│   │   │   └── strategies_translated_nl_nl_2025-11-28_PRODUCTION.mp3
+│   │   ├── debug
+│   │   │   ├── chunk_1_content.json
+│   │   │   ├── chunk_2_content.json
+│   │   │   ├── chunk_3_content.json
+│   │   │   ├── chunk_4_content.json
+│   │   │   └── chunk_5_content.json
+│   │   ├── prompts
+│   │   │   ├── strategies in building automation.txt
+│   │   │   └── temp_prompt.txt
+│   │   ├── scripts
+│   │   │   ├── strategies_2025-11-28_draft1 DE BAK.txt
+│   │   │   ├── strategies_2025-11-28_draft1.txt
+│   │   │   ├── strategies_de_2025-11-28_translated.txt
+│   │   │   ├── strategies_nl_2025-11-28_translated.txt
+│   │   │   └── strategies_sources.txt
+│   │   └── sources
+│   │       ├── research_context.txt
+│   │       └── sources_list.txt
+│   └── test
 │       ├── audio
 │       ├── debug
-│       │   └── chunk_1_content.json
 │       ├── prompts
 │       │   └── temp_prompt.txt
 │       ├── scripts
-│       │   ├── protocols2_2025-11-26_draft1.txt
-│       │   └── protocols2_sources.txt
 │       └── sources
 │           ├── research_context.txt
-│           └── sources_list.txt
+│           ├── sources_list.txt
+│           └── test.txt
+├── providers
+│   ├── base.py
+│   ├── cartesia.py
+│   ├── elevenlabs.py
+│   ├── __init__.py
+│   └── __pycache__
+│       ├── base.cpython-311.pyc
+│       ├── cartesia.cpython-311.pyc
+│       ├── elevenlabs.cpython-311.pyc
+│       └── __init__.cpython-311.pyc
+├── __pycache__
+│   └── podcast_pipeline.cpython-311.pyc
 ├── README.md
 ├── requirements.txt
-├── SETUP_AND_UPDATE.md
+├── SETUP_and_UPDATE.md
 ├── smart_update.sh
-├── technical_deep_dive_dutch.txt
 ├── templates
 │   ├── news_brief_dutch.txt
 │   ├── news_brief_english.txt
@@ -78,6 +123,8 @@
 │   ├── technical_deep_dive_dutch.txt
 │   ├── technical_deep_dive_english.txt
 │   └── technical_deep_dive_german.txt
-└── tree.txt
+├── translate_script.py
+├── tree.txt
+└── tune_audio.py
 
-28 directories, 53 files
+43 directories, 85 files

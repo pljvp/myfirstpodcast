@@ -1,19 +1,338 @@
-PODCAST SCRIPT - TECHNICAL DEEP DIVE (Dutch)
+PODCAST SCRIPT GENERATION - TECHNICAL DEEP DIVE (Dutch - Expert Analysis)
 
-TARGET: {duration}-minute (~{word_count} words)
+TARGET: {duration}-minute podcast (~{word_count} words)
 TOPIC: {topic}
+PROJECT: {project_name}
 
-**AUDIO TAGS:** Always use [square brackets]
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
 
-**FORMAT:**
-Speaker A: [analytical] Technical question
-Speaker B: [explaining] Detailed answer
-(In-depth, expert-level, 20 minutes)
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
-**RESEARCH:** 10-15 technical sources
+✅ CORRECT FORMAT:
+Speaker A: [analytical] De architectuur is fascinerend.
+Speaker B: [interrupting] [curious] Wacht, hoe schaalt dat?
+Speaker A: [explaining] Laat me dit doorlopen...
 
-**STYLE:** Detailed technical discussion, [thoughtful], [explaining]
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: analytical De architectuur is fascinerend.
+Speaker A: (analytical) De architectuur is fascinerend.
+Speaker A: *analytical* De architectuur is fascinerend.
 
-**OUTPUT:** Pure dialogue, NO meta-commentary, sources at end
+**MULTIPLE TAGS:**
+- Space between: [thoughtful] [explaining] Precies.
+- Or adjacent: [confused][curious] Ik snap het niet helemaal...
+- Always lowercase in brackets
 
-Create in-depth Dutch technical podcast about {topic}!
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+Interruption & Overlap (Voor technische uitdagingen):
+[interrupting] [overlapping] [interjecting]
+
+Emotions (Technical/Analytical focus):
+[analytical] [thoughtful] [curious] [skeptical] [impressed]
+[confused] [realizing] [explaining] [questioning] [concerned]
+
+Reactions:
+[hmm] [sighs] [pauses] [chuckles] [gasps]
+
+Delivery (Voor technische precisie):
+[carefully] [precisely] [slowly] [emphasizing]
+[hesitates] [clarifying] [correcting]
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - De Technische Expert (HOOFDSTEM - VROUWELIJK):**
+- Zelfverzekerd en autoritair
+- Diepgaande technische kennis
+- Legt complexe concepten helder uit: [analytical] [explaining]
+- Behandelt edge cases: [thoughtful] [carefully]
+- Geestig over technische eigenaardigheden
+- GEEN stereotypen (geen "professor")
+
+**Speaker B - De Uitdagende Vragensteller (MANNELIJK):**
+- Gelijkwaardig technisch competent
+- Stelt moeilijke vragen: [skeptical] [questioning]
+- Eist precisie: [curious] [pressing]
+- Vangt aannames: [interrupting] [realizing]
+- Brengt alternatieve perspectieven
+- GEEN stereotypen (geen "junior developer")
+
+**RELATIE - KRITISCH:**
+- Peer-to-peer technische discussie
+- Beide zijn experts (gelijkwaardig)
+- Respectvol maar direct
+- Bevragen elkaars aannames
+- Werken samen aan complexe problemen
+- Delen "aha!"-momenten
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Wees technisch precies
+- Geen verzonnen mogelijkheden
+- Alle claims moeten verifieerbaar zijn
+- Erken limitaties en tradeoffs
+- Real-world constraints zijn belangrijk
+
+===================================
+ONLINE RESEARCH REQUIREMENTS  
+===================================
+
+**VERPLICHT: Diepgaand technisch onderzoek**
+
+1. Vind 10-15 hoogwaardige technische bronnen
+2. Prioriteit:
+   - Wetenschappelijke papers / preprints
+   - Technische documentatie
+   - Architectuurdiagrammen / RFCs
+   - Industry whitepapers
+   - Expert technische blogs
+   - Conferentie talks / presentaties
+
+3. Extraheer:
+   - Specifieke technische details
+   - Architectuurbeslissingen en tradeoffs
+   - Performance metrics en benchmarks
+   - Implementatie uitdagingen
+   - Edge cases en limitaties
+   - Industry best practices
+
+4. Documenteer bronnen aan het eind
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Pure dialogue only
+4. Technische precisie vereist
+5. Gebruik correcte terminologie
+
+===================================
+STORY ARC - TECHNICAL ANALYSIS
+===================================
+
+**OPENING (1-2 min):** DE TECHNISCHE UITDAGING
+
+**Start met het probleem:**
+Speaker A: [analytical] Laten we het hebben over de fundamentele uitdaging hier.
+Speaker B: [curious] Precies—wat maakt dit bijzonder moeilijk?
+Speaker A: [explaining] Nou, wanneer je werkt met...
+
+[Use: [analytical], [thoughtful], [explaining]]
+
+**ARCHITECTUUR (5-7 min):**
+- Hoe is het ontworpen?
+- Hoofdcomponenten en interacties
+- Design beslissingen en tradeoffs
+[Use: [explaining], [analytical], [questioning]]
+
+**DEEP DIVE (8-10 min):**
+- 3-4 technische concepten in detail
+- Edge cases en limitaties
+- Performance overwegingen
+- Security implicaties
+[Use: [carefully], [skeptical], [realizing], [impressed]]
+
+**TRADEOFFS (2-3 min):**
+- Wat zijn de limitaties?
+- Alternatieve benaderingen
+- Wanneer wel / niet gebruiken
+[Use: [thoughtful], [analytical], [concerned]]
+
+**TOEKOMST (1-2 min):**
+- Waar gaat dit naartoe?
+- Open problemen
+- Onderzoeksrichtingen
+[Use: [curious], [speculating], [impressed]]
+
+===================================
+AUTHENTIC TECHNICAL DUTCH STYLE
+===================================
+
+**MUST USE:**
+
+Informele toon:
+✅ "Als je naar de architectuur kijkt..."
+✅ "Heb je wel eens met... gewerkt?"
+✅ "Snap je wat ik bedoel?"
+
+Technische precisie:
+✅ "De tijdscomplexiteit is O(n log n)"
+✅ "Dit introduceert een race condition wanneer..."
+✅ "Het CAP theorem betekent hier..."
+
+Specifieke terminologie:
+✅ Gebruik correcte technische termen
+✅ Definieer acroniemen bij eerste gebruik
+✅ Refereer naar standards/RFCs
+
+Analytisch denken:
+✅ "Laten we het algoritme doorlopen..."
+✅ "Beschouw de edge case waar..."
+✅ "De tradeoff hier is tussen..."
+
+Erken onzekerheid:
+✅ "Ik geloof dat de implementatie gebruikt..."
+✅ "Als ik de spec goed lees..."
+✅ "Dat is een open onderzoeksvraag..."
+
+**EXAMPLE TECHNICAL EXCHANGE:**
+
+Speaker A: [analytical] Het consensus mechanisme gebruikt een PBFT variant.
+Speaker B: [curious] Byzantine fault tolerance—hoeveel nodes kunnen kwaadaardig zijn?
+Speaker A: [explaining] Tot een derde, min één. Dus met 10 nodes...
+Speaker B: [interrupting] [realizing] Drie kunnen gecompromitteerd zijn en het werkt nog?
+Speaker A: [confirming] Precies. Dat is de theoretische limiet.
+
+===================================
+DYNAMIC DIALOGUE TECHNIQUES  
+===================================
+
+**1. TECHNISCHE UITDAGINGEN:**
+
+Speaker A: [explaining] Het grootste knelpunt is I/O latency.
+Speaker B: [questioning] Hebben ze asynchrone operaties overwogen?
+Speaker A: [thoughtful] Dat brengt complexiteit met zich mee...
+
+**2. EDGE CASES:**
+
+Speaker B: [skeptical] Maar wat als de cache koud is?
+Speaker A: [pauses] [carefully] Goede vraag. In dat scenario...
+
+**3. REALISATIES:**
+
+Speaker A: [analytical] Dus het lock-free algoritme betekent—
+Speaker B: [interrupting] [realizing] Wacht, dat is ABA probleem terrein!
+Speaker A: [impressed] Precies! En daarom gebruiken ze...
+
+**4. TRADEOFF ANALYSE:**
+
+Speaker A: [explaining] Je wint performance maar verliest consistency.
+Speaker B: [thoughtful] Is dat acceptabel voor deze use case?
+Speaker A: [analytical] Hangt af van je requirements...
+
+**5. COLLABORATIEF PROBLEEM-OPLOSSEN:**
+
+Speaker B: [confused] Ik zie niet hoe dat schaalt voorbij 1000 nodes.
+Speaker A: [hesitates] Hmm... [pauses] Tenzij ze sharden?
+Speaker B: [curious] Dat zou logisch zijn. Laat me checken...
+
+===================================
+TECHNICAL DEPTH REQUIREMENTS
+===================================
+
+**SPECIFICITEIT:**
+- Echte algoritmes (niet "het is snel")
+- Echte performance cijfers
+- Specifieke protocollen/standards
+- Genoemde design patterns
+- Concrete implementaties
+
+**PRECISIE:**
+- Correcte terminologie
+- Nauwkeurige technische details
+- Juiste eenheden (ms, GB, req/s)
+- Versienummers waar relevant
+- Platform/taal specifics
+
+**CONTEXT:**
+- Waarom deze benadering gekozen werd
+- Welke alternatieven bestaan
+- Historische context
+- Industry standards
+- Real-world toepassingen
+
+**EERLIJKHEID:**
+- Erken limitaties
+- Bespreek tradeoffs
+- Noem onopgeloste problemen
+- Noteer implementatie uitdagingen
+
+===================================
+CONTENT STRUCTURE
+===================================
+
+**LAAG VOOR LAAG:**
+1. High-level overzicht (Wat is het?)
+2. Architectuur (Hoe is het gestructureerd?)
+3. Deep dive (Hoe werkt het?)
+4. Tradeoffs (Wat zijn de kosten?)
+5. Context (Wanneer gebruiken?)
+
+**GEBRUIK VOORBEELDEN:**
+- Concrete code snippets (beschreven)
+- Real-world systemen
+- Specifieke producten/projecten
+- Echte benchmarks
+- Industry case studies
+
+**BOUW BEGRIP OP:**
+- Start simpel, voeg complexiteit toe
+- Verbind met bekende concepten
+- Gebruik analogieën spaarzaam (maar accuraat)
+- Erken wanneer dingen complex worden
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct research..."
+- Meta-commentary
+- <search> tags
+- "---" separators
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Technische precisie en diepte
+4. Expert-level discussie
+5. {word_count}-word target
+
+**AT THE END:**
+
+**SOURCES FOUND:**
+[List all sources with URLs]
+Include: Papers, Docs, RFCs, Blogs, Talks
+
+===================================
+FINAL CHECKLIST
+===================================
+
+✅ ALL emotion tags use [square brackets]
+✅ 3-5 [interrupting] moments (technische uitdagingen)
+✅ Heavy use of [analytical], [thoughtful], [explaining]
+✅ Technisch precieze taal
+✅ 10-15 hoogwaardige technische bronnen
+✅ Specifieke voorbeelden en cijfers
+✅ Tradeoffs besproken
+✅ Edge cases overwogen
+✅ Limitaties erkend
+✅ {word_count}-word target
+✅ Bronnen gedocumenteerd
+✅ Expert-level diepte doorlopend
+
+===================================
+
+Now create a deep, technical, expert-level podcast about {topic}!
+
+Remember: This is peer-to-peer technical analysis—precise, detailed, challenging!

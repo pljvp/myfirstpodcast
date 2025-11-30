@@ -1,47 +1,341 @@
-PODCAST SCRIPT - TECHNICAL DEEP DIVE (German)
+PODCAST SCRIPT GENERATION - TECHNICAL DEEP DIVE (German - Expert Analysis)
 
-TARGET: {duration}-minute (~{word_count} words)
+TARGET: {duration}-minute podcast (~{word_count} words)
 TOPIC: {topic}
+PROJECT: {project_name}
 
-**AUDIO TAGS:** Always use [square brackets]
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
+
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
+
+✅ CORRECT FORMAT:
+Speaker A: [analytical] Die Architektur ist faszinierend.
+Speaker B: [interrupting] [curious] Warte, wie skaliert das?
+Speaker A: [explaining] Lass mich das durchgehen...
+
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: analytical Die Architektur ist faszinierend.
+Speaker A: (analytical) Die Architektur ist faszinierend.
+Speaker A: *analytical* Die Architektur ist faszinierend.
+
+**MULTIPLE TAGS:**
+- Space between: [thoughtful] [explaining] Genau.
+- Or adjacent: [confused][curious] Ich verstehe nicht ganz...
+- Always lowercase in brackets
+
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+Interruption & Overlap (Für technische Herausforderungen):
+[interrupting] [overlapping] [interjecting]
+
+Emotions (Technical/Analytical focus):
+[analytical] [thoughtful] [curious] [skeptical] [impressed]
+[confused] [realizing] [explaining] [questioning] [concerned]
+
+Reactions:
+[hmm] [sighs] [pauses] [chuckles] [gasps]
+
+Delivery (Für technische Präzision):
+[carefully] [precisely] [slowly] [emphasizing]
+[hesitates] [clarifying] [correcting]
 
 ===================================
 CHARACTER DYNAMICS
 ===================================
 
-**Speaker A - Kompetente Expertin (LEAD VOICE - FEMALE):**
-- Selbstbewusst und stark
-- Erklärt detailliert: [analytical] [explaining]
-- Technisch versiert aber zugänglich
-- Witzig und scharf
-- Keine Stereotypen (keine "Professorin")
+**Speaker A - Die Technische Expertin (LEAD VOICE - FEMALE):**
+- Selbstbewusst und autoritativ
+- Tiefes technisches Wissen
+- Erklärt komplexe Konzepte klar: [analytical] [explaining]
+- Behandelt Randfälle: [thoughtful] [carefully]
+- Witzig über technische Eigenheiten
+- KEINE Stereotypen (keine "Professorin")
 
-**Speaker B - Technischer Sparringspartner (MALE):**
-- Freundlich und intelligent
-- Stellt tiefgehende Fragen: [thoughtful] [curious]
-- Fordert Details ein
-- Keine Stereotypen (kein "Doktorand")
+**Speaker B - Der Fordernde Herausforderer (MALE):**
+- Gleichwertig technisch kompetent
+- Stellt harte Fragen: [skeptical] [questioning]
+- Fordert Präzision: [curious] [pressing]
+- Erkennt Annahmen: [interrupting] [realizing]
+- Bringt alternative Perspektiven
+- KEINE Stereotypen (kein "Junior-Entwickler")
 
-**RELATIE:**
-- Beide Experten, gleichwertig
+**BEZIEHUNG - KRITISCH:**
+- Peer-to-peer technische Diskussion
+- Beide sind Experten (gleichwertig)
 - Respektvoll aber direkt
-- Fordern sich gegenseitig heraus
+- Hinterfragen gegenseitig Annahmen
+- Arbeiten an komplexen Problemen zusammen
+- Teilen "Aha!"-Momente
 
 **CRITICAL: DON'T INVENT THE IMPOSSIBLE**
-- Sei präzise bei technischen Details
+- Sei technisch präzise
 - Keine erfundenen Fähigkeiten
-- Verifizierbare Fakten nur
+- Alle Claims müssen verifizierbar sein
+- Anerkenne Limitierungen und Tradeoffs
+- Real-world Constraints sind wichtig
 
 ===================================
-FORMAT
+ONLINE RESEARCH REQUIREMENTS  
 ===================================
 
-In-depth technical discussion, 20 minutes
-[analytical], [thoughtful], [explaining]
+**MANDATORY: Tiefe technische Recherche**
 
-**RESEARCH:** 10-15 technical sources
+1. Finde 10-15 hochwertige technische Quellen
+2. Priorität:
+   - Wissenschaftliche Paper / Preprints
+   - Technische Dokumentation
+   - Architekturdiagramme / RFCs
+   - Industry Whitepapers
+   - Experten-Tech-Blogs
+   - Konferenzvorträge / Präsentationen
 
-**OUTPUT:** Pure dialogue, NO meta-commentary
-Sources at end after "**SOURCES FOUND:**"
+3. Extrahiere:
+   - Spezifische technische Details
+   - Architekturentscheidungen und Tradeoffs
+   - Performance-Metriken und Benchmarks
+   - Implementierungs-Herausforderungen
+   - Randfälle und Limitierungen
+   - Industry Best Practices
 
-Create in-depth German technical podcast about {topic}!
+4. Dokumentiere Quellen am Ende
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Pure dialogue only
+4. Technische Präzision erforderlich
+5. Verwende korrekte Terminologie
+6. DU-FORM (NIE "Sie"!)
+
+===================================
+STORY ARC - TECHNICAL ANALYSIS
+===================================
+
+**OPENING (1-2 min):** DIE TECHNISCHE HERAUSFORDERUNG
+
+**Start mit dem Problem:**
+Speaker A: [analytical] Also, lass uns über die grundlegende Herausforderung sprechen.
+Speaker B: [curious] Richtig—was macht das besonders schwierig?
+Speaker A: [explaining] Nun, wenn du mit... arbeitest...
+
+[Use: [analytical], [thoughtful], [explaining]]
+
+**ARCHITEKTUR (5-7 min):**
+- Wie ist es designed?
+- Hauptkomponenten und Interaktionen
+- Design-Entscheidungen und Tradeoffs
+[Use: [explaining], [analytical], [questioning]]
+
+**DEEP DIVE (8-10 min):**
+- 3-4 technische Konzepte im Detail
+- Randfälle und Limitierungen
+- Performance-Überlegungen
+- Sicherheits-Implikationen
+[Use: [carefully], [skeptical], [realizing], [impressed]]
+
+**TRADEOFFS (2-3 min):**
+- Was sind die Limitierungen?
+- Alternative Ansätze
+- Wann nutzen / nicht nutzen
+[Use: [thoughtful], [analytical], [concerned]]
+
+**ZUKUNFT (1-2 min):**
+- Wohin geht das?
+- Offene Probleme
+- Forschungsrichtungen
+[Use: [curious], [speculating], [impressed]]
+
+===================================
+AUTHENTIC TECHNICAL GERMAN STYLE
+===================================
+
+**MUST USE:**
+
+Du-Form (IMMER!):
+✅ "Wenn du dir die Architektur anschaust..."
+✅ "Hast du schon mal mit... gearbeitet?"
+❌ "Wenn Sie sich die Architektur anschauen..." (NEVER!)
+
+Technische Präzision:
+✅ "Die Zeitkomplexität ist O(n log n)"
+✅ "Das führt zu einer Race Condition wenn..."
+✅ "Das CAP-Theorem bedeutet hier..."
+
+Spezifische Terminologie:
+✅ Verwende korrekte Fachbegriffe
+✅ Definiere Akronyme beim ersten Mal
+✅ Referenziere Standards/RFCs
+
+Analytisches Denken:
+✅ "Lass uns den Algorithmus durchgehen..."
+✅ "Betrachte den Randfall wo..."
+✅ "Der Tradeoff hier ist zwischen..."
+
+Anerkenne Unsicherheit:
+✅ "Ich glaube die Implementation nutzt..."
+✅ "Wenn ich die Spec richtig lese..."
+✅ "Das ist eine offene Forschungsfrage..."
+
+**EXAMPLE TECHNICAL EXCHANGE:**
+
+Speaker A: [analytical] Der Konsensus-Mechanismus nutzt eine PBFT-Variante.
+Speaker B: [curious] Byzantine Fault Tolerance—wie viele Nodes können bösartig sein?
+Speaker A: [explaining] Bis zu einem Drittel, minus eins. Also bei 10 Nodes...
+Speaker B: [interrupting] [realizing] Drei könnten kompromittiert sein und es funktioniert noch?
+Speaker A: [confirming] Genau. Das ist das theoretische Limit.
+
+===================================
+DYNAMIC DIALOGUE TECHNIQUES  
+===================================
+
+**1. TECHNISCHE HERAUSFORDERUNGEN:**
+
+Speaker A: [explaining] Der Hauptflaschenhals ist I/O-Latenz.
+Speaker B: [questioning] Haben sie asynchrone Operationen in Betracht gezogen?
+Speaker A: [thoughtful] Das bringt Komplexität mit...
+
+**2. RANDFÄLLE:**
+
+Speaker B: [skeptical] Aber was wenn der Cache kalt ist?
+Speaker A: [pauses] [carefully] Gute Frage. In dem Szenario...
+
+**3. REALISIERUNGEN:**
+
+Speaker A: [analytical] Also der Lock-Free-Algorithmus bedeutet—
+Speaker B: [interrupting] [realizing] Warte, das ist ABA-Problem-Territorium!
+Speaker A: [impressed] Genau! Und deswegen nutzen sie...
+
+**4. TRADEOFF-ANALYSE:**
+
+Speaker A: [explaining] Du gewinnst Performance aber verlierst Konsistenz.
+Speaker B: [thoughtful] Ist das akzeptabel für diesen Use Case?
+Speaker A: [analytical] Kommt auf deine Requirements an...
+
+**5. KOLLABORATIVES PROBLEM-SOLVING:**
+
+Speaker B: [confused] Ich seh nicht wie das über 1000 Nodes skaliert.
+Speaker A: [hesitates] Hmm... [pauses] Es sei denn sie sharden?
+Speaker B: [curious] Das würde Sinn machen. Lass mich checken...
+
+===================================
+TECHNICAL DEPTH REQUIREMENTS
+===================================
+
+**SPEZIFITÄT:**
+- Echte Algorithmen (nicht "es ist schnell")
+- Reale Performance-Zahlen
+- Spezifische Protokolle/Standards
+- Benannte Design Patterns
+- Konkrete Implementierungen
+
+**PRÄZISION:**
+- Korrekte Terminologie
+- Genaue technische Details
+- Richtige Units (ms, GB, req/s)
+- Versionsnummern wo relevant
+- Plattform/Sprach-Spezifika
+
+**KONTEXT:**
+- Warum dieser Ansatz gewählt wurde
+- Welche Alternativen existieren
+- Historischer Kontext
+- Industry Standards
+- Real-World Anwendungen
+
+**EHRLICHKEIT:**
+- Anerkenne Limitierungen
+- Diskutiere Tradeoffs
+- Erwähne ungelöste Probleme
+- Notiere Implementierungs-Herausforderungen
+
+===================================
+CONTENT STRUCTURE
+===================================
+
+**SCHICHT FÜR SCHICHT:**
+1. High-Level Überblick (Was ist es?)
+2. Architektur (Wie ist es strukturiert?)
+3. Deep Dive (Wie funktioniert es?)
+4. Tradeoffs (Was sind die Kosten?)
+5. Kontext (Wann nutzen?)
+
+**VERWENDE BEISPIELE:**
+- Konkrete Code-Snippets (beschrieben)
+- Real-World Systeme
+- Spezifische Produkte/Projekte
+- Echte Benchmarks
+- Industry Case Studies
+
+**BAUE VERSTÄNDNIS AUF:**
+- Start einfach, füge Komplexität hinzu
+- Verbinde zu bekannten Konzepten
+- Verwende Analogien sparsam (aber akkurat)
+- Anerkenne wenn Dinge komplex werden
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct research..."
+- Meta-commentary
+- <search> tags
+- "---" separators
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Technische Präzision und Tiefe
+4. Expert-Level Diskussion
+5. DU-FORM throughout
+6. {word_count}-word target
+
+**AT THE END:**
+
+**SOURCES FOUND:**
+[List all sources with URLs]
+Include: Papers, Docs, RFCs, Blogs, Talks
+
+===================================
+FINAL CHECKLIST
+===================================
+
+✅ ALL emotion tags use [square brackets]
+✅ 3-5 [interrupting] moments (technische Herausforderungen)
+✅ Heavy use of [analytical], [thoughtful], [explaining]
+✅ Technisch präzise Sprache
+✅ DU-FORM throughout (NIE "Sie"!)
+✅ 10-15 hochwertige technische Quellen
+✅ Spezifische Beispiele und Zahlen
+✅ Tradeoffs diskutiert
+✅ Randfälle betrachtet
+✅ Limitierungen anerkannt
+✅ {word_count}-word target
+✅ Quellen dokumentiert
+✅ Expert-Level Tiefe durchgehend
+
+===================================
+
+Now create a deep, technical, expert-level podcast about {topic}!
+
+Remember: This is peer-to-peer technical analysis—precise, detailed, challenging!

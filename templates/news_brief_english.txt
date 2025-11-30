@@ -1,38 +1,300 @@
-PODCAST SCRIPT - NEWS BRIEF (English)
+PODCAST SCRIPT GENERATION - NEWS BRIEF (English - Fast & Dynamic)
 
-TARGET: {duration}-minute (~{word_count} words)
+TARGET: {duration}-minute podcast (~{word_count} words)
 TOPIC: {topic}
+PROJECT: {project_name}
 
-**AUDIO TAGS:** Always use [square brackets]
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
+
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
+
+✅ CORRECT FORMAT:
+Speaker A: [energetic] This is breaking news!
+Speaker B: [interrupting] [excited] Wait, tell me more!
+Speaker A: [fast-paced] So, this morning...
+
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: energetic This is breaking news!
+Speaker A: (energetic) This is breaking news!
+Speaker A: *energetic* This is breaking news!
+
+**MULTIPLE TAGS:**
+- Space between: [interrupting] [excited] Exactly!
+- Or adjacent: [nervous][hesitant] I don't know...
+- Always lowercase in brackets
+
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+Interruption & Overlap (USE FREQUENTLY - news is fast!):
+[interrupting] [overlapping] [interjecting]
+
+Emotions (Energy-focused):
+[energetic] [excited] [curious] [surprised] [shocked]
+[concerned] [skeptical] [impressed] [urgent]
+
+Reactions:
+[laughs] [gasps] [sighs] [wow] [hmm]
+
+Delivery (CRITICAL for news pacing):
+[fast-paced] - Rapid delivery (USE OFTEN!)
+[urgently] - Breaking news energy
+[dramatically] - Big reveals
+[quietly] - Serious moments
+[loudly] - Emphasis
 
 ===================================
 CHARACTER DYNAMICS
 ===================================
 
-**Speaker A - Energetic Host (LEAD VOICE - FEMALE):**
-- Confident, strong, dynamic
-- Quick and energetic: [energetic] [fast-paced]
-- No stereotypes
+**Speaker A - The Energetic News Host (LEAD VOICE - FEMALE):**
+- Confident, dynamic, strong
+- Fast and energetic: [energetic] [fast-paced]
+- Delivers news with momentum
+- Witty when appropriate
+- NO stereotypes
 
-**Speaker B - Engaged Partner (MALE):**
-- Friendly, responsive
-- Asks concise questions: [engaged] [curious]
-- No stereotypes
+**Speaker B - The Engaged Reactor (MALE):**
+- Friendly, quick to respond
+- Asks pointed questions: [curious] [surprised]
+- Brings perspective
+- Emotionally engaged
+- NO stereotypes
+
+**RELATIONSHIP:**
+- Casual, fast rapport
+- Quick back-and-forth
+- Both intelligent
+- Share surprise at news
 
 **CRITICAL: DON'T INVENT THE IMPOSSIBLE**
-- Stick to verified facts only
-- No exaggeration beyond reality
+- Only verified, current facts
+- No exaggeration
+- All claims must be sourced
 
 ===================================
-FORMAT
+ONLINE RESEARCH REQUIREMENTS  
 ===================================
 
-Dynamic news update, 5 minutes
-[excited], [fast-paced], [energetic]
+**MANDATORY: Research current news**
 
-**RESEARCH:** 3-5 recent sources (2024-2025)
+1. Find 3-5 high-quality, RECENT sources
+2. Priority: Last 7 days (breaking news!)
+3. Source types:
+   - News agencies (AP, Reuters, AFP)
+   - Trade publications
+   - Official statements
+   - Expert commentary
 
-**OUTPUT:** Pure dialogue, NO meta-commentary
-Sources at end after "**SOURCES FOUND:**"
+4. Extract:
+   - Specific numbers and data
+   - Timestamps (today, yesterday, this week)
+   - Current developments
+   - Reactions and commentary
+   - Next steps
 
-Create engaging English news brief about {topic}!
+5. Document sources at end
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Pure dialogue only
+4. NO quotation marks
+5. Contractions natural: don't, can't, it's
+
+===================================
+STORY ARC - NEWS FORMAT
+===================================
+
+**OPENING (15-20 seconds):** BREAKING NEWS ENERGY
+
+**Start with the headline:**
+Speaker A: [energetic] [fast-paced] Okay, you need to hear this!
+Speaker B: [curious] [excited] What happened?
+Speaker A: [urgently] So, this morning it was announced...
+
+[Use: [energetic], [fast-paced], [urgently]]
+
+**BUILD (1-2 min):**
+- What happened?
+- When and where?
+- Who's affected?
+[Use: [explaining], [surprised], [concerned]]
+
+**CONTEXT (1-2 min):**
+- Why does this matter?
+- What came before?
+- Analysis
+[Use: [thoughtful], [analytical]]
+
+**IMPACT (30-60 sec):**
+- What does this mean?
+- Next steps
+- Outlook
+[Use: [impressed], [concerned], [hopeful]]
+
+**QUICK WRAP:**
+- Summary in 1-2 sentences
+- "We'll keep you updated"
+
+===================================
+AUTHENTIC NEWS STYLE
+===================================
+
+**MUST USE:**
+
+Casual tone:
+✅ "Did you catch this?"
+✅ "You know what this means?"
+✅ "Wait till you hear..."
+
+News language:
+✅ Breaking!, Whoa!, Wow!, Insane!, Incredible!
+✅ Hold on..., Wait..., Check this out...
+✅ Just now..., This morning..., Just confirmed...
+
+Time references (CRITICAL!):
+✅ today, yesterday, this week
+✅ an hour ago, just now
+✅ since this morning
+
+Contractions:
+✅ don't, can't, it's, what's
+✅ Sentence fragments OK!
+
+**FAST-PACED STYLE:**
+
+Speaker A: [fast-paced] Okay, listen—this morning, just after nine, it was announced...
+Speaker B: [interrupting] [surprised] Seriously?
+Speaker A: [energetic] Yes! And here's the crazy part...
+
+===================================
+DYNAMIC DIALOGUE TECHNIQUES  
+===================================
+
+**1. RAPID-FIRE QUESTIONS:**
+
+Speaker A: [fast-paced] The numbers just came in—
+Speaker B: [interrupting] [urgently] How many?
+Speaker A: [dramatically] 50 percent more than expected!
+
+**2. SHARED SHOCK:**
+
+Speaker A: [shocked] And guess who said that...
+Speaker B: [gasps] Not—
+Speaker A: [overlapping] [excited] Yes!
+
+**3. BREAKING NEWS ENERGY:**
+
+Speaker A: [urgently] [fast-paced] Okay, brace yourself!
+Speaker B: [energetic] What's going on?!
+
+**4. QUICK CONTEXT:**
+
+Speaker B: [curious] But why now?
+Speaker A: [explaining] Quick version: ...
+
+===================================
+ENERGY & PACING
+===================================
+
+**FAST THROUGHOUT:**
+
+High energy opening:
+[energetic] [fast-paced] Okay, you HAVE to hear this!
+
+Maintain momentum:
+[excited] And then—listen—it turned out...
+
+Build to reveals:
+[dramatically] And here's the kicker... [pauses] [shocked] 
+
+Keep it tight:
+- Short sentences
+- Quick exchanges
+- Minimal pauses
+- Forward momentum
+
+===================================
+CONTENT REQUIREMENTS
+===================================
+
+**THE 5 W's:**
+- WHAT happened?
+- WHO is affected?
+- WHEN did it happen?
+- WHERE did it occur?
+- WHY does it matter?
+
+**RECENCY:**
+- Mention date/time
+- "Today", "yesterday", "this week"
+- Emphasize currency
+
+**FACTS:**
+- Specific numbers
+- Names and organizations
+- Official statements
+- Verified information
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct research..."
+- Meta-commentary
+- <search> tags
+- "---" separators
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Fast-paced conversational English
+4. News-appropriate energy
+5. {word_count}-word target (keep tight!)
+
+**AT THE END:**
+
+**SOURCES FOUND:**
+[List all sources with URLs and dates]
+
+===================================
+FINAL CHECKLIST
+===================================
+
+✅ ALL emotion tags use [square brackets]
+✅ 5-10 [interrupting] or [overlapping] moments
+✅ Heavy use of [fast-paced], [energetic], [urgently]
+✅ Casual, conversational tone
+✅ Recent sources (within 7 days if possible)
+✅ All 5 W's covered
+✅ Dates/times mentioned
+✅ {word_count}-word target
+✅ Sources documented
+✅ Fast-paced, news-appropriate energy
+
+===================================
+
+Now create a dynamic, current, engaging English news brief about {topic}!
+
+Remember: This is BREAKING NEWS energy—fast, excited, informative!

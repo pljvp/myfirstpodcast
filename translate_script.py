@@ -55,6 +55,18 @@ def extract_language_from_filename(filename):
     return 'en'  # Default to English if not found
 
 
+
+
+def extract_provider_from_filename(filename):
+    """Extract provider tag from script filename"""
+    if '_11LB_' in filename:
+        return 'elevenlabs', '11LB'
+    elif '_CRTS_' in filename:
+        return 'cartesia', 'CRTS'
+    else:
+        # Default to ElevenLabs if no tag
+        return 'elevenlabs', '11LB'
+
 def translate_script(script, target_language, anthropic_key):
     """Translate script using Claude API"""
     
@@ -160,12 +172,15 @@ def main():
     with open(script_path, 'r', encoding='utf-8') as f:
         original_script = f.read()
     
-    # Extract source language from filename
+    # Extract source language and provider from filename
     source_lang = extract_language_from_filename(script_path.name)
+    provider_name, provider_tag = extract_provider_from_filename(script_path.name)
     
     print(f"\nLoaded: {script_path.name}")
     print(f"Detected source language: {source_lang.upper()}")
+    print(f"Detected provider: {provider_name.upper()} (from filename)")
     print(f"Script length: {len(original_script)} chars")
+    print(f"[INFO] Translation will preserve {provider_name.upper()} format")
     
     # Select target language
     print("\nAvailable languages:")
@@ -198,7 +213,7 @@ def main():
     # Save translated script with proper naming
     timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
     lang_upper = target_language.upper()
-    translated_filename = f"{project_name}_{lang_upper}_{timestamp}_draft1.txt"
+    translated_filename = f"{project_name}_{lang_upper}_{timestamp}_{provider_tag}_draft1.txt"
     translated_path = Path(f"./projects/{project_name}/scripts/{translated_filename}")
     
     with open(translated_path, 'w', encoding='utf-8') as f:
@@ -256,7 +271,7 @@ def main():
         cleaned_script = clean_script_for_audio(translated_script)
         
         # Generate audio
-        audio_data, chars = generate_audio(cleaned_script, config, target_language, mode, speed, project_name)
+        audio_data, chars = generate_audio(cleaned_script, config, target_language, provider_name, mode, speed, project_name)
         
         if audio_data:
             # FIXED: Proper filename format with language code in capitals

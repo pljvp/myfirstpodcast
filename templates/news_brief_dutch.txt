@@ -1,19 +1,300 @@
-PODCAST SCRIPT - NEWS BRIEF (Dutch)
+PODCAST SCRIPT GENERATION - NEWS BRIEF (Dutch - Fast & Dynamic)
 
-TARGET: {duration}-minute (~{word_count} words)
+TARGET: {duration}-minute podcast (~{word_count} words)
 TOPIC: {topic}
+PROJECT: {project_name}
 
-**AUDIO TAGS:** Always use [square brackets]
+===================================
+CRITICAL: ELEVENLABS V3 AUDIO TAGS
+===================================
 
-**FORMAT:**
-Speaker A: [energetic] Quick intro
-Speaker B: [engaged] Response
-(Dynamic, fast-paced, 5 minutes)
+**AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
-**RESEARCH:** 3-5 recent sources (2024-2025)
+✅ CORRECT FORMAT:
+Speaker A: [energetic] Dit is breaking news!
+Speaker B: [interrupting] [excited] Wacht, vertel meer!
+Speaker A: [fast-paced] Dus, vanochtend...
 
-**STYLE:** Energetic news update, [excited], [fast-paced]
+❌ WRONG FORMAT (DO NOT USE):
+Speaker A: energetic Dit is breaking news!
+Speaker A: (energetic) Dit is breaking news!
+Speaker A: *energetic* Dit is breaking news!
 
-**OUTPUT:** Pure dialogue, NO meta-commentary, sources at end
+**MULTIPLE TAGS:**
+- Space between: [interrupting] [excited] Precies!
+- Or adjacent: [nervous][hesitant] Ik weet het niet...
+- Always lowercase in brackets
 
-Create engaging Dutch news brief about {topic}!
+===================================
+AVAILABLE AUDIO TAGS
+===================================
+
+Interruption & Overlap (GEBRUIK VAAK - nieuws is snel!):
+[interrupting] [overlapping] [interjecting]
+
+Emotions (Energy-focused):
+[energetic] [excited] [curious] [surprised] [shocked]
+[concerned] [skeptical] [impressed] [urgent]
+
+Reactions:
+[laughs] [gasps] [sighs] [wow] [hmm]
+
+Delivery (KRITISCH voor nieuws tempo):
+[fast-paced] - Snelle aflevering (VAAK GEBRUIKEN!)
+[urgently] - Breaking news energie
+[dramatically] - Grote onthullingen
+[quietly] - Serieuze momenten
+[loudly] - Nadruk
+
+===================================
+CHARACTER DYNAMICS
+===================================
+
+**Speaker A - De Energieke Nieuwspresentator (HOOFDSTEM - VROUWELIJK):**
+- Zelfverzekerd, dynamisch, sterk
+- Snel en energiek: [energetic] [fast-paced]
+- Brengt nieuws met vaart
+- Geestig waar passend
+- GEEN stereotypen
+
+**Speaker B - De Betrokken Reageerder (MANNELIJK):**
+- Vriendelijk, reageert snel
+- Stelt prikkelende vragen: [curious] [surprised]
+- Brengt perspectief
+- Emotioneel betrokken
+- GEEN stereotypen
+
+**RELATIE:**
+- Informeel, snel contact
+- Snelle wisselwerking
+- Beide intelligent
+- Delen verrassing over nieuws
+
+**CRITICAL: DON'T INVENT THE IMPOSSIBLE**
+- Alleen geverifieerde, actuele feiten
+- Geen overdrijving
+- Alle claims moeten bronnen hebben
+
+===================================
+ONLINE RESEARCH REQUIREMENTS  
+===================================
+
+**VERPLICHT: Actueel nieuws onderzoeken**
+
+1. Vind 3-5 hoogwaardige, RECENTE bronnen
+2. Prioriteit: Laatste 7 dagen (breaking news!)
+3. Brontypes:
+   - Nieuwsagentschappen (ANP, Reuters, AP)
+   - Vakpublicaties
+   - Officiële verklaringen
+   - Expertcommentaar
+
+4. Extraheer:
+   - Specifieke cijfers en data
+   - Tijdstempels (vandaag, gisteren, deze week)
+   - Actuele ontwikkelingen
+   - Reacties en commentaar
+   - Volgende stappen
+
+5. Documenteer bronnen aan het eind
+
+===================================
+DIALOGUE FORMAT - CRITICAL
+===================================
+
+**USE THIS FORMAT EXACTLY:**
+
+Speaker A: [emotion tags] Dialogue here...
+Speaker B: [emotion tags] Response here...
+
+**CRITICAL RULES:**
+
+1. **ALWAYS use square brackets for ALL audio tags**
+2. Label each line with "Speaker A:" or "Speaker B:"
+3. Pure dialogue only
+4. NO quotation marks
+5. Contractions natural: 't, 'm, z'n
+
+===================================
+STORY ARC - NEWS FORMAT
+===================================
+
+**OPENING (15-20 seconds):** BREAKING NEWS ENERGIE
+
+**Start met de kop:**
+Speaker A: [energetic] [fast-paced] Oké, dit moet je gehoord hebben!
+Speaker B: [curious] [excited] Wat dan?
+Speaker A: [urgently] Dus, vanochtend werd aangekondigd...
+
+[Use: [energetic], [fast-paced], [urgently]]
+
+**BUILD (1-2 min):**
+- Wat is er gebeurd?
+- Wanneer en waar?
+- Wie is getroffen?
+[Use: [explaining], [surprised], [concerned]]
+
+**CONTEXT (1-2 min):**
+- Waarom is dit belangrijk?
+- Wat kwam ervoor?
+- Analyse
+[Use: [thoughtful], [analytical]]
+
+**IMPACT (30-60 sec):**
+- Wat betekent dit?
+- Volgende stappen
+- Vooruitzichten
+[Use: [impressed], [concerned], [hopeful]]
+
+**SNELLE AFSLUITING:**
+- Samenvatting in 1-2 zinnen
+- "We houden je op de hoogte"
+
+===================================
+AUTHENTIC DUTCH NEWS STYLE
+===================================
+
+**MUST USE:**
+
+Informele toon:
+✅ "Heb je dit gehoord?"
+✅ "Snap je wat dit betekent?"
+✅ "Wacht tot je dit hoort..."
+
+Nieuws taal:
+✅ Breaking!, Wauw!, Wow!, Gek!, Ongelooflijk!
+✅ Wacht even..., Kijk..., Check dit...
+✅ Zojuist..., Vanochtend..., Net bevestigd...
+
+Tijd referenties (KRITISCH!):
+✅ vandaag, gisteren, deze week
+✅ een uur geleden, zojuist
+✅ sinds vanochtend
+
+Contractions:
+✅ 't, 'm, z'n, d'r
+✅ Sentence fragments OK!
+
+**FAST-PACED STYLE:**
+
+Speaker A: [fast-paced] Oké, luister—vanochtend, net na negenen, werd aangekondigd...
+Speaker B: [interrupting] [surprised] Echt waar?
+Speaker A: [energetic] Ja! En het gekke is...
+
+===================================
+DYNAMIC DIALOGUE TECHNIQUES  
+===================================
+
+**1. RAPID-FIRE VRAGEN:**
+
+Speaker A: [fast-paced] De cijfers zijn net binnen—
+Speaker B: [interrupting] [urgently] Hoeveel?
+Speaker A: [dramatically] 50 procent meer dan verwacht!
+
+**2. GEDEELDE SHOCK:**
+
+Speaker A: [shocked] En raad eens wie dat zei...
+Speaker B: [gasps] Niet—
+Speaker A: [overlapping] [excited] Wel!
+
+**3. BREAKING NEWS ENERGIE:**
+
+Speaker A: [urgently] [fast-paced] Oké, hou je vast!
+Speaker B: [energetic] Wat is er aan de hand?!
+
+**4. SNELLE CONTEXT:**
+
+Speaker B: [curious] Maar waarom nu?
+Speaker A: [explaining] Korte versie: ...
+
+===================================
+ENERGY & PACING
+===================================
+
+**SNEL DOOR EN DOOR:**
+
+Hoge energie opening:
+[energetic] [fast-paced] Oké, dit MOET je horen!
+
+Behoud momentum:
+[excited] En toen—luister—bleek...
+
+Build naar onthullingen:
+[dramatically] En nu komt het... [pauses] [shocked] 
+
+Hou het strak:
+- Korte zinnen
+- Snelle uitwisselingen
+- Minimale pauzes
+- Voorwaartse momentum
+
+===================================
+CONTENT REQUIREMENTS
+===================================
+
+**DE 5 W's:**
+- WAT is er gebeurd?
+- WIE is getroffen?
+- WANNEER gebeurde het?
+- WAAR vond het plaats?
+- WAAROM is dit belangrijk?
+
+**ACTUALITEIT:**
+- Noem datum/tijd
+- "Vandaag", "gisteren", "deze week"
+- Benadruk actualiteit
+
+**FEITEN:**
+- Specifieke cijfers
+- Namen en organisaties
+- Officiële verklaringen
+- Geverifieerde informatie
+
+===================================
+OUTPUT FORMAT
+===================================
+
+**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+
+❌ **DO NOT INCLUDE:**
+- "I'll conduct research..."
+- Meta-commentary
+- <search> tags
+- "---" separators
+
+✅ **START IMMEDIATELY WITH:**
+Speaker A: [emotion tags] First line of dialogue...
+
+**PROVIDE:**
+
+1. Pure dialogue with Speaker A/B labels
+2. ALL audio tags in [square brackets]
+3. Fast-paced conversational Dutch
+4. News-appropriate energy
+5. {word_count}-word target (keep tight!)
+
+**AT THE END:**
+
+**SOURCES FOUND:**
+[List all sources with URLs and dates]
+
+===================================
+FINAL CHECKLIST
+===================================
+
+✅ ALL emotion tags use [square brackets]
+✅ 5-10 [interrupting] or [overlapping] moments
+✅ Heavy use of [fast-paced], [energetic], [urgently]
+✅ Casual, conversational tone
+✅ Recent sources (within 7 days if possible)
+✅ All 5 W's covered
+✅ Dates/times mentioned
+✅ {word_count}-word target
+✅ Sources documented
+✅ Fast-paced, news-appropriate energy
+
+===================================
+
+Now create a dynamic, current, engaging Dutch news brief about {topic}!
+
+Remember: This is BREAKING NEWS energy—fast, excited, informative!

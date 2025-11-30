@@ -1,5 +1,6 @@
 #!/bin/bash
-# smart_update.sh - Intelligent pipeline update with full preservation
+# smart_update.sh - Handles providers/ folder and multi-file updates
+# FIXED: Now handles tune_audio and translate_script properly
 
 set -e
 
@@ -8,7 +9,7 @@ echo ""
 
 # Check location
 if [ ! -f "podcast_pipeline.py" ]; then
-    echo "❌ ERROR: Run this from your myfirstpodcast_v3 folder"
+    echo "❌ ERROR: Run this from your myfirstpodcast folder"
     exit 1
 fi
 
@@ -20,25 +21,23 @@ mkdir -p ".backup"
 echo "📦 BACKING UP YOUR DATA..."
 echo ""
 
-# 1. Backup configs
-echo "  → API keys & voice IDs..."
+# Backup configs
+echo "  → API keys & config..."
 cp config/.env "$BACKUP_DIR/.env" 2>/dev/null || echo "    (No .env found)"
 cp config/podcast_config.json "$BACKUP_DIR/podcast_config.json"
 
-# 2. Backup research templates
+# Backup templates
 if [ -d "templates/research_contexts" ]; then
-    echo "  → Research context templates..."
+    echo "  → Research templates..."
     mkdir -p "$BACKUP_DIR/research_contexts"
     cp -r templates/research_contexts/* "$BACKUP_DIR/research_contexts/" 2>/dev/null || true
 fi
 
-# 3. Backup all template files
-echo "  → Podcast templates..."
 mkdir -p "$BACKUP_DIR/templates"
 cp templates/*.txt "$BACKUP_DIR/templates/" 2>/dev/null || true
 
-# 4. Backup project contexts
-echo "  → Project-specific research contexts..."
+# Backup project contexts
+echo "  → Project contexts..."
 mkdir -p "$BACKUP_DIR/project_contexts"
 for project_dir in projects/*/; do
     if [ -d "$project_dir" ]; then
@@ -46,156 +45,169 @@ for project_dir in projects/*/; do
         if [ -f "$project_dir/sources/research_context.txt" ]; then
             mkdir -p "$BACKUP_DIR/project_contexts/$project_name"
             cp "$project_dir/sources/research_context.txt" "$BACKUP_DIR/project_contexts/$project_name/"
-            echo "    ✓ Backed up: $project_name/research_context.txt"
         fi
     fi
 done
 
-echo ""
-echo "✓ All data backed up to: $BACKUP_DIR"
-echo ""
-
-# 5. Update files
-echo "📥 CHECKING FOR NEW FILES..."
+echo "✓ Backed up to: $BACKUP_DIR"
 echo ""
 
-# Show what we're looking for and what we found
+# Update pipeline
+echo "📥 CHECKING FOR UPDATES..."
+echo ""
 echo "Looking for pipeline files:"
-echo "  - podcast_pipeline_FIXED.py"
+echo "  - podcast_pipeline_UPDATED.py"
+echo "  - podcast_pipeline_NEW.py"
 echo "  - podcast_pipeline_new.py"
+echo "  - podcast_pipeline_FIXED.py"
 echo ""
 
 PIPELINE_UPDATED=false
 
-# Handle pipeline files
-if [ -f "podcast_pipeline_FIXED.py" ]; then
-    echo "  ✓ FOUND: podcast_pipeline_FIXED.py"
-    OLD_BACKUP=".backup/podcast_pipeline_backup_$(date +%Y%m%d_%H%M%S).py"
-    mv podcast_pipeline.py "$OLD_BACKUP"
-    mv podcast_pipeline_FIXED.py podcast_pipeline.py
-    echo "  ✓ INSTALLED: podcast_pipeline.py (old saved to $OLD_BACKUP)"
-    PIPELINE_UPDATED=true
-elif [ -f "podcast_pipeline_new.py" ]; then
-    echo "  ✓ FOUND: podcast_pipeline_new.py"
-    OLD_BACKUP=".backup/podcast_pipeline_backup_$(date +%Y%m%d_%H%M%S).py"
-    mv podcast_pipeline.py "$OLD_BACKUP"
-    mv podcast_pipeline_new.py podcast_pipeline.py
-    echo "  ✓ INSTALLED: podcast_pipeline.py (old saved to $OLD_BACKUP)"
-    PIPELINE_UPDATED=true
-else
+# Check for pipeline files (_UPDATED, _NEW, _new, _FIXED)
+for suffix in "_UPDATED" "_NEW" "_new" "_FIXED"; do
+    if [ -f "podcast_pipeline${suffix}.py" ]; then
+        echo "  ✓ FOUND: podcast_pipeline${suffix}.py"
+        OLD_BACKUP=".backup/podcast_pipeline_backup_$(date +%Y%m%d_%H%M%S).py"
+        mv podcast_pipeline.py "$OLD_BACKUP"
+        mv "podcast_pipeline${suffix}.py" podcast_pipeline.py
+        echo "  ✓ INSTALLED (old → $OLD_BACKUP)"
+        PIPELINE_UPDATED=true
+        break
+    fi
+done
+
+if [ "$PIPELINE_UPDATED" = false ]; then
     echo "  ❌ NO PIPELINE FILE FOUND"
     echo ""
-    echo "Put one of these files in this folder:"
-    echo "  - podcast_pipeline_FIXED.py"
-    echo "  - podcast_pipeline_new.py"
-    echo ""
-    ls -la *.py 2>/dev/null | grep -v "__" || echo "No .py files found in current directory"
-    echo ""
-    read -p "Continue anyway? (y/N): " continue_choice
+    echo "Expected: podcast_pipeline_UPDATED.py, _NEW.py, _new.py, or _FIXED.py"
+    read -p "Continue? (y/N): " continue_choice
     if [ "$continue_choice" != "y" ] && [ "$continue_choice" != "Y" ]; then
-        echo "Aborted."
         exit 1
     fi
 fi
 
+# Handle providers folder
+echo ""
+echo "Looking for providers/ folder..."
+if [ -d "providers" ]; then
+    echo "  ✓ FOUND: providers/ folder"
+    
+    # Backup existing if present
+    if [ -d "providers" ] && [ "$(ls -A providers 2>/dev/null)" ]; then
+        PROVIDERS_BACKUP=".backup/providers_backup_$(date +%Y%m%d_%H%M%S)"
+        mkdir -p "$PROVIDERS_BACKUP"
+        cp -r providers/* "$PROVIDERS_BACKUP/" 2>/dev/null
+        echo "    (backed up to $PROVIDERS_BACKUP)"
+    fi
+    
+    echo "  ✓ Providers installed"
+    PROVIDERS_UPDATED=true
+else
+    echo "  ➖ No providers/ folder found"
+    PROVIDERS_UPDATED=false
+fi
+
+# Handle utility scripts
 echo ""
 echo "Looking for utility scripts:"
-echo "  - translate_script.py"
-echo "  - tune_audio.py"
+echo "  - tune_audio_UPDATED.py / _NEW.py / _new.py / _FIXED.py"
+echo "  - translate_script_UPDATED.py / _NEW.py / _new.py / _FIXED.py"
 echo ""
 
 UTILITIES_UPDATED=0
 
-# Handle translate_script.py
-if [ -f "translate_script.py" ]; then
-    echo "  ✓ FOUND: translate_script.py"
-    if [ -f "./translate_script.py" ] && [ ! -L "./translate_script.py" ]; then
-        # Backup existing if it's a real file (not a new install)
-        if [ -s "./translate_script.py" ]; then
-            OLD_BACKUP=".backup/translate_script_backup_$(date +%Y%m%d_%H%M%S).py"
-            cp ./translate_script.py "$OLD_BACKUP" 2>/dev/null
-            echo "    (backed up to $OLD_BACKUP)"
-        fi
-    fi
-    chmod +x translate_script.py
-    echo "  ✓ INSTALLED: translate_script.py (executable)"
-    UTILITIES_UPDATED=$((UTILITIES_UPDATED + 1))
-fi
-
-# Handle tune_audio.py
-if [ -f "tune_audio.py" ]; then
-    echo "  ✓ FOUND: tune_audio.py"
-    if [ -f "./tune_audio.py" ] && [ ! -L "./tune_audio.py" ]; then
-        # Backup existing if it's a real file
-        if [ -s "./tune_audio.py" ]; then
+# Handle tune_audio
+TUNE_FOUND=false
+for suffix in "_UPDATED" "_NEW" "_new" "_FIXED"; do
+    if [ -f "tune_audio${suffix}.py" ]; then
+        echo "  ✓ FOUND: tune_audio${suffix}.py"
+        if [ -f "tune_audio.py" ]; then
             OLD_BACKUP=".backup/tune_audio_backup_$(date +%Y%m%d_%H%M%S).py"
-            cp ./tune_audio.py "$OLD_BACKUP" 2>/dev/null
+            mv tune_audio.py "$OLD_BACKUP"
             echo "    (backed up to $OLD_BACKUP)"
         fi
+        mv "tune_audio${suffix}.py" tune_audio.py
+        chmod +x tune_audio.py
+        echo "  ✓ INSTALLED: tune_audio.py"
+        UTILITIES_UPDATED=$((UTILITIES_UPDATED + 1))
+        TUNE_FOUND=true
+        break
     fi
-    chmod +x tune_audio.py
-    echo "  ✓ INSTALLED: tune_audio.py (executable)"
-    UTILITIES_UPDATED=$((UTILITIES_UPDATED + 1))
+done
+
+if [ "$TUNE_FOUND" = false ]; then
+    echo "  ➖ tune_audio (not found - optional)"
 fi
 
-if [ $UTILITIES_UPDATED -eq 0 ]; then
-    echo "  (No utility scripts found - this is optional)"
+# Handle translate_script
+TRANSLATE_FOUND=false
+for suffix in "_UPDATED" "_NEW" "_new" "_FIXED"; do
+    if [ -f "translate_script${suffix}.py" ]; then
+        echo "  ✓ FOUND: translate_script${suffix}.py"
+        if [ -f "translate_script.py" ]; then
+            OLD_BACKUP=".backup/translate_script_backup_$(date +%Y%m%d_%H%M%S).py"
+            mv translate_script.py "$OLD_BACKUP"
+            echo "    (backed up to $OLD_BACKUP)"
+        fi
+        mv "translate_script${suffix}.py" translate_script.py
+        chmod +x translate_script.py
+        echo "  ✓ INSTALLED: translate_script.py"
+        UTILITIES_UPDATED=$((UTILITIES_UPDATED + 1))
+        TRANSLATE_FOUND=true
+        break
+    fi
+done
+
+if [ "$TRANSLATE_FOUND" = false ]; then
+    echo "  ➖ translate_script (not found - optional)"
 fi
 
+# Handle config
 echo ""
-echo "Processing template files..."
-
-# Handle template files with _FIXED suffix
-TEMPLATES_MOVED=0
-for file in *_FIXED.txt; do
-    if [ -f "$file" ] && [ "$file" != "*_FIXED.txt" ]; then
-        target=$(echo "$file" | sed 's/_FIXED//')
-        mv "$file" "templates/$target"
-        echo "  ✓ $file → templates/$target"
-        TEMPLATES_MOVED=$((TEMPLATES_MOVED + 1))
+if [ -f "podcast_config_UPDATED.json" ]; then
+    echo "  ⚠️  New config structure detected"
+    echo "  → Contains provider configuration for ElevenLabs + Cartesia"
+    read -p "Replace config? (y/N): " config_choice
+    if [ "$config_choice" == "y" ] || [ "$config_choice" == "Y" ]; then
+        CONFIG_BACKUP=".backup/podcast_config_backup_$(date +%Y%m%d_%H%M%S).json"
+        mv "config/podcast_config.json" "$CONFIG_BACKUP"
+        mv "podcast_config_UPDATED.json" "config/podcast_config.json"
+        echo "  ✓ Config updated (old → $CONFIG_BACKUP)"
+        echo ""
+        echo "  ⚠️  IMPORTANT: Edit config/podcast_config.json to add:"
+        echo "     - Your Cartesia voice IDs (replace placeholders)"
+    else
+        echo "  ➖ Keeping existing config"
+        rm "podcast_config_UPDATED.json"
     fi
-done
-
-# Handle loose template files in root
-for file in news_brief_*.txt technical_deep_dive_*.txt popular_science_*.txt; do
-    if [ -f "$file" ] && [ "$file" != "*_*.txt" ]; then
-        mv "$file" "templates/"
-        echo "  ✓ $file → templates/"
-        TEMPLATES_MOVED=$((TEMPLATES_MOVED + 1))
-    fi
-done
-
-if [ $TEMPLATES_MOVED -eq 0 ]; then
-    echo "  (No template files to move)"
-fi
-
-# Handle config file if in root
-if [ -f "podcast_config.json" ]; then
-    echo ""
-    echo "  ✓ FOUND: podcast_config.json"
+elif [ -f "podcast_config.json" ]; then
+    echo "  ✓ FOUND: podcast_config.json (moving to config/)"
     mv "podcast_config.json" "config/"
-    echo "  ✓ MOVED: config/podcast_config.json"
 fi
 
+# Handle requirements
+if [ -f "requirements_UPDATED.txt" ]; then
+    echo ""
+    echo "  ✓ FOUND: requirements_UPDATED.txt"
+    REQ_BACKUP=".backup/requirements_backup_$(date +%Y%m%d_%H%M%S).txt"
+    cp "requirements.txt" "$REQ_BACKUP" 2>/dev/null || true
+    mv "requirements_UPDATED.txt" "requirements.txt"
+    echo "  ✓ Requirements updated (old → $REQ_BACKUP)"
+    echo ""
+    echo "  💡 Run: pip install -r requirements.txt --break-system-packages"
+fi
+
+# Restore data
 echo ""
 echo "📦 RESTORING YOUR DATA..."
-echo ""
+cp "$BACKUP_DIR/.env" config/.env 2>/dev/null || true
 
-# 6. Restore configs
-echo "  → API keys..."
-cp "$BACKUP_DIR/.env" config/.env 2>/dev/null || echo "    (No .env to restore)"
-echo "    ✓ Configs restored"
-
-# 7. Restore research templates
 if [ -d "$BACKUP_DIR/research_contexts" ]; then
-    echo "  → Research templates..."
     mkdir -p templates/research_contexts
     cp -r "$BACKUP_DIR/research_contexts"/* templates/research_contexts/ 2>/dev/null || true
-    echo "    ✓ Restored"
 fi
 
-# 8. Restore project contexts
-echo "  → Project contexts..."
 if [ -d "$BACKUP_DIR/project_contexts" ]; then
     for project_dir in "$BACKUP_DIR/project_contexts"/*; do
         if [ -d "$project_dir" ]; then
@@ -203,7 +215,6 @@ if [ -d "$BACKUP_DIR/project_contexts" ]; then
             if [ -f "$project_dir/research_context.txt" ]; then
                 mkdir -p "projects/$project_name/sources"
                 cp "$project_dir/research_context.txt" "projects/$project_name/sources/"
-                echo "    ✓ $project_name/research_context.txt"
             fi
         fi
     done
@@ -213,38 +224,32 @@ echo ""
 echo "="*60
 if [ "$PIPELINE_UPDATED" = true ]; then
     echo "✅ UPDATE COMPLETE!"
+    if [ "$PROVIDERS_UPDATED" = true ]; then
+        echo "✅ Provider system installed!"
+    fi
+    if [ $UTILITIES_UPDATED -gt 0 ]; then
+        echo "✅ Updated $UTILITIES_UPDATED utility script(s)"
+    fi
 else
-    echo "⚠️  UPDATE PARTIAL - NO PIPELINE FILE UPDATED"
+    echo "⚠️  PARTIAL UPDATE"
 fi
 echo "="*60
-echo "Backup: $BACKUP_DIR"
-echo "Pipeline backups: .backup/"
 echo ""
-echo "What was updated:"
+echo "Summary:"
 if [ "$PIPELINE_UPDATED" = true ]; then
     echo "  ✅ Pipeline script"
 else
     echo "  ❌ Pipeline script (not found)"
 fi
+if [ "$PROVIDERS_UPDATED" = true ]; then
+    echo "  ✅ TTS providers/ folder"
+fi
 if [ $UTILITIES_UPDATED -gt 0 ]; then
-    echo "  ✅ $UTILITIES_UPDATED utility script(s) (translate/tune)"
-else
-    echo "  ➖ Utility scripts (not found - optional)"
+    echo "  ✅ Utility scripts ($UTILITIES_UPDATED)"
 fi
 echo "  ✅ API keys preserved"
-echo "  ✅ Voice config preserved"
 echo "  ✅ Templates preserved"
-echo "  ✅ Project contexts preserved"
-if [ $TEMPLATES_MOVED -gt 0 ]; then
-    echo "  ✅ $TEMPLATES_MOVED template file(s) moved"
-fi
+echo "  ✅ Projects preserved"
 echo ""
-if [ "$PIPELINE_UPDATED" = true ]; then
-    echo "✓ Ready to run: python podcast_pipeline.py"
-    if [ $UTILITIES_UPDATED -gt 0 ]; then
-        echo "✓ New utilities available: translate_script.py, tune_audio.py"
-    fi
-else
-    echo "⚠️  Pipeline not updated - download podcast_pipeline_FIXED.py first!"
-fi
+echo "✓ Ready: python podcast_pipeline.py"
 echo ""
