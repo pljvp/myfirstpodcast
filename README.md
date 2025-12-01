@@ -64,6 +64,26 @@ myfirstpodcast/
 - Always full quality (44100 Hz)
 - Speed range: 0.7-1.2 (auto-converted to Cartesia's -1.0 to 1.0)
 
+### **Speed Settings (Unified Interface)**
+- **User input:** Always use ElevenLabs-style range (0.7-1.2)
+- **ElevenLabs:** Uses value directly
+- **Cartesia:** Auto-converts internally using formula: `(speed - 1.0) * 2.0`
+- **Speed tags in test audio:** Always show ElevenLabs-style value (e.g., `OS1.05`)
+- **Result:** Same speed input produces comparable audio across both providers
+
+### **Test Mode Audio Speed Tags**
+Test audio filenames include speed settings for easy comparison:
+```
+test_de_2025-12-01_mvie-totr_CRTS_OS1.05_MS1.05_FS1.05_PROTOTYPE.mp3
+                                      ^^^^^^ ^^^^^^ ^^^^^^
+                                      Overall Male  Female
+```
+- **OS** (Overall Speed): Base speed setting (0.7-1.2)
+- **MS** (Male Speed): Speaker B actual speed (includes per-voice adjustments)
+- **FS** (Female Speed): Speaker A actual speed (includes per-voice adjustments)
+
+Note: Speed tags always show ElevenLabs-style values for consistency, even for Cartesia audio.
+
 ### **File Naming with Provider Tags**
 
 **Scripts:**
@@ -102,8 +122,9 @@ python podcast_pipeline.py
 
 ### **2. Project Setup:**
 - **Project name:** Folder/file names (preserves case: BACnet stays BACnet)
+  - Special: `test` triggers test mode (voice tuning with short scenarios)
 - **Podcast topic:** Content description (allows spaces)
-- **Duration:** Minutes (auto-calculates word count at 150 words/min)
+- **Duration:** Minutes (auto-calculates word count at 180 words/min for dialogue)
 
 ### **3. Style Selection:**
 ```
@@ -537,6 +558,62 @@ See `requirements.txt` for versions.
    ```
 
 5. **Follow prompts** for project setup, provider selection, and generation
+
+## Test Mode (Voice Tuning)
+
+**Purpose:** Quick 1-1.5 minute test samples for voice/emotion tuning without expensive 25-minute full podcasts.
+
+**Trigger:** Project name = `test` (case-insensitive)
+
+**Features:**
+- **Fast workflow:** Skips research context and template menus
+- **Predefined scenarios:** Road trips, cooking disasters, movie analysis, or random
+- **Speed tags:** Filenames include OS/MS/FS speed settings
+- **Scenario tags:** Easy identification (`mvie-totr`, `cook-pizz`, etc.)
+
+**Example workflow:**
+```bash
+python podcast_pipeline.py
+
+Enter project name: test
+
+[TEST MODE ACTIVATED]
+
+Select test scenario type:
+    1. Road trip argument
+    2. Cooking disaster  
+    3. Movie scene analysis
+    4. Random scenario
+Choice: 3
+
+Movie scene analysis scenarios:
+    1. Pulp Fiction (briefcase scene)
+    2. The Matrix (red pill/blue pill)
+    3. Star Trek (Borg: resistance is futile)
+    4. Totoro (Catbus scene)
+    5. Inception (dream layers)
+    6. Random
+Choice: 4
+
+[TEST MODE] Skipping research context
+[TEST MODE] Loading test template...
+Using template: templates/popular_science_german_TEST.txt
+
+✓ Script saved: test_DE_2025-12-01_mvie-totr_CRTS_draft1.txt
+✓ Audio saved: test_de_2025-12-01_mvie-totr_CRTS_OS1.05_MS1.05_FS1.05_PROTOTYPE.mp3
+```
+
+**File naming:**
+```
+Scripts: test_DE_2025-12-01_22-30_mvie-totr_CRTS_draft1.txt
+Audio:   test_de_2025-12-01_mvie-totr_CRTS_OS1.05_MS1.05_FS1.05_PROTOTYPE.mp3
+```
+
+**Benefits:**
+- Test voice settings in < 2 minutes
+- Compare speeds side-by-side
+- Fine-tune emotions before full production
+- Cost-effective iteration
 
 ## Advanced Features
 

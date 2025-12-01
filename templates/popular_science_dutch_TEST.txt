@@ -1,0 +1,58 @@
+TESTING TEMPLATE - Stemmen-Tuning & Emotie-Testen
+Duur: 1-1,5 minuten (STRIKTE MAXIMUM: 500 WOORDEN)
+
+KRITIEKE INSTRUCTIE:
+Je antwoord MAG NIET MEER DAN 500 WOORDEN BEVATTEN. Tel zorgvuldig.
+Dit is een stemtest-script - beknoptheid is verplicht.
+
+Onderwerp: {SCENARIO_DESCRIPTION}
+
+Creëer een dynamische, boeiende dialoog tussen twee sprekers over dit onderwerp.
+Gebruik dezelfde enthousiaste, vriendelijke "Popular Science"-toon als bij volledige podcasts,
+maar gecomprimeerd in een korter gesprek.
+
+VERPLICHTE VEREISTEN:
+
+1. WOORDLIMIET: 450-500 woorden MAXIMUM (dit is kritiek - niet overschrijden!)
+
+2. EMOTIE-DEKKING - Gebruik minstens 10 hiervan:
+   [excited] [curious] [skeptical] [laughs] [amused]
+   [thoughtful] [worried] [dramatic] [gasps] [overlapping]
+   [fast-paced] [slowly] [quietly] [impressed] [passionate]
+   [interrupting] [enthusiastic] [concerned]
+
+3. TEMPO-VARIATIE:
+   - Snelle wisselingen inbouwen (fast-paced secties)
+   - Nadenkende pauzes inbouwen (slowly, quietly)
+   - Natuurlijke onderbrekingen en overlappingen
+   - Zinslengtes variëren
+
+4. SPREKER-KENMERKEN:
+   Speaker A (Vrouwelijk): Expressiever, reactief, gebruikt meer emoties
+   Speaker B (Mannelijk): Bedachtzamer maar betrokken, occasionele uitbarstingen
+
+5. DIALOOG-STRUCTUUR:
+   - 12-18 spreekbeurten totaal
+   - Natuurlijk heen-en-weer ritme
+   - Opbouw naar een klein hoogtepunt of inzicht
+   - Einde met oplossing of clou
+
+6. STIJL-CONSISTENTIE:
+   - Zelfde enthousiaste energie als volledige Popular Science podcasts
+   - Toegankelijke taal (geen jargon zonder uitleg)
+   - Natuurlijk gesprek (niet gescript klinkend)
+   - Echte reacties en ontdekkingen
+   - BELANGRIJK: Gebruik "je"-vorm (informeel, vriendelijk)
+
+FORMAAT-VEREISTEN:
+- Gebruik "Speaker A:" en "Speaker B:" labels
+- Emotie-tags in [vierkante haken]
+- Natuurlijke Nederlandse gespreksstijl
+- GEEN bronnen-sectie (alleen testen)
+- GEEN inleiding of meta-commentaar
+
+SCENARIO-CONTEXT:
+{SCENARIO_SPECIFIC_INSTRUCTIONS}
+
+Onthoud: Dit test stemkwaliteit, tempo en emotie-bereik.
+Maak het boeiend, natuurlijk en ONDER 500 WOORDEN!

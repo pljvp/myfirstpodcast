@@ -118,6 +118,245 @@ def load_template(template_path, variables):
     return template
 
 
+
+def build_scenario_context(scenario_type, topic_description, language='german'):
+    """Build scenario-specific context instructions for test templates"""
+    
+    # German contexts
+    contexts_de = {
+        'road': f"""SZENARIO-KONTEXT:
+
+SITUATION: Paar im Auto, verloren und streitet über Navigation
+
+ORT: {topic_description}
+
+EMOTIONALER BOGEN:
+- Anfang: Selbstsicher, aber beginnende Zweifel
+- Mitte: Zunehmende Frustration, spielerisches Gezänk
+- Höhepunkt: Erkenntnis, dass sie völlig verloren sind
+- Auflösung: Humor und Akzeptanz
+
+SCHLÜSSEL-ELEMENTE:
+- GPS gibt falsche Anweisungen
+- Uneinigkeit über "links" vs "rechts"
+- Verweis auf vergangene Navigations-Desaster
+- Physische Komik (Beinahe-Unfälle, falsche Abbiegungen)
+- Eine Person verteidigt ihre Navigations-Fähigkeiten
+- Andere Person weist skeptisch auf Fehler hin
+
+TON: Frustriert aber liebevoll, komische Spannung""",
+        
+        'cook': f"""SZENARIO-KONTEXT:
+
+SITUATION: Zwei Personen kochen zusammen, Desaster entfaltet sich
+
+REZEPT: {topic_description}
+
+EMOTIONALER BOGEN:
+- Anfang: Optimistisch, lockerer Ansatz
+- Mitte: Dinge gehen schief, Panik steigt
+- Höhepunkt: Rauchmelder / komplettes Versagen
+- Auflösung: Essen bestellen, darüber lachen
+
+SCHLÜSSEL-ELEMENTE:
+- Eine Person improvisiert, andere folgt Rezept
+- Mess-Desaster (zu viel/wenig Zutaten)
+- Temperatur-Probleme (zu heiß/kalt)
+- Rauch/Brandgeruch
+- Uneinigkeit über "Kochen ist Kunst vs Wissenschaft"
+- Physische Reaktionen (gasps, Panik)
+
+TON: Eskalierende Chaos, erhalten Zuneigung""",
+        
+        'mvie': f"""SZENARIO-KONTEXT:
+
+SITUATION: Film-Enthusiasten debattieren über berühmte Szene
+
+FILM/SZENE: {topic_description}
+
+EMOTIONALER BOGEN:
+- Anfang: Eine Person leidenschaftlich, andere neugierig
+- Mitte: Analytische Diskussion, Meinungsverschiedenheiten
+- Höhepunkt: Offenbarung oder lustige Beobachtung
+- Auflösung: Einigung oder agree-to-disagree
+
+SCHLÜSSEL-ELEMENTE:
+- Zitat oder Verweis auf tatsächliche Szene
+- Debatte über Interpretation/Bedeutung
+- Eine Person analytisch, andere anfangs abweisend
+- Entdeckung neuer Perspektive
+- Pop-Kultur-Referenzen
+- Wechsel von Skepsis zu Wertschätzung (oder umgekehrt)
+
+TON: Intellektuell aber spielerisch, leidenschaftliche Diskussion"""
+    }
+    
+    # English contexts
+    contexts_en = {
+        'road': f"""SCENARIO CONTEXT:
+
+SITUATION: Couple in car, lost and arguing about navigation
+
+LOCATION: {topic_description}
+
+EMOTIONAL ARC:
+- Start: Confident but starting to doubt
+- Middle: Escalating frustration, playful bickering
+- Climax: Realization they're completely lost
+- Resolution: Humor and acceptance
+
+KEY ELEMENTS:
+- GPS giving wrong directions
+- Disagreement about "left" vs "right"
+- Reference to past navigation disasters
+- Physical comedy (near-misses, wrong turns)
+- One person defending their navigation skills
+- Other person skeptically pointing out mistakes
+
+TONE: Frustrated but affectionate, comedic tension""",
+        
+        'cook': f"""SCENARIO CONTEXT:
+
+SITUATION: Two people cooking together, disaster unfolds
+
+RECIPE: {topic_description}
+
+EMOTIONAL ARC:
+- Start: Optimistic, casual approach
+- Middle: Things going wrong, panic rising
+- Climax: Smoke alarm / complete failure
+- Resolution: Ordering takeout, laughing about it
+
+KEY ELEMENTS:
+- One person improvising, other following recipe
+- Measurement disasters
+- Temperature problems
+- Smoke/burning smell
+- Disagreement about "cooking is art vs science"
+- Physical reactions (gasps, panic)
+
+TONE: Escalating chaos, maintained affection""",
+        
+        'mvie': f"""SCENARIO CONTEXT:
+
+SITUATION: Film enthusiasts debating famous scene
+
+MOVIE/SCENE: {topic_description}
+
+EMOTIONAL ARC:
+- Start: One passionate, other curious
+- Middle: Analytical discussion, disagreements
+- Climax: Revelation or funny observation
+- Resolution: Agreement or agree-to-disagree
+
+KEY ELEMENTS:
+- Quotation or reference to actual scene
+- Debate about interpretation/meaning
+- One analytical, other dismissive initially
+- Discovery of new perspective
+- Pop culture references
+- Shift from skepticism to appreciation (or vice versa)
+
+TONE: Intellectual but playful, passionate discussion"""
+    }
+    
+    # Dutch contexts
+    contexts_nl = {
+        'road': f"""SCENARIO CONTEXT:
+
+SITUATIE: Stel in auto, verdwaald en ruzie over navigatie
+
+LOCATIE: {topic_description}
+
+EMOTIONELE BOOG:
+- Begin: Zelfverzekerd maar beginnende twijfel
+- Midden: Toenemende frustratie, speelse ruzie
+- Hoogtepunt: Besef dat ze helemaal verdwaald zijn
+- Oplossing: Humor en acceptatie
+
+SLEUTELELEMENTEN:
+- GPS geeft verkeerde aanwijzingen
+- Onenigheid over "links" vs "rechts"
+- Verwijzing naar eerdere navigatie-rampen
+- Fysieke komedie (bijna-ongelukken, verkeerde afslag)
+- Eén persoon verdedigt navigatie-vaardigheden
+- Ander persoon wijst skeptisch op fouten
+
+TOON: Gefrustreerd maar liefdevol, komische spanning""",
+        
+        'cook': f"""SCENARIO CONTEXT:
+
+SITUATIE: Twee mensen samen koken, ramp ontvouwt zich
+
+RECEPT: {topic_description}
+
+EMOTIONELE BOOG:
+- Begin: Optimistisch, relaxte aanpak
+- Midden: Dingen gaan mis, paniek stijgt
+- Hoogtepunt: Rookalarm / compleet falen
+- Oplossing: Eten bestellen, erom lachen
+
+SLEUTELELEMENTEN:
+- Eén persoon improviseert, ander volgt recept
+- Meet-rampen (te veel/weinig ingrediënten)
+- Temperatuur problemen (te heet/koud)
+- Rook/brandlucht
+- Onenigheid over "koken is kunst vs wetenschap"
+- Fysieke reacties (gasps, paniek)
+
+TOON: Escalerende chaos, behouden genegenheid""",
+        
+        'mvie': f"""SCENARIO CONTEXT:
+
+SITUATIE: Film-enthousiastelingen debatteren over beroemde scène
+
+FILM/SCÈNE: {topic_description}
+
+EMOTIONELE BOOG:
+- Begin: Eén gepassioneerd, ander nieuwsgierig
+- Midden: Analytische discussie, meningsverschillen
+- Hoogtepunt: Onthulling of grappige observatie
+- Oplossing: Akkoord of agree-to-disagree
+
+SLEUTELELEMENTEN:
+- Citaat of verwijzing naar werkelijke scène
+- Debat over interpretatie/betekenis
+- Eén analytisch, ander aanvankelijk afwijzend
+- Ontdekking van nieuw perspectief
+- Popcultuur referenties
+- Verschuiving van scepsis naar waardering (of omgekeerd)
+
+TOON: Intellectueel maar speels, gepassioneerde discussie"""
+    }
+    
+    # Select context based on language
+    if language == 'german':
+        contexts = contexts_de
+    elif language == 'english':
+        contexts = contexts_en
+    elif language == 'dutch':
+        contexts = contexts_nl
+    else:
+        contexts = contexts_en
+    
+    return contexts.get(scenario_type, '')
+
+
+def save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_number):
+    """Save test script with scenario tag: test_LANG_DATE_scenario-topic_PROV_draftN.txt"""
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
+    lang_upper = language_code.upper()
+    
+    # test_DE_2025-11-29_19-30_road-prsd_CRTS_draft1.txt
+    filename = f"{project_name.lower()}_{lang_upper}_{timestamp}_{topic_tag}_{provider_tag}_draft{draft_number}.txt"
+    
+    path = Path(f"./projects/{project_name}/scripts/{filename}")
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(script)
+    
+    return path
+
+
 def get_user_input(prompt, options=None):
     """Get user input with optional menu"""
     if options:
@@ -219,11 +458,11 @@ def extract_and_save_sources(script, project_name):
     return script
 
 
-def save_script(script, project_name, draft_number, language_code='EN'):
-    """Save script with versioned filename including language code and timestamp"""
+def save_script(script, project_name, language_code, provider_tag, draft_number):
+    """Save script with versioned filename including language, provider tag and timestamp"""
     timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
     lang_upper = language_code.upper()
-    filename = f"{project_name}_{lang_upper}_{timestamp}_draft{draft_number}.txt"
+    filename = f"{project_name}_{lang_upper}_{timestamp}_{provider_tag}_draft{draft_number}.txt"
     path = Path(f"./projects/{project_name}/scripts/{filename}")
     with open(path, 'w', encoding='utf-8') as f:
         f.write(script)
@@ -879,11 +1118,30 @@ def process_source_documents(project_name):
             print("Invalid choice")
 
 
-def save_audio(audio_data, project_name, topic, language_code, provider_tag, mode):
+def save_audio(audio_data, project_name, topic, language_code, provider_tag, mode, speed, config, is_test_mode=False, topic_tag=None):
     """Save audio file with project name, topic, language, and provider tag"""
     date = datetime.now().strftime('%Y-%m-%d')
     safe_topic = topic.replace('/', '-').replace('\\', '-')
-    filename = f"{project_name}_{safe_topic}_{language_code}_{date}_{provider_tag}_{mode.upper()}.mp3"
+    if is_test_mode and topic_tag:
+        # test_de_2025-11-29_road-prsd_CRTS_OS1.05_MS1.00_FS1.10_PROTOTYPE.mp3
+        # Add speed tags for test mode: OS (overall), MS (male), FS (female)
+        speed_tag = f"OS{speed:.2f}"
+        
+        # Get male/female speeds from config if available
+        male_speed = speed
+        female_speed = speed
+        if config and 'speed_adjustments' in config and isinstance(config.get('speed_adjustments'), dict):
+            male_speed = speed * config['speed_adjustments'].get('speaker_b_male', 1.0)
+            female_speed = speed * config['speed_adjustments'].get('speaker_a_female', 1.0)
+        
+        ms_tag = f"MS{male_speed:.2f}"
+        fs_tag = f"FS{female_speed:.2f}"
+        
+        filename = f"{project_name.lower()}_{language_code}_{date}_{topic_tag}_{provider_tag}_{speed_tag}_{ms_tag}_{fs_tag}_{mode.upper()}.mp3"
+    else:
+        # Normal filename
+        safe_topic = topic.replace('/', '-').replace('\\', '-')
+        filename = f"{project_name}_{safe_topic}_{language_code}_{date}_{provider_tag}_{mode.upper()}.mp3"
     path = Path(f"./projects/{project_name}/audio/{filename}")
     
     # Ensure directory exists
@@ -961,7 +1219,139 @@ def main():
     
     # 1. Project setup
     project_name = get_user_input("Enter project name (alphanumeric, for folders/filenames)").replace(' ', '_')
-    topic = get_user_input("Enter podcast topic")
+    
+    # Detect test mode
+    is_test_mode = (project_name.lower() == 'test')
+    
+    if is_test_mode:
+        print("\n" + "="*60)
+        print("TEST MODE ACTIVATED")
+        print("="*60)
+        print("Voice tuning test scenarios (~1-1.5 min, max 500 words)")
+        print("="*60)
+    # Test mode: scenario selection BEFORE normal topic
+    if is_test_mode:
+        # Scenario type selection
+        print("\nSelect test scenario type:")
+        scenario_type = get_user_input("", [
+            "Road trip argument",
+            "Cooking disaster",
+            "Movie scene analysis",
+            "Random scenario (Claude chooses interesting situation)"
+        ])
+        
+        scenario_map = ['road', 'cook', 'mvie', 'rndm']
+        selected_scenario = scenario_map[scenario_type]
+        
+        # Scenario detail selection
+        if selected_scenario == 'road':
+            print("\nRoad trip argument scenarios:")
+            topic_choice = get_user_input("", [
+                "Istanbul heavy traffic (Bosphorus bridge chaos)",
+                "Paris late night (Arc de Triomphe roundabout)",
+                "UK rural countryside (sheep blocking narrow roads)",
+                "German Autobahn (no speed limit construction zone)",
+                "Tokyo side streets (wrong GPS coordinates)",
+                "Random (Claude searches and picks most interesting)"
+            ])
+            
+            topics = {
+                0: ('Istanbul Bosphorus bridge traffic chaos rush hour', 'istb'),
+                1: ('Paris late night Arc de Triomphe roundabout confusion', 'prsd'),
+                2: ('UK countryside single track roads with sheep blocking', 'ukrl'),
+                3: ('German Autobahn no speed limit construction zone chaos', 'autb'),
+                4: ('Tokyo narrow side streets GPS coordinates wrong', 'toky'),
+                5: ('RANDOM', 'RANDOM')
+            }
+            
+            topic_description, topic_abbrev = topics[topic_choice]
+            
+            if topic_abbrev == 'RANDOM':
+                print("\n[INFO] Searching for interesting driving scenarios...")
+                # Use Claude to search and select
+                search_prompt = "Search for interesting unusual driving situations and traffic scenarios in cities worldwide. Return the most interesting one for a dialogue."
+                # For now, use a default
+                topic_description = "Venice narrow canals wrong boat GPS coordinates"
+                topic_abbrev = "veni"
+                print(f"[SELECTED] {topic_description}")
+        
+        elif selected_scenario == 'cook':
+            print("\nCooking disaster scenarios:")
+            topic_choice = get_user_input("", [
+                "Pizza from scratch (dough disaster)",
+                "Birthday cake (three-layer collapse)",
+                "Christmas turkey (timing disaster dry meat)",
+                "Chocolate soufflé (falling flat temperature fail)",
+                "Sushi rice (first time sticky disaster)",
+                "Random (Claude searches and picks most interesting)"
+            ])
+            
+            topics = {
+                0: ('Making authentic Neapolitan pizza from scratch dough disaster', 'pizz'),
+                1: ('Three-layer birthday cake collapse frosting disaster', 'cake'),
+                2: ('Christmas turkey timing disaster dry overcooked meat', 'xmas'),
+                3: ('French chocolate soufflé falling flat temperature fail', 'souf'),
+                4: ('First time making sushi rice sticky disaster', 'sush'),
+                5: ('RANDOM', 'RANDOM')
+            }
+            
+            topic_description, topic_abbrev = topics[topic_choice]
+            
+            if topic_abbrev == 'RANDOM':
+                print("\n[INFO] Searching for cooking disasters...")
+                topic_description = "Homemade pasta dough too sticky disaster"
+                topic_abbrev = "past"
+                print(f"[SELECTED] {topic_description}")
+        
+        elif selected_scenario == 'mvie':
+            print("\nMovie scene analysis scenarios:")
+            topic_choice = get_user_input("", [
+                "Pulp Fiction (Royale with Cheese dialogue)",
+                "Matrix (red pill blue pill philosophy)",
+                "Star Trek (Borg resistance is futile)",
+                "My Neighbor Totoro (cat bus magic scene)",
+                "Inception (spinning top ending debate)",
+                "Random (Claude searches and picks most interesting)"
+            ])
+            
+            topics = {
+                0: ('Pulp Fiction Royale with Cheese metric system dialogue', 'pulp'),
+                1: ('Matrix red pill blue pill choice meaning philosophy', 'mtrx'),
+                2: ('Star Trek Borg resistance is futile scene analysis', 'borg'),
+                3: ('My Neighbor Totoro cat bus scene magic realism', 'totr'),
+                4: ('Inception spinning top ending interpretation debate ambiguity', 'incr'),
+                5: ('RANDOM', 'RANDOM')
+            }
+            
+            topic_description, topic_abbrev = topics[topic_choice]
+            
+            if topic_abbrev == 'RANDOM':
+                print("\n[INFO] Searching for famous movie scenes...")
+                topic_description = "Casablanca play it again Sam misquote"
+                topic_abbrev = "casa"
+                print(f"[SELECTED] {topic_description}")
+        
+        else:  # rndm
+            print("\n[INFO] Claude will search and select most interesting scenario...")
+            # Let Claude pick everything
+            topic_description = "Venice canals GPS navigation disaster"
+            topic_abbrev = "veni"
+            selected_scenario = 'road'  # Default to road for context
+            print(f"[SELECTED] Road trip: {topic_description}")
+        
+        # Build topic_tag
+        topic_tag = f"{selected_scenario}-{topic_abbrev}"
+        topic = topic_description  # Use for display
+        
+        print(f"\nTopic set to: {topic_description}")
+        print(f"File tag: {topic_tag}\n")
+    
+    else:
+        # Normal mode
+        topic = get_user_input("Enter podcast topic")
+        topic_tag = None
+        selected_scenario = None
+        topic_description = None
     
     while True:
         try:
@@ -972,8 +1362,8 @@ def main():
         except ValueError:
             print("Please enter a valid number")
     
-    word_count = duration * 150
-    print(f"Calculated word count: ~{word_count} words (150 words/min)")
+    word_count = duration * 180
+    print(f"Calculated word count: ~{word_count} words (180 words/min)")
     
     # 2-4. Style, language, mode selection
     styles = list(config['styles'].keys())
@@ -1038,8 +1428,15 @@ def main():
     print(f"  ✓ Created subdirectories")
     
     # 5b. CHECK FOR EXISTING SCRIPTS
+    if is_test_mode:
+        # For tests: filter by scenario tag too
+        pattern = f"{project_name}_{language_code.upper()}_*_{topic_tag}_{provider_tag}_draft*.txt"
+    else:
+        # Normal pattern
+        pattern = f"{project_name}_{language_code.upper()}_*_{provider_tag}_draft*.txt"
+    
     existing_scripts = sorted(
-        list(Path(f"./projects/{project_name}/scripts").glob(f"{project_name}_{language_code.upper()}_*_{provider_tag}_draft*.txt")),
+        list(Path(f"./projects/{project_name}/scripts").glob(pattern)),
         key=lambda x: x.stat().st_mtime,
         reverse=True
     )
@@ -1082,137 +1479,167 @@ def main():
     
     # 5c. Research context (only if generating new)
     if not script_ready:
-    
-        research_context_file = project_path / "sources" / "research_context.txt"
-        print(f"\n✓ Research context file: {research_context_file}")
-        # Show what's being used
-        default_template = Path("templates/research_contexts/default.txt")
-        if default_template.exists() and not (project_path / "sources" / "research_context.txt").exists():
-            print("  (Using default template from templates/research_contexts/default.txt)")
-        elif (project_path / "sources" / "research_context.txt").exists():
-            # Check if it's different from default (i.e., project-specific)
-            with open(project_path / "sources" / "research_context.txt", 'r') as f:
-                current_content = f.read()
         
-            is_customized = "{project_name}" not in current_content  # Simple check
-            if is_customized:
-                print("  (Using project-specific research context)")
-            else:
-                print("  (Using default template)")
-    
-        # Offer choices
-        edit_choice = get_user_input("\nResearch context options", [
-            "Use as-is (proceed with current context)",
-            "Edit current context (customize for this project)",
-            "Reset to default template (if you made mistakes)",
-            "Show current context"
-        ])
-    
-        if edit_choice == 1:
-            print("\nOpening research context in your text editor...")
-            subprocess.run([os.environ.get('EDITOR', 'nano'), str(research_context_file)])
-            print("✓ Research context updated (now project-specific)")
-        elif edit_choice == 2:
-            if default_template.exists():
-                print("\nResetting to default template...")
-                with open(default_template, 'r') as f:
-                    template_content = f.read()
-                with open(research_context_file, 'w') as f:
-                    f.write(template_content.replace("{project_name}", project_name))
-                print("✓ Reset to default template")
-            else:
-                print("⚠ No default template found at templates/research_contexts/default.txt")
-        elif edit_choice == 3:
-            print("\n" + "="*60)
-            with open(research_context_file, 'r') as f:
-                print(f.read())
-            print("="*60)
-            input("\nPress Enter to continue...")
-    
-        with open(research_context_file, 'r', encoding='utf-8') as f:
-            research_context = f.read()
-    
-        # 6. Prompt handling
-        variables = {
-            'duration': duration,
-            'word_count': word_count,
-            'topic': topic,
-            'project_name': project_name
-        }
-    
-        prompt_choice = get_user_input("\nPrompt template options", [
-            f"Use default template ({selected_style} / {selected_language})",
-            "Load existing template from this project's prompts folder",
-            "Copy template from templates folder to project and customize",
-            "Edit the chosen template before generating",
-            "Start with blank prompt"
-        ])
-    
-        if prompt_choice == 0:
-            # Use default template
-            template_file = config['styles'][selected_style]['default_template_file']
-            template_file = template_file.replace('{language}', selected_language)
-            if Path(template_file).exists():
-                prompt = load_template(template_file, variables)
-            else:
-                print(f"WARNING: Template {template_file} not found")
-                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            
-        elif prompt_choice == 1:
-            # Load existing from project
-            project_prompts = list(Path(f"./projects/{project_name}/prompts/").glob("*.txt"))
-            if project_prompts:
-                prompt_names = [p.name for p in project_prompts]
-                prompt_idx = get_user_input("Select prompt file", prompt_names)
-                prompt = load_template(project_prompts[prompt_idx], variables)
-            else:
-                print("No saved prompts found in project")
-                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            
-        elif prompt_choice == 2:
-            # Copy global template to project
-            templates = list(Path("./templates/").glob("*.txt"))
-            if templates:
-                template_names = [t.name for t in templates]
-                template_idx = get_user_input("Select template to copy", template_names)
-                prompt = load_template(templates[template_idx], variables)
-                save_prompt(prompt, project_name, "copied_template.txt")
-                print(f"Template copied to project")
-            else:
-                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            
-        elif prompt_choice == 3:
-            # Edit template before generating
-            template_file = config['styles'][selected_style]['default_template_file']
-            template_file = template_file.replace('{language}', selected_language)
-            if Path(template_file).exists():
-                prompt = load_template(template_file, variables)
-            else:
-                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-        
-            save_prompt(prompt, project_name, "edited_prompt.txt")
-            prompt_file = Path(f"./projects/{project_name}/prompts/edited_prompt.txt")
-            print(f"\nOpening {prompt_file} for editing...")
-            subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
-            with open(prompt_file, 'r', encoding='utf-8') as f:
-                prompt = f.read()
+        if is_test_mode:
+            # TEST MODE: Skip research context menu, use empty context
+            research_context = ""
+            print("\n[TEST MODE] Skipping research context (not needed for test scenarios)")
             
         else:
-            # Start with blank
-            prompt = f"Create a {duration}-minute podcast script about '{topic}'."
-            save_prompt(prompt, project_name, "blank_prompt.txt")
-            prompt_file = Path(f"./projects/{project_name}/prompts/blank_prompt.txt")
-            subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
-            with open(prompt_file, 'r', encoding='utf-8') as f:
-                prompt = f.read()
+            # NORMAL MODE: Full research context flow
+            research_context_file = project_path / "sources" / "research_context.txt"
+            print(f"\n✓ Research context file: {research_context_file}")
+            # Show what's being used
+            default_template = Path("templates/research_contexts/default.txt")
+            if default_template.exists() and not (project_path / "sources" / "research_context.txt").exists():
+                print("  (Using default template from templates/research_contexts/default.txt)")
+            elif (project_path / "sources" / "research_context.txt").exists():
+                # Check if it's different from default (i.e., project-specific)
+                with open(project_path / "sources" / "research_context.txt", 'r') as f:
+                    current_content = f.read()
+            
+                is_customized = "{project_name}" not in current_content  # Simple check
+                if is_customized:
+                    print("  (Using project-specific research context)")
+                else:
+                    print("  (Using default template)")
+        
+            # Offer choices
+            edit_choice = get_user_input("\nResearch context options", [
+                "Use as-is (proceed with current context)",
+                "Edit current context (customize for this project)",
+                "Reset to default template (if you made mistakes)",
+                "Show current context"
+            ])
     
-        prompt = f"""{prompt}
+            if edit_choice == 1:
+                print("\nOpening research context in your text editor...")
+                subprocess.run([os.environ.get('EDITOR', 'nano'), str(research_context_file)])
+                print("✓ Research context updated (now project-specific)")
+            elif edit_choice == 2:
+                if default_template.exists():
+                    print("\nResetting to default template...")
+                    with open(default_template, 'r') as f:
+                        template_content = f.read()
+                    with open(research_context_file, 'w') as f:
+                        f.write(template_content.replace("{project_name}", project_name))
+                    print("✓ Reset to default template")
+                else:
+                    print("⚠ No default template found at templates/research_contexts/default.txt")
+            elif edit_choice == 3:
+                print("\n" + "="*60)
+                with open(research_context_file, 'r') as f:
+                    print(f.read())
+                print("="*60)
+                input("\nPress Enter to continue...")
+    
+            with open(research_context_file, 'r', encoding='utf-8') as f:
+                research_context = f.read()
+    
+        # 6. Prompt handling
+        if is_test_mode:
+            # TEST MODE: Load test template directly, skip menu
+            print("\n[TEST MODE] Loading test template...")
+            template_file = f"templates/{style_key}_{language}_TEST.txt"
+            if not Path(template_file).exists():
+                print(f"[WARNING] Test template not found: {template_file}")
+                print(f"[INFO] Falling back to regular template")
+                template_file = f"templates/{style_key}_{language}_dynamic.txt"
+            
+            print(f"Using template: {template_file}")
+            
+            with open(template_file, 'r', encoding='utf-8') as f:
+                template = f.read()
+            
+            # Inject scenario context
+            scenario_context = build_scenario_context(selected_scenario, topic_description, language)
+            template = template.replace('{SCENARIO_DESCRIPTION}', topic_description)
+            template = template.replace('{SCENARIO_SPECIFIC_INSTRUCTIONS}', scenario_context)
+            
+            prompt = template  # Test template is already complete
+            
+        else:
+            # NORMAL MODE: Full prompt template menu
+            variables = {
+                'duration': duration,
+                'word_count': word_count,
+                'topic': topic,
+                'project_name': project_name
+            }
+    
+            prompt_choice = get_user_input("\nPrompt template options", [
+                f"Use default template ({selected_style} / {selected_language})",
+                "Load existing template from this project's prompts folder",
+                "Copy template from templates folder to project and customize",
+                "Edit the chosen template before generating",
+                "Start with blank prompt"
+            ])
+    
+            if prompt_choice == 0:
+                # Use default template
+                template_file = config['styles'][selected_style]['default_template_file']
+                template_file = template_file.replace('{language}', selected_language)
+                if Path(template_file).exists():
+                    prompt = load_template(template_file, variables)
+                else:
+                    print(f"WARNING: Template {template_file} not found")
+                    prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            
+            elif prompt_choice == 1:
+                # Load existing from project
+                project_prompts = list(Path(f"./projects/{project_name}/prompts/").glob("*.txt"))
+                if project_prompts:
+                    prompt_names = [p.name for p in project_prompts]
+                    prompt_idx = get_user_input("Select prompt file", prompt_names)
+                    prompt = load_template(project_prompts[prompt_idx], variables)
+                else:
+                    print("No saved prompts found in project")
+                    prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            
+            elif prompt_choice == 2:
+                # Copy global template to project
+                templates = list(Path("./templates/").glob("*.txt"))
+                if templates:
+                    template_names = [t.name for t in templates]
+                    template_idx = get_user_input("Select template to copy", template_names)
+                    prompt = load_template(templates[template_idx], variables)
+                    save_prompt(prompt, project_name, "copied_template.txt")
+                    print(f"Template copied to project")
+                else:
+                    prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+            
+            elif prompt_choice == 3:
+                # Edit template before generating
+                template_file = config['styles'][selected_style]['default_template_file']
+                template_file = template_file.replace('{language}', selected_language)
+                if Path(template_file).exists():
+                    prompt = load_template(template_file, variables)
+                else:
+                    prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+        
+                save_prompt(prompt, project_name, "edited_prompt.txt")
+                prompt_file = Path(f"./projects/{project_name}/prompts/edited_prompt.txt")
+                print(f"\nOpening {prompt_file} for editing...")
+                subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
+                with open(prompt_file, 'r', encoding='utf-8') as f:
+                    prompt = f.read()
+            
+            else:
+                # Start with blank
+                prompt = f"Create a {duration}-minute podcast script about '{topic}'."
+                save_prompt(prompt, project_name, "blank_prompt.txt")
+                prompt_file = Path(f"./projects/{project_name}/prompts/blank_prompt.txt")
+                subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
+                with open(prompt_file, 'r', encoding='utf-8') as f:
+                    prompt = f.read()
+    
+            prompt = f"""{prompt}
 
-    === RESEARCH CONTEXT AND INSTRUCTIONS ===
+        === RESEARCH CONTEXT AND INSTRUCTIONS ===
 
-    {research_context}
+        {research_context}
 
-    IMPORTANT: Follow the research instructions above. Conduct thorough online research using web search. Find and analyze the specified number of sources. Document your sources at the end of the script."""
+        IMPORTANT: Follow the research instructions above. Conduct thorough online research using web search. Find and analyze the specified number of sources. Document your sources at the end of the script."""
     
         # 7a. Check and process source documents BEFORE prompt review
         source_documents = process_source_documents(project_name)
@@ -1275,7 +1702,10 @@ def main():
         script = extract_and_save_sources(script, project_name)
     
         draft_num = 1
-        script_path = save_script(script, project_name, draft_num, language_code)
+        if is_test_mode:
+            script_path = save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_num)
+        else:
+            script_path = save_script(script, project_name, language_code, provider_tag, draft_num)
         print(f"Script generated! ({len(script.split())} words)")
         print(f"Saved to: {script_path}")
     
@@ -1322,7 +1752,10 @@ def main():
                 if revised:
                     script = extract_and_save_sources(revised, project_name)
                     draft_num += 1
-                    script_path = save_script(script, project_name, draft_num, language_code)
+                    if is_test_mode:
+                        script_path = save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_num)
+                    else:
+                        script_path = save_script(script, project_name, language_code, provider_tag, draft_num)
                     print(f"✓ Revised script saved to: {script_path}")
                 else:
                     print("✗ Revision failed")
@@ -1357,7 +1790,10 @@ def main():
                 if regenerated:
                     script = extract_and_save_sources(regenerated, project_name)
                     draft_num += 1
-                    script_path = save_script(script, project_name, draft_num, language_code)
+                    if is_test_mode:
+                        script_path = save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_num)
+                    else:
+                        script_path = save_script(script, project_name, language_code, provider_tag, draft_num)
                     print(f"✓ Regenerated script saved to: {script_path}")
                 else:
                     print("✗ Regeneration failed")
@@ -1435,7 +1871,10 @@ def main():
         return
     
     try:
-        audio_path = save_audio(audio_data, project_name, topic, language_code, provider_tag, mode)
+        if is_test_mode:
+            audio_path = save_audio(audio_data, project_name, topic, language_code, provider_tag, mode, speed, config, is_test_mode=True, topic_tag=topic_tag)
+        else:
+            audio_path = save_audio(audio_data, project_name, topic, language_code, provider_tag, mode, speed, config)
         print(f"[DEBUG] Audio saved to: {audio_path}")
     except Exception as e:
         print(f"[ERROR] Failed to save audio: {e}")

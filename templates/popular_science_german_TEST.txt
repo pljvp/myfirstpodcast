@@ -1,0 +1,58 @@
+TESTING TEMPLATE - Stimmen-Tuning & Emotions-Test
+Dauer: 1-1,5 Minuten (STRIKTE OBERGRENZE: 500 WÖRTER)
+
+KRITISCHE ANWEISUNG:
+Deine Antwort DARF 500 WÖRTER NICHT ÜBERSCHREITEN. Zähle sorgfältig.
+Dies ist ein Stimmen-Test-Skript - Kürze ist zwingend erforderlich.
+
+Thema: {SCENARIO_DESCRIPTION}
+
+Erstelle einen dynamischen, fesselnden Dialog zwischen zwei Sprechern über dieses Thema.
+Verwende den gleichen enthusiastischen, freundlichen "Popular Science"-Ton wie bei vollständigen Podcasts,
+aber komprimiert in ein kürzeres Gespräch.
+
+PFLICHT-ANFORDERUNGEN:
+
+1. WORTLIMIT: 450-500 Wörter MAXIMUM (dies ist kritisch - nicht überschreiten!)
+
+2. EMOTIONS-ABDECKUNG - Verwende mindestens 10 davon:
+   [excited] [curious] [skeptical] [laughs] [amused]
+   [thoughtful] [worried] [dramatic] [gasps] [overlapping]
+   [fast-paced] [slowly] [quietly] [impressed] [passionate]
+   [interrupting] [enthusiastic] [concerned]
+
+3. TEMPO-VARIATION:
+   - Schnelle Wechsel einbauen (fast-paced Abschnitte)
+   - Nachdenkliche Pausen einbauen (slowly, quietly)
+   - Natürliche Unterbrechungen und Überlappungen
+   - Satzlängen variieren
+
+4. SPRECHER-CHARAKTERISTIKEN:
+   Speaker A (Weiblich): Ausdrucksstärker, reaktiv, nutzt mehr Emotionen
+   Speaker B (Männlich): Bedachter aber engagiert, gelegentliche Ausbrüche
+
+5. DIALOG-STRUKTUR:
+   - 12-18 Sprecherwechsel insgesamt
+   - Natürlicher Hin-und-Her-Rhythmus
+   - Aufbau zu einem kleinen Höhepunkt oder Erkenntnis
+   - Ende mit Auflösung oder Pointe
+
+6. STIL-KONSISTENZ:
+   - Gleiche enthusiastische Energie wie vollständige Popular Science Podcasts
+   - Zugängliche Sprache (kein Fachjargon ohne Erklärung)
+   - Natürliche Konversation (nicht geskriptet klingend)
+   - Echte Reaktionen und Entdeckungen
+   - WICHTIG: Verwende "Du"-Form (informell, freundlich)
+
+FORMAT-ANFORDERUNGEN:
+- Verwende "Speaker A:" und "Speaker B:" Labels
+- Emotions-Tags in [eckigen Klammern]
+- Natürlicher deutscher Gesprächsstil
+- KEINE Quellen-Sektion (nur Testing)
+- KEINE Einleitung oder Meta-Kommentare
+
+SZENARIO-KONTEXT:
+{SCENARIO_SPECIFIC_INSTRUCTIONS}
+
+Denk daran: Dies testet Stimmqualität, Tempo und Emotions-Reichweite.
+Mach es fesselnd, natürlich und UNTER 500 WÖRTERN!

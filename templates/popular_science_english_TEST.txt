@@ -1,0 +1,57 @@
+TESTING TEMPLATE - Voice Tuning & Emotion Testing
+Duration: 1-1.5 minutes (STRICT 500 WORD MAXIMUM)
+
+CRITICAL INSTRUCTION:
+Your response MUST NOT EXCEED 500 WORDS. Count carefully.
+This is a voice testing script - brevity is mandatory.
+
+Topic: {SCENARIO_DESCRIPTION}
+
+Create a dynamic, engaging dialogue between two speakers discussing this topic.
+Use the same enthusiastic, friendly "Popular Science" tone as full podcasts,
+but compressed into a shorter conversation.
+
+MANDATORY REQUIREMENTS:
+
+1. WORD LIMIT: 450-500 words MAXIMUM (this is critical - do not exceed!)
+
+2. EMOTION COVERAGE - Include at least 10 of these:
+   [excited] [curious] [skeptical] [laughs] [amused]
+   [thoughtful] [worried] [dramatic] [gasps] [overlapping]
+   [fast-paced] [slowly] [quietly] [impressed] [passionate]
+   [interrupting] [enthusiastic] [concerned]
+
+3. PACING VARIATION:
+   - Include rapid exchanges (fast-paced sections)
+   - Include thoughtful pauses (slowly, quietly)
+   - Include natural interruptions and overlaps
+   - Vary sentence lengths
+
+4. SPEAKER CHARACTERISTICS:
+   Speaker A (Female): More expressive, reactive, uses more emotions
+   Speaker B (Male): More measured but engaged, occasional bursts
+
+5. DIALOGUE STRUCTURE:
+   - 12-18 speaking turns total
+   - Natural back-and-forth rhythm
+   - Build to a small climax or realization
+   - End with resolution or punchline
+
+6. STYLE CONSISTENCY:
+   - Same enthusiastic energy as full Popular Science podcasts
+   - Accessible language (no jargon without explanation)
+   - Natural conversation (not scripted-sounding)
+   - Genuine reactions and discoveries
+
+FORMAT REQUIREMENTS:
+- Use "Speaker A:" and "Speaker B:" labels
+- Include emotion tags in [brackets]
+- Natural English conversation style
+- NO sources section (testing only)
+- NO preamble or meta-commentary
+
+SCENARIO CONTEXT:
+{SCENARIO_SPECIFIC_INSTRUCTIONS}
+
+Remember: This tests voice quality, pacing, and emotion range.
+Make it engaging, natural, and UNDER 500 WORDS!

@@ -11,6 +11,8 @@ from pathlib import Path
 class CartesiaProvider:
     """Cartesia TTS provider using Sonic model"""
     
+    PROVIDER_TAG = "CRTS"
+    
     def __init__(self, api_key, config):
         """Initialize Cartesia provider
         
@@ -281,3 +283,16 @@ class CartesiaProvider:
             return combined_audio, total_chars
         else:
             return None, 0
+
+    
+    def _save_debug_chunk(self, chunk_content: dict, chunk_num: int, project_name: str):
+        """Save chunk for debugging with CRTS tag"""
+        from pathlib import Path
+        import json
+        
+        debug_path = Path(f"./projects/{project_name}/debug")
+        debug_path.mkdir(parents=True, exist_ok=True)
+        
+        debug_file = debug_path / f"chunk_{chunk_num}_CRTS_content.json"
+        with open(debug_file, 'w', encoding='utf-8') as f:
+            json.dump(chunk_content, f, indent=2, ensure_ascii=False)

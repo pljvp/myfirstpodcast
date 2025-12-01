@@ -101,8 +101,9 @@ All standard emotion tags also supported:
                 if not line.startswith('#') and not line.startswith('---'):
                     current_text.append(line)
         
+        # FIXED: Correct syntax for final segment
         if current_text and current_speaker:
-            voice_id = voice_ids['speaker_a'] if current_speaker == 'speaker_a' else voice_ids['speaker_b']
+            voice_id = voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b']
             dialogue.append({'voice_id': voice_id, 'text': ' '.join(current_text).strip()})
         
         return dialogue if dialogue else None

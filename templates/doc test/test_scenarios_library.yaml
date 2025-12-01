@@ -1,0 +1,197 @@
+# Test Scenario Library
+# Definitions and context instructions for voice tuning tests
+
+## SCENARIO TYPES
+
+### ROAD TRIP ARGUMENT
+scenarios:
+  random:
+    search_query: "interesting unusual driving situations traffic cities world"
+    instruction: "Search results and select THE MOST INTERESTING scenario for a dialogue. Extract location name and create 4-char abbreviation."
+  
+  istanbul:
+    topic: "Istanbul Bosphorus bridge traffic chaos rush hour"
+    abbrev: "istb"
+    
+  paris:
+    topic: "Paris late night Arc de Triomphe roundabout confusion"
+    abbrev: "prsd"
+    
+  uk_rural:
+    topic: "UK countryside single track roads with sheep blocking"
+    abbrev: "ukrl"
+    
+  autobahn:
+    topic: "German Autobahn no speed limit construction zone chaos"
+    abbrev: "autb"
+    
+  tokyo:
+    topic: "Tokyo narrow side streets GPS coordinates wrong"
+    abbrev: "toky"
+
+context_template: |
+  SZENARIO-KONTEXT:
+  
+  SITUATION: Paar im Auto, verloren und streitet über Navigation
+  
+  ORT: {selected_location}
+  
+  EMOTIONALER BOGEN:
+  - Anfang: Selbstsicher, aber beginnende Zweifel
+  - Mitte: Zunehmende Frustration, spielerisches Gezänk
+  - Höhepunkt: Erkenntnis, dass sie völlig verloren sind
+  - Auflösung: Humor und Akzeptanz
+  
+  SCHLÜSSEL-ELEMENTE:
+  - GPS gibt falsche Anweisungen
+  - Uneinigkeit über "links" vs "rechts"
+  - Verweis auf vergangene Navigations-Desaster
+  - Physische Komik (Beinahe-Unfälle, falsche Abbiegungen)
+  - Eine Person verteidigt ihre Navigations-Fähigkeiten
+  - Andere Person weist skeptisch auf Fehler hin
+  
+  TON: Frustriert aber liebevoll, komische Spannung
+
+---
+
+### COOKING DISASTER
+scenarios:
+  random:
+    search_query: "famous cooking disasters difficult recipes for beginners"
+    instruction: "Search results and select THE MOST INTERESTING recipe/disaster scenario. Extract dish name and create 4-char abbreviation."
+  
+  pizza:
+    topic: "Making authentic Neapolitan pizza from scratch dough disaster"
+    abbrev: "pizz"
+    
+  cake:
+    topic: "Three-layer birthday cake collapse frosting disaster"
+    abbrev: "cake"
+    
+  christmas:
+    topic: "Christmas turkey timing disaster dry overcooked meat"
+    abbrev: "xmas"
+    
+  souffle:
+    topic: "French chocolate soufflé falling flat temperature fail"
+    abbrev: "souf"
+    
+  sushi:
+    topic: "First time making sushi rice sticky disaster"
+    abbrev: "sush"
+
+context_template: |
+  SZENARIO-KONTEXT:
+  
+  SITUATION: Zwei Personen kochen zusammen, Desaster entfaltet sich
+  
+  REZEPT: {selected_recipe}
+  
+  EMOTIONALER BOGEN:
+  - Anfang: Optimistisch, lockerer Ansatz
+  - Mitte: Dinge gehen schief, Panik steigt
+  - Höhepunkt: Rauchmelder / komplettes Versagen
+  - Auflösung: Essen bestellen, darüber lachen
+  
+  SCHLÜSSEL-ELEMENTE:
+  - Eine Person improvisiert, andere folgt Rezept
+  - Mess-Desaster (zu viel/wenig Zutaten)
+  - Temperatur-Probleme (zu heiß/kalt)
+  - Rauch/Brandgeruch
+  - Uneinigkeit über "Kochen ist Kunst vs Wissenschaft"
+  - Physische Reaktionen (gasps, Panik)
+  
+  TON: Eskalierende Chaos, erhalten Zuneigung
+
+---
+
+### MOVIE SCENE ANALYSIS
+scenarios:
+  random:
+    search_query: "most debated famous movie scenes quotable iconic"
+    instruction: "Search results and select THE MOST INTERESTING scene for debate. Extract movie name and create 4-char abbreviation."
+  
+  pulp_fiction:
+    topic: "Pulp Fiction Royale with Cheese metric system dialogue"
+    abbrev: "pulp"
+    
+  matrix:
+    topic: "Matrix red pill blue pill choice meaning philosophy"
+    abbrev: "mtrx"
+    
+  star_trek:
+    topic: "Star Trek Borg resistance is futile scene analysis"
+    abbrev: "borg"
+    
+  totoro:
+    topic: "My Neighbor Totoro cat bus scene magic realism"
+    abbrev: "totr"
+    
+  inception:
+    topic: "Inception spinning top ending interpretation debate ambiguity"
+    abbrev: "incr"
+
+context_template: |
+  SZENARIO-KONTEXT:
+  
+  SITUATION: Film-Enthusiasten debattieren über berühmte Szene
+  
+  FILM/SZENE: {selected_movie_scene}
+  
+  EMOTIONALER BOGEN:
+  - Anfang: Eine Person leidenschaftlich, andere neugierig
+  - Mitte: Analytische Diskussion, Meinungsverschiedenheiten
+  - Höhepunkt: Offenbarung oder lustige Beobachtung
+  - Auflösung: Einigung oder agree-to-disagree
+  
+  SCHLÜSSEL-ELEMENTE:
+  - Zitat oder Verweis auf tatsächliche Szene
+  - Debatte über Interpretation/Bedeutung
+  - Eine Person analytisch, andere anfangs abweisend
+  - Entdeckung neuer Perspektive
+  - Pop-Kultur-Referenzen
+  - Wechsel von Skepsis zu Wertschätzung (oder umgekehrt)
+  
+  TON: Intellektuell aber spielerisch, leidenschaftliche Diskussion
+
+---
+
+## MENU DISPLAY TEXT
+
+road_menu:
+  title: "Road trip argument scenarios:"
+  options:
+    - "Istanbul heavy traffic (Bosphorus bridge chaos)"
+    - "Paris late night (Arc de Triomphe roundabout)"
+    - "UK rural countryside (sheep blocking narrow roads)"
+    - "German Autobahn (no speed limit construction zone)"
+    - "Tokyo side streets (wrong GPS coordinates)"
+    - "Random (Claude searches and picks most interesting)"
+
+cook_menu:
+  title: "Cooking disaster scenarios:"
+  options:
+    - "Pizza from scratch (dough disaster)"
+    - "Birthday cake (three-layer collapse)"
+    - "Christmas turkey (timing disaster dry meat)"
+    - "Chocolate soufflé (falling flat temperature fail)"
+    - "Sushi rice (first time sticky disaster)"
+    - "Random (Claude searches and picks most interesting)"
+
+mvie_menu:
+  title: "Movie scene analysis scenarios:"
+  options:
+    - "Pulp Fiction (Royale with Cheese dialogue)"
+    - "Matrix (red pill blue pill philosophy)"
+    - "Star Trek (Borg resistance is futile)"
+    - "My Neighbor Totoro (cat bus magic scene)"
+    - "Inception (spinning top ending debate)"
+    - "Random (Claude searches and picks most interesting)"
+
+rndm_menu:
+  title: "Random scenario selection"
+  message: "Claude will search online and select the most interesting scenario from one of these categories:"
+  categories:
+    - "Road trip arguments in interesting locations"
+    - "Cooking disasters with challenging recipes"
+    - "Movie scene analysis debates"
