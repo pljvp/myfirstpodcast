@@ -64,7 +64,7 @@
         "speaker_a_female": "HKUbFf0kZdG11lOEhRi2",
         "speaker_b_male": "dnSxHmjp9jQffMRfRzwo"
       },
-      "speed": 1.05
+      "speed": 1.00
     },
     "english": {
       "name": "English",
@@ -73,7 +73,7 @@
         "speaker_a_female": "Nhs7eitvQWFTQBsf0yiT",
         "speaker_b_male": "oTQK6KgOJHp8UGGZjwUu"
       },
-      "speed": 1.05
+      "speed": 1.00
     },
     "dutch": {
       "name": "Nederlands (Dutch)",
@@ -82,7 +82,7 @@
         "speaker_a_female": "ANHrhmaFeVN0QJaa0PhL",
         "speaker_b_male": "eWrnzOwO7JvyjacVxTzV"
       },
-      "speed": 1.05
+      "speed": 1.00
     }
   },
   "elevenlabs_settings": {
