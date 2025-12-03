@@ -45,6 +45,24 @@ load_dotenv(config_path)
 DEBUG_VERBOSE = True
 
 
+
+
+def get_text_editor():
+    """Get appropriate text editor for current OS"""
+    import platform
+    
+    # Check environment variable first
+    if 'EDITOR' in os.environ:
+        return os.environ['EDITOR']
+    
+    # Detect OS
+    system = platform.system()
+    
+    if system == 'Windows':
+        return 'notepad'
+    else:  # Linux, Unix
+        return 'nano'
+
 def log_debug(message):
     """Print debug message if verbose mode enabled"""
     if DEBUG_VERBOSE:
