@@ -428,10 +428,11 @@ def main():
     detected_lang = detect_language(original_script)
     print(f"Detected language: {detected_lang.upper()}")
     
-    # Get speeds
-    default_speed = 1.05
+    # Get default speed from config
+    language = 'german' if detected_lang == 'de' else 'dutch' if detected_lang == 'nl' else 'english'
+    default_speed = config['languages'].get(language, {}).get('speed', 1.0)
     
-    print(f"\nCurrent default speed: {default_speed}")
+    print(f"\nDefault speed from config: {default_speed}")
     print("Speed range: 0.7 (slow) to 1.2 (fast)")
     print()
     
