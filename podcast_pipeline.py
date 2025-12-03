@@ -1532,7 +1532,7 @@ def main():
     
             if edit_choice == 1:
                 print("\nOpening research context in your text editor...")
-                subprocess.run([os.environ.get('EDITOR', 'nano'), str(research_context_file)])
+                subprocess.run([get_text_editor(), str(research_context_file)])
                 print("✓ Research context updated (now project-specific)")
             elif edit_choice == 2:
                 if default_template.exists():
@@ -1638,7 +1638,7 @@ def main():
                 save_prompt(prompt, project_name, "edited_prompt.txt")
                 prompt_file = Path(f"./projects/{project_name}/prompts/edited_prompt.txt")
                 print(f"\nOpening {prompt_file} for editing...")
-                subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
+                subprocess.run([get_text_editor(), str(prompt_file)])
                 with open(prompt_file, 'r', encoding='utf-8') as f:
                     prompt = f.read()
             
@@ -1647,7 +1647,7 @@ def main():
                 prompt = f"Create a {duration}-minute podcast script about '{topic}'."
                 save_prompt(prompt, project_name, "blank_prompt.txt")
                 prompt_file = Path(f"./projects/{project_name}/prompts/blank_prompt.txt")
-                subprocess.run([os.environ.get('EDITOR', 'nano'), str(prompt_file)])
+                subprocess.run([get_text_editor(), str(prompt_file)])
                 with open(prompt_file, 'r', encoding='utf-8') as f:
                     prompt = f.read()
     
@@ -1703,7 +1703,7 @@ def main():
     
         if confirm == 1:
             print(f"\nOpening prompt in your text editor...")
-            subprocess.run([os.environ.get('EDITOR', 'nano'), str(temp_prompt_path)])
+            subprocess.run([get_text_editor(), str(temp_prompt_path)])
             with open(temp_prompt_path, 'r', encoding='utf-8') as f:
                 prompt = f.read()
             print("✓ Prompt updated")
@@ -1746,7 +1746,7 @@ def main():
         
             if action == 0:
                 print(f"\nOpening {script_path} in your text editor...")
-                subprocess.run([os.environ.get('EDITOR', 'nano'), str(script_path)])
+                subprocess.run([get_text_editor(), str(script_path)])
                 print("\n✓ Editor closed")
             
             elif action == 1:
