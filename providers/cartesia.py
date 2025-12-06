@@ -258,8 +258,8 @@ class CartesiaProvider:
                     "__experimental_controls": segment.get('__experimental_controls', {})
                 },
                 "output_format": {
-                    "container": "mp3",
-                    "encoding": "mp3",
+                    "container": "raw",
+                    "encoding": "pcm_f32le",
                     "sample_rate": 44100
                 }
             }
@@ -277,10 +277,38 @@ class CartesiaProvider:
                 print(f"[ERROR] {type(e).__name__}: {e}")
                 return None, 0
         
-        # Combine audio chunks
+        # Combine audio chunks (PCM is safe to concatenate)
         if audio_chunks:
-            combined_audio = b''.join(audio_chunks)
-            return combined_audio, total_chars
+            combined_pcm = b''.join(audio_chunks)
+            
+            # Convert PCM to MP3 using pydub for proper encoding
+            try:
+                from pydub import AudioSegment
+                import io
+                
+                # Create AudioSegment from raw PCM data
+                audio = AudioSegment(
+                    data=combined_pcm,
+                    sample_width=4,  # 32-bit float = 4 bytes
+                    frame_rate=44100,
+                    channels=1
+                )
+                
+                # Export to MP3
+                mp3_buffer = io.BytesIO()
+                audio.export(mp3_buffer, format="mp3", bitrate="128k")
+                combined_audio = mp3_buffer.getvalue()
+                
+                return combined_audio, total_chars
+                
+            except ImportError:
+                print("[WARNING] pydub not available, returning raw PCM")
+                print("[WARNING] Install pydub for proper MP3 output: pip install pydub")
+                return combined_pcm, total_chars
+            except Exception as e:
+                print(f"[ERROR] MP3 conversion failed: {e}")
+                print("[WARNING] Returning raw PCM instead")
+                return combined_pcm, total_chars
         else:
             return None, 0
 
