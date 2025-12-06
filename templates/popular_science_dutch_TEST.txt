@@ -44,12 +44,20 @@ VERPLICHTE VEREISTEN:
    - Echte reacties en ontdekkingen
    - BELANGRIJK: Gebruik "je"-vorm (informeel, vriendelijk)
 
-FORMAAT-VEREISTEN:
+FORMAAT-VEREISTEN (ZEER BELANGRIJK):
 - Gebruik "Speaker A:" en "Speaker B:" labels
+- ABSOLUUT GEEN MARKDOWN FORMATTING
+- ABSOLUUT GEEN STERRETJES (**) ROND SPEAKER LABELS
+- CORRECT: Speaker A: [excited] Text
+- FOUT: **Speaker A:** [excited] Text
+- FOUT: *Speaker A:* [excited] Text
 - Emotie-tags in [vierkante haken]
 - Natuurlijke Nederlandse gespreksstijl
 - GEEN bronnen-sectie (alleen testen)
 - GEEN inleiding of meta-commentaar
+
+KRITIEKE HERINNERING: 
+Gebruik PLAIN TEXT "Speaker A:" en "Speaker B:" - GEEN BOLD, GEEN ASTERISKS!
 
 SCENARIO-CONTEXT:
 {SCENARIO_SPECIFIC_INSTRUCTIONS}

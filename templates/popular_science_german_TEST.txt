@@ -44,12 +44,20 @@ PFLICHT-ANFORDERUNGEN:
    - Echte Reaktionen und Entdeckungen
    - WICHTIG: Verwende "Du"-Form (informell, freundlich)
 
-FORMAT-ANFORDERUNGEN:
+FORMAT-ANFORDERUNGEN (SEHR WICHTIG):
 - Verwende "Speaker A:" und "Speaker B:" Labels
+- ABSOLUT KEINE MARKDOWN FORMATIERUNG
+- ABSOLUT KEINE STERNCHEN (**) UM SPEAKER LABELS
+- KORREKT: Speaker A: [excited] Text
+- FALSCH: **Speaker A:** [excited] Text
+- FALSCH: *Speaker A:* [excited] Text
 - Emotions-Tags in [eckigen Klammern]
 - Natürlicher deutscher Gesprächsstil
 - KEINE Quellen-Sektion (nur Testing)
 - KEINE Einleitung oder Meta-Kommentare
+
+KRITISCHE ERINNERUNG:
+Verwende PLAIN TEXT "Speaker A:" und "Speaker B:" - KEIN BOLD, KEINE STERNCHEN!
 
 SZENARIO-KONTEXT:
 {SCENARIO_SPECIFIC_INSTRUCTIONS}
