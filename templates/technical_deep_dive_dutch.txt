@@ -105,6 +105,13 @@ ONLINE RESEARCH REQUIREMENTS
 
 ===================================
 DIALOGUE FORMAT - CRITICAL
+
+**CRITICAL - NO MARKDOWN FORMATTING:**
+- ABSOLUTELY NO BOLD (**) AROUND SPEAKER LABELS
+- ABSOLUTELY NO ASTERISKS (*) AROUND SPEAKER LABELS
+- ✅ CORRECT: Speaker A: [excited] Text
+- ❌ WRONG: **Speaker A:** [excited] Text
+- ❌ WRONG: *Speaker A:* [excited] Text
 ===================================
 
 **USE THIS FORMAT EXACTLY:**

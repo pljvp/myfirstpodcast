@@ -281,33 +281,46 @@ class CartesiaProvider:
         if audio_chunks:
             combined_pcm = b''.join(audio_chunks)
             
-            # Convert PCM to MP3 using pydub for proper encoding
+            # Convert float32 PCM to MP3 using pydub
+            # CRITICAL: Cartesia returns pcm_f32le (float), but pydub expects int PCM
             try:
+                import numpy as np
                 from pydub import AudioSegment
                 import io
                 
-                # Create AudioSegment from raw PCM data
+                # Step 1: Convert raw bytes to float32 numpy array
+                pcm_float_array = np.frombuffer(combined_pcm, dtype=np.float32)
+                
+                # Step 2: Convert float32 (-1.0 to 1.0) to int16 (-32768 to 32767)
+                # This is the critical conversion - pydub doesn't support float PCM directly
+                pcm_int16_array = (pcm_float_array * 32767).astype(np.int16)
+                
+                # Step 3: Create AudioSegment from int16 PCM
                 audio = AudioSegment(
-                    data=combined_pcm,
-                    sample_width=4,  # 32-bit float = 4 bytes
+                    data=pcm_int16_array.tobytes(),
+                    sample_width=2,  # 16-bit = 2 bytes (NOT 4!)
                     frame_rate=44100,
                     channels=1
                 )
                 
-                # Export to MP3
+                # Step 4: Export to MP3
                 mp3_buffer = io.BytesIO()
-                audio.export(mp3_buffer, format="mp3", bitrate="128k")
+                audio.export(mp3_buffer, format="mp3", bitrate="192k")
                 combined_audio = mp3_buffer.getvalue()
                 
                 return combined_audio, total_chars
                 
-            except ImportError:
-                print("[WARNING] pydub not available, returning raw PCM")
-                print("[WARNING] Install pydub for proper MP3 output: pip install pydub")
+            except ImportError as e:
+                print(f"[ERROR] Missing required library: {e}")
+                print("[ERROR] Install required packages:")
+                print("[ERROR]   pip install numpy pydub")
+                print("[ERROR]   (and ensure ffmpeg is installed)")
                 return combined_pcm, total_chars
             except Exception as e:
-                print(f"[ERROR] MP3 conversion failed: {e}")
-                print("[WARNING] Returning raw PCM instead")
+                print(f"[ERROR] PCM to MP3 conversion failed: {e}")
+                import traceback
+                traceback.print_exc()
+                print("[WARNING] Returning raw float32 PCM instead of MP3")
                 return combined_pcm, total_chars
         else:
             return None, 0

@@ -1558,11 +1558,21 @@ def main():
         if is_test_mode:
             # TEST MODE: Load test template directly, skip menu
             print("\n[TEST MODE] Loading test template...")
-            template_file = f"templates/{style_key}_{language}_TEST.txt"
+            
+            # Map style to template filename prefix
+            # selected_style is like "popular_scientific", template files are "popular_science"
+            style_to_template = {
+                'popular_scientific': 'popular_science',
+                'technical_deep_dive': 'technical_deep_dive',
+                'news_brief': 'news_brief'
+            }
+            style_key = style_to_template.get(selected_style, selected_style)
+            
+            template_file = f"templates/{style_key}_{selected_language}_TEST.txt"
             if not Path(template_file).exists():
                 print(f"[WARNING] Test template not found: {template_file}")
                 print(f"[INFO] Falling back to regular template")
-                template_file = f"templates/{style_key}_{language}_dynamic.txt"
+                template_file = f"templates/{style_key}_{selected_language}_dynamic.txt"
             
             print(f"Using template: {template_file}")
             
@@ -1570,7 +1580,7 @@ def main():
                 template = f.read()
             
             # Inject scenario context
-            scenario_context = build_scenario_context(selected_scenario, topic_description, language)
+            scenario_context = build_scenario_context(selected_scenario, topic_description, selected_language)
             template = template.replace('{SCENARIO_DESCRIPTION}', topic_description)
             template = template.replace('{SCENARIO_SPECIFIC_INSTRUCTIONS}', scenario_context)
             

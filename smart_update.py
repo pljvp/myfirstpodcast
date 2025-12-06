@@ -36,6 +36,15 @@ FILE_UPDATES = {
     'popular_science_dutch_TEST.txt': 'templates/popular_science_dutch_TEST.txt',
     'popular_science_english_TEST.txt': 'templates/popular_science_english_TEST.txt',
     'popular_science_german_TEST.txt': 'templates/popular_science_german_TEST.txt',
+    'popular_science_dutch_dynamic.txt': 'templates/popular_science_dutch_dynamic.txt',
+    'popular_science_english_dynamic.txt': 'templates/popular_science_english_dynamic.txt',
+    'popular_science_german_dynamic.txt': 'templates/popular_science_german_dynamic.txt',
+    'technical_deep_dive_dutch.txt': 'templates/technical_deep_dive_dutch.txt',
+    'technical_deep_dive_english.txt': 'templates/technical_deep_dive_english.txt',
+    'technical_deep_dive_german.txt': 'templates/technical_deep_dive_german.txt',
+    'news_brief_dutch.txt': 'templates/news_brief_dutch.txt',
+    'news_brief_english.txt': 'templates/news_brief_english.txt',
+    'news_brief_german.txt': 'templates/news_brief_german.txt',
 }
 
 # Special handling for config (requires user confirmation)
