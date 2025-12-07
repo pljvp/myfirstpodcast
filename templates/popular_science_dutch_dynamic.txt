@@ -274,40 +274,48 @@ Always write them phonetically, not as digits!
 ===================================
 
 ===================================
-OUTPUT FORMAT
+OUTPUT FORMAT - CRITICAL
 ===================================
 
-**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+⚠️ CRITICAL - YOUR RESPONSE MUST START WITH DIALOGUE IMMEDIATELY
 
-❌ **DO NOT INCLUDE:**
-- "I'll conduct thorough research..."
-- "Let me search for information..."
+❌ DO NOT START WITH:
+- "I'll conduct research..."
+- "Let me search..."
+- "Now I'll create..."
 - <search_quality_check> tags
-- <search> tags
-- Any meta-commentary
-- "---" separators (not before, not after dialogue)
-- Line breaks with dashes (---)
+- <search> tags  
+- ANY meta-commentary
+- ANY preamble
 
-✅ **START IMMEDIATELY WITH:**
-Speaker A: [emotion tags] First line of dialogue...
+✅ YOUR FIRST LINE MUST BE:
+Speaker A: [emotion tags] dialogue text
 
-**PROVIDE:**
+===================================
 
-1. Pure dialogue with Speaker A/B labels
-2. ALL audio tags in [square brackets]
-3. Natural conversational Dutch
-4. 5-10 interruptions throughout
-5. Generate {word_count} words (±5% acceptable)
+YOU WILL OUTPUT ONLY DIALOGUE:
 
-**AT THE END (separate section):**
+Speaker A: [emotion tags] First line of greeting...
+Speaker B: [emotion tags] Response...
+[... continue dialogue ...]
+Speaker A: [emotion tags] Final line...
+Speaker B: [emotion tags] Goodbye...
 
-**SOURCES FOUND:**
-[List all sources used with URLs]
+[STOP HERE]
 
-**NO OTHER TEXT - JUST DIALOGUE!**
+DO NOT include:
+❌ "SOURCES FOUND:" section
+❌ Source lists
+❌ URLs
+❌ Any text after final dialogue line
+
+Sources are handled separately by the system.
+Your job: Create ONLY the dialogue.
+Word count applies to dialogue ONLY.
 
 ===================================
 FINAL CHECKLIST
+===================================
 ===================================
 
 ✅ ALL emotion/reaction tags use [square brackets]
@@ -318,7 +326,6 @@ FINAL CHECKLIST
 ✅ Starts with surprising fact
 ✅ 3-4 "revelation" moments
 ✅ Generate {word_count} words (±5% acceptable) met
-✅ Sources documented at end
 ✅ Pure dialogue only
 ✅ Speaker A/B labels on every line
 

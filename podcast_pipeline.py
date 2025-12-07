@@ -450,16 +450,40 @@ Provide the complete revised script maintaining the same format with Speaker A a
     return generate_script(prompt, api_key)
 
 
-def extract_and_save_sources(script, project_name):
-    """Extract sources from Claude's response and save separately"""
-    sources_pattern = r'(?:^|\n)(?:SOURCES FOUND:|Sources?:)(.*?)(?:\n\n---|\Z)'
+
+
+def fetch_and_save_sources_separately(project_name, topic, api_key):
+    """Make a separate Claude call to get research sources"""
+    print("\n" + "="*60)
+    print("FETCHING RESEARCH SOURCES")
+    print("="*60)
     
-    match = re.search(sources_pattern, script, re.DOTALL | re.IGNORECASE)
+    sources_prompt = f"""List all the research sources you used when creating the podcast about "{topic}".
+
+Format each source as:
+Title - URL
+
+Examples:
+Nature Study on Quantum Computing 2024 - https://nature.com/articles/...
+MIT Technology Review: AI Advances - https://technologyreview.com/...
+
+Only list sources, no commentary or explanations.
+If you did not use external sources, respond with: "No external sources used."
+"""
     
-    if match:
-        sources_content = match.group(1).strip()
+    try:
+        response = anthropic.Anthropic(api_key=api_key).messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=2000,
+            messages=[{"role": "user", "content": sources_prompt}]
+        )
         
-        sources_file = Path(f"./projects/{project_name}/scripts/{project_name}_sources.txt")
+        sources_content = response.content[0].text.strip()
+        
+        # Save to sources folder (not scripts folder!)
+        sources_file = Path(f"./projects/{project_name}/sources/{project_name}_sources.txt")
+        sources_file.parent.mkdir(parents=True, exist_ok=True)
+        
         with open(sources_file, 'w', encoding='utf-8') as f:
             f.write(f"Research Sources for {project_name}\n")
             f.write("="*60 + "\n\n")
@@ -469,11 +493,25 @@ def extract_and_save_sources(script, project_name):
             f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
         
         print(f"✓ Sources saved to: {sources_file}")
+        return True
         
-        script_clean = re.sub(sources_pattern, '', script, flags=re.DOTALL|re.IGNORECASE)
-        return script_clean.strip()
+    except Exception as e:
+        print(f"⚠ Could not fetch sources: {e}")
+        return False
+
+
+def extract_and_save_sources(script, project_name):
+    """Legacy function - now just cleans up any sources Claude included.
+    Sources are fetched separately via fetch_and_save_sources_separately()"""
     
-    return script
+    # Remove any sources that Claude included despite instructions
+    sources_pattern = r'(?:^|\n)(?:\*\*)?(?:SOURCES FOUND:|Sources?:)(?:\*\*)?(.*?)(?:\n\n---|$)'
+    script_clean = re.sub(sources_pattern, '', script, flags=re.DOTALL | re.IGNORECASE)
+    
+    # Also remove any remaining source lists at end
+    script_clean = re.sub(r'\n\d+\.\s+.*?https?://.*', '', script_clean, flags=re.MULTILINE)
+    
+    return script_clean.strip()
 
 
 def save_script(script, project_name, language_code, provider_tag, draft_number):

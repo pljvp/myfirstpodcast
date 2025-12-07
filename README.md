@@ -173,7 +173,6 @@ python podcast_pipeline.py
    2. Cooking disaster
    3. Movie scene analysis
    4. Random scenario
-   Choice: 3
 
 3. Topic: My Neighbor Totoro
    └─> Combined with scenario

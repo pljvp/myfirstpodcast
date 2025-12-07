@@ -437,41 +437,48 @@ Always write them phonetically, not as digits!
 ===================================
 
 ===================================
-OUTPUT FORMAT
+OUTPUT FORMAT - CRITICAL
 ===================================
 
-**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+⚠️ CRITICAL - YOUR RESPONSE MUST START WITH DIALOGUE IMMEDIATELY
 
-❌ **DO NOT INCLUDE:**
-- "I'll conduct thorough research..."
-- "Let me search for information..."
-- "Now I'll create the script..."
+❌ DO NOT START WITH:
+- "I'll conduct research..."
+- "Let me search..."
+- "Now I'll create..."
 - <search_quality_check> tags
-- <search> tags
-- Any meta-commentary about what you're doing
-- "---" separators before dialogue
+- <search> tags  
+- ANY meta-commentary
+- ANY preamble
 
-✅ **START IMMEDIATELY WITH:**
-Speaker A: [emotion tags] First line of dialogue...
-
-**PROVIDE:**
-
-1. Pure dialogue with Speaker A/B labels
-2. ALL audio tags in [square brackets]
-3. Natural German with Du-form
-4. 5-10 interruptions throughout
-5. Varied emotions and reactions
-6. Generate {word_count} words (±5% acceptable)
-
-**AT THE END (separate section):**
-
-SOURCES FOUND:
-[List all sources used with URLs]
-
-**NO OTHER TEXT - JUST DIALOGUE!**
+✅ YOUR FIRST LINE MUST BE:
+Speaker A: [emotion tags] dialogue text
 
 ===================================
-FINAL CHECKLIST BEFORE SUBMISSION
+
+YOU WILL OUTPUT ONLY DIALOGUE:
+
+Speaker A: [emotion tags] First line of greeting...
+Speaker B: [emotion tags] Response...
+[... continue dialogue ...]
+Speaker A: [emotion tags] Final line...
+Speaker B: [emotion tags] Goodbye...
+
+[STOP HERE]
+
+DO NOT include:
+❌ "SOURCES FOUND:" section
+❌ Source lists
+❌ URLs
+❌ Any text after final dialogue line
+
+Sources are handled separately by the system.
+Your job: Create ONLY the dialogue.
+Word count applies to dialogue ONLY.
+
+===================================
+FINAL CHECKLIST
+=================================== BEFORE SUBMISSION
 ===================================
 
 Before you submit, verify:
@@ -485,7 +492,6 @@ Before you submit, verify:
 ✅ 3-4 "revelation" moments
 ✅ Concrete examples from research
 ✅ Generate {word_count} words (±5% acceptable) met
-✅ Sources documented at end
 ✅ Pure dialogue (no stage directions outside tags)
 ✅ Speaker A/B labels on every line
 ✅ Multiple tags use spaces: [tag1] [tag2] not tag1, tag2

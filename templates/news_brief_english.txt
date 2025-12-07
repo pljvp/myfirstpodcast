@@ -364,35 +364,48 @@ Always write them phonetically, not as digits!
 ===================================
 
 ===================================
-OUTPUT FORMAT
+OUTPUT FORMAT - CRITICAL
 ===================================
 
-**CRITICAL - START WITH DIALOGUE IMMEDIATELY:**
+⚠️ CRITICAL - YOUR RESPONSE MUST START WITH DIALOGUE IMMEDIATELY
 
-❌ **DO NOT INCLUDE:**
+❌ DO NOT START WITH:
 - "I'll conduct research..."
-- Meta-commentary
-- <search> tags
-- "---" separators
+- "Let me search..."
+- "Now I'll create..."
+- <search_quality_check> tags
+- <search> tags  
+- ANY meta-commentary
+- ANY preamble
 
-✅ **START IMMEDIATELY WITH:**
-Speaker A: [emotion tags] First line of dialogue...
+✅ YOUR FIRST LINE MUST BE:
+Speaker A: [emotion tags] dialogue text
 
-**PROVIDE:**
+===================================
 
-1. Pure dialogue with Speaker A/B labels
-2. ALL audio tags in [square brackets]
-3. Fast-paced conversational English
-4. News-appropriate energy
-5. Generate {word_count} words (±5% acceptable) (keep tight!)
+YOU WILL OUTPUT ONLY DIALOGUE:
 
-**AT THE END:**
+Speaker A: [emotion tags] First line of greeting...
+Speaker B: [emotion tags] Response...
+[... continue dialogue ...]
+Speaker A: [emotion tags] Final line...
+Speaker B: [emotion tags] Goodbye...
 
-**SOURCES FOUND:**
-[List all sources with URLs and dates]
+[STOP HERE]
+
+DO NOT include:
+❌ "SOURCES FOUND:" section
+❌ Source lists
+❌ URLs
+❌ Any text after final dialogue line
+
+Sources are handled separately by the system.
+Your job: Create ONLY the dialogue.
+Word count applies to dialogue ONLY.
 
 ===================================
 FINAL CHECKLIST
+===================================
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
@@ -403,7 +416,6 @@ FINAL CHECKLIST
 ✅ All 5 W's covered
 ✅ Dates/times mentioned
 ✅ Generate {word_count} words (±5% acceptable)
-✅ Sources documented
 ✅ Fast-paced, news-appropriate energy
 
 ===================================
