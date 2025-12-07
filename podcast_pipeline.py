@@ -1380,8 +1380,8 @@ def main():
         except ValueError:
             print("Please enter a valid number")
     
-    word_count = duration * 180
-    print(f"Calculated word count: ~{word_count} words (180 words/min)")
+    word_count = duration * 222
+    print(f"Calculated word count: ~{word_count} words (222 words/min)")
     
     # 2-4. Style, language, mode selection
     styles = list(config['styles'].keys())
