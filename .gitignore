@@ -38,6 +38,10 @@ podcast_pipeline_backup_*.py
 # Logs
 *.log
 
+# Tree
+tree*.txt
+Tree*.txt
+
 # OS
 Thumbs.db
 .DS_Store
