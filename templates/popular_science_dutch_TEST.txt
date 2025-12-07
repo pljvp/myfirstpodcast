@@ -13,7 +13,7 @@ maar gecomprimeerd in een korter gesprek.
 
 VERPLICHTE VEREISTEN:
 
-1. WOORDLIMIET: 450-500 woorden MAXIMUM (dit is kritiek - niet overschrijden!)
+1. Generate {word_count} words as specified in terminal (±5% acceptable)
 
 2. EMOTIE-DEKKING - Gebruik minstens 10 hiervan:
    [excited] [curious] [skeptical] [laughs] [amused]
@@ -119,7 +119,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE

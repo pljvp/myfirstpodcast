@@ -13,7 +13,7 @@ aber komprimiert in ein kürzeres Gespräch.
 
 PFLICHT-ANFORDERUNGEN:
 
-1. WORTLIMIT: 450-500 Wörter MAXIMUM (dies ist kritisch - nicht überschreiten!)
+1. Generate {word_count} words as specified in terminal (±5% acceptable)
 
 2. EMOTIONS-ABDECKUNG - Verwende mindestens 10 davon:
    [excited] [curious] [skeptical] [laughs] [amused]
@@ -119,7 +119,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE

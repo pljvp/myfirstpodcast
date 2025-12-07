@@ -1,4 +1,4 @@
-# 🎙️ AI Podcast Pipeline
+AA# 🎙️ AI Podcast Pipeline
 
 Two-person dialogue podcast generator with natural conversations, emotions, and interruptions.
 
@@ -70,10 +70,10 @@ python podcast_pipeline.py
 **Terminal prompts:**
 
 ```
-1. Project name: BACnet
-   └─> Creates: projects/BACnet/
+1. Project name: myprojectname
+   └─> Creates: projects/myprojectname/
 
-2. Topic: BACnet protocol in building automation
+2. Topic: myprojectname topic in building automation
    └─> Used for research & script generation
 
 3. Duration (minutes): 15
@@ -83,34 +83,73 @@ python podcast_pipeline.py
    1. Dynamic, friendly science (Popular Scientific)
    2. In-depth technical analysis (Technical Deep Dive)
    3. Quick news update (News Brief)
-   Choice: 1
 
 5. Language:
    1. Deutsch (German)
    2. English
    3. Nederlands (Dutch)
-   Choice: 1
 
 6. Provider:
    1. ElevenLabs (Premium voices)
    2. Cartesia (Fast, affordable)
-   Choice: 2
 
 7. Mode:
    1. Prototype (standard quality, 64k bitrate)
    2. Production (high quality, full bitrate)
-   Choice: 2
 
 8. Speed (0.7-1.2, default 1.0): [Enter]
    └─> Optional: Override default speed
+
+9. Research Context Options
+   1. Use as-is (proceed with current context)
+   2. Edit current context (Define audience & focus)
+   3. Reset to default template (if you made mistakes)
+   4. Show current context
+
+   └─> CRUCIAL STEP: Option 2 opens editor to customize:
+       • Target audience (experts, general public, students)
+       • Focus areas (technical depth, practical examples, theory)
+       • Topics to emphasize or avoid
+       • Tone and style preferences
+
+   ★ Example customizations:
+       ┌────────────────────────────────────────────────────────┐
+       │ Topics:                                                │
+       │ 1. Introduce topic ABC                                 │
+       │ 2. Give examples of DEF                                │
+       │ 3. Project future state - but keep to the facts!       │
+       │                                                        │
+       │ Target audience:                                       │
+       │ Building automation engineers                          │
+       │ Focus: Practical implementation, not theory            │
+       │ Emphasize: Real-world examples, troubleshooting        │
+       │ Avoid: Marketing fluff, basic concepts                 │
+       └────────────────────────────────────────────────────────┘
+
+10. Prompt Template Options
+    1. Use default template (popular_scientific / german)
+    2. Load existing template from project's prompts folder
+    3. Copy template from templates folder to project and customize
+    4. Edit the chosen template before generating
+    5. Start with blank prompt
+
+11. Source Documents Check
+    Options:
+      1. Proceed (use existing documents if any)
+      2. List current documents
+      3. Add new source files
+
+    └─> If no documents: Web research only
+    └─> If documents added: Combined with web research
+
 ```
 
 **Output:**
 ```
-projects/BACnet/
-├── scripts/BACnet_DE_2025-12-06_14-30_CRTS_draft1.txt
-├── audio/BACnet_de_2025-12-06_CRTS_PRODUCTION.mp3
-└── sources/BACnet_sources.txt
+projects/myprojectname/
+├── scripts/myprojectname_DE_2025-12-06_14-30_CRTS_draft1.txt
+├── audio/myprojectname_de_2025-12-06_CRTS_PRODUCTION.mp3
+└── sources/myprojectname_sources.txt
 ```
 
 ---
@@ -143,6 +182,8 @@ python podcast_pipeline.py
    └─> Always generates 1-1.5 min regardless
 
 5-8. [Same as standard: Style, Language, Provider, Mode, Speed]
+
+9-11. [Research context, templates, source docs - same options]
 ```
 
 **Output:**
@@ -207,7 +248,7 @@ python tune_audio.py
 ```bash
 # 1. Generate in German
 python podcast_pipeline.py
-# Topic: "BACnet protocol"
+# Topic: "myprojectname topic"
 # Language: German
 
 # 2. Translate script
@@ -230,6 +271,7 @@ myfirstpodcast/
 │   ├── .env                    # API keys (gitignored)
 │   └── podcast_config.json     # Voice IDs, speeds, styles
 ├── templates/                   # Script templates (3 styles × 3 languages)
+│   └── research_contexts/      # Default research contexts
 ├── providers/                   # TTS provider implementations
 │   ├── cartesia.py             # Cartesia with crossfading
 │   └── elevenlabs.py           # ElevenLabs implementation
@@ -237,7 +279,8 @@ myfirstpodcast/
 │   └── {project}/
 │       ├── audio/              # Generated MP3s
 │       ├── scripts/            # Dialogue scripts
-│       ├── sources/            # Your documents
+│       ├── sources/            # Your documents + research_context.txt
+│       ├── prompts/            # Custom templates
 │       └── debug/              # API payloads for troubleshooting
 ├── podcast_pipeline.py         # Main generator
 ├── tune_audio.py              # Post-processing: Speed adjustment
@@ -287,6 +330,12 @@ CARTESIA_API_KEY=...
 - **Global:** `templates/research_contexts/default.txt`
 - **Project-specific:** `projects/{project}/sources/research_context.txt`
 
+**⚡ CRITICAL for quality:** Customize `research_context.txt` per project to define:
+- Target audience expertise level
+- Focus areas and depth
+- Topics to emphasize/avoid
+- Desired tone and style
+
 ---
 
 ## 📈 Performance
@@ -315,13 +364,13 @@ CARTESIA_API_KEY=...
 **Scripts:**
 ```
 {project}_{LANG}_{DATE}_{TIME}_{PROVIDER}_draft{N}.txt
-Example: BACnet_DE_2025-12-06_14-30_CRTS_draft1.txt
+Example: myprojectname_DE_2025-12-06_14-30_CRTS_draft1.txt
 ```
 
 **Audio:**
 ```
 {project}_{lang}_{date}_{provider}_{MODE}.mp3
-Example: BACnet_de_2025-12-06_CRTS_PRODUCTION.mp3
+Example: myprojectname_de_2025-12-06_CRTS_PRODUCTION.mp3
 ```
 
 **Test Audio:**

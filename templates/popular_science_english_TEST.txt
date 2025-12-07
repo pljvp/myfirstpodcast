@@ -13,7 +13,7 @@ but compressed into a shorter conversation.
 
 MANDATORY REQUIREMENTS:
 
-1. WORD LIMIT: 450-500 words MAXIMUM (this is critical - do not exceed!)
+1. Generate {word_count} words as specified in terminal (±5% acceptable)
 
 2. EMOTION COVERAGE - Include at least 10 of these:
    [excited] [curious] [skeptical] [laughs] [amused]
@@ -118,7 +118,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE

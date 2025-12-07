@@ -1,6 +1,6 @@
 PODCAST SCRIPT GENERATION - TECHNICAL DEEP DIVE (English - Expert Analysis)
 
-TARGET: {duration}-minute podcast (~{word_count} words)
+TARGET: {duration} minutes | {word_count} words (±5% acceptable)
 TOPIC: {topic}
 PROJECT: {project_name}
 
@@ -84,7 +84,7 @@ ONLINE RESEARCH REQUIREMENTS
 
 **MANDATORY: Deep technical research**
 
-1. Find 10-15 high-quality technical sources
+1. Find high-quality technical sources as specified in your research context
 2. Prioritize:
    - Academic papers / preprints
    - Technical documentation
@@ -341,7 +341,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE
@@ -414,7 +414,7 @@ Speaker A: [emotion tags] First line of dialogue...
 2. ALL audio tags in [square brackets]
 3. Technical precision and depth
 4. Expert-level discussion
-5. {word_count}-word target
+5. Generate {word_count} words (±5% acceptable)
 
 **AT THE END:**
 
@@ -435,7 +435,7 @@ FINAL CHECKLIST
 ✅ Tradeoffs discussed
 ✅ Edge cases considered
 ✅ Limitations acknowledged
-✅ {word_count}-word target
+✅ Generate {word_count} words (±5% acceptable)
 ✅ Sources documented
 ✅ Expert-level depth throughout
 

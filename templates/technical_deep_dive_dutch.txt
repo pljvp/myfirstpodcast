@@ -1,6 +1,6 @@
 PODCAST SCRIPT GENERATION - TECHNICAL DEEP DIVE (Dutch - Expert Analysis)
 
-TARGET: {duration}-minute podcast (~{word_count} words)
+TARGET: {duration} minutes | {word_count} words (±5% acceptable)
 TOPIC: {topic}
 PROJECT: {project_name}
 
@@ -346,7 +346,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE
@@ -419,7 +419,7 @@ Speaker A: [emotion tags] First line of dialogue...
 2. ALL audio tags in [square brackets]
 3. Technische precisie en diepte
 4. Expert-level discussie
-5. {word_count}-word target
+5. Generate {word_count} words (±5% acceptable)
 
 **AT THE END:**
 
@@ -440,7 +440,7 @@ FINAL CHECKLIST
 ✅ Tradeoffs besproken
 ✅ Edge cases overwogen
 ✅ Limitaties erkend
-✅ {word_count}-word target
+✅ Generate {word_count} words (±5% acceptable)
 ✅ Bronnen gedocumenteerd
 ✅ Expert-level diepte doorlopend
 

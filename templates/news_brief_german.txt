@@ -1,6 +1,6 @@
 PODCAST SCRIPT GENERATION - NEWS BRIEF (German - Fast & Dynamic)
 
-TARGET: {duration}-minute podcast (~{word_count} words)
+TARGET: {duration} minutes | {word_count} words (±5% acceptable)
 TOPIC: {topic}
 PROJECT: {project_name}
 
@@ -311,7 +311,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE
@@ -384,7 +384,7 @@ Speaker A: [emotion tags] First line of dialogue...
 2. ALL audio tags in [square brackets]
 3. Fast-paced German with Du-form
 4. News-appropriate energy
-5. {word_count}-word target (keep tight!)
+5. Generate {word_count} words (±5% acceptable) (keep tight!)
 
 **AT THE END:**
 
@@ -402,7 +402,7 @@ FINAL CHECKLIST
 ✅ Recent sources (within 7 days if possible)
 ✅ All 5 W's covered
 ✅ Dates/times mentioned
-✅ {word_count}-word target
+✅ Generate {word_count} words (±5% acceptable)
 ✅ Sources documented
 ✅ Fast-paced, news-appropriate energy
 

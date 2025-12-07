@@ -1,6 +1,6 @@
 PODCAST SCRIPT GENERATION - POPULAR SCIENCE (English - Dynamic & Natural)
 
-TARGET: {duration}-minute podcast (~{word_count} words)
+TARGET: {duration} minutes | {word_count} words (±5% acceptable)
 TOPIC: {topic}
 PROJECT: {project_name}
 
@@ -101,7 +101,7 @@ ONLINE RESEARCH REQUIREMENTS
 
 **MANDATORY: Conduct thorough online research using web search**
 
-1. Find 5-10 high-quality sources
+1. Find high-quality sources as specified in your research context
 2. Prioritize recent (2024-2025) information  
 3. Include diverse source types:
    - Academic papers or preprints
@@ -383,7 +383,7 @@ Speaker B: [formal] Bleiben Sie informiert!
 **IMPORTANT:**
 - VARY the goodbye each time
 - Both speakers participate
-- System adds 0.5s silence AFTER your last line
+- System adds 2.0s silence AFTER your last line
 
 ===================================
 YEAR PRONUNCIATION GUIDE
@@ -460,7 +460,7 @@ Speaker A: [emotion tags] First line of dialogue...
 3. Natural conversational English
 4. 5-10 interruptions throughout
 5. Varied emotions and reactions
-6. {word_count}-word target
+6. Generate {word_count} words (±5% acceptable)
 
 **AT THE END (separate section):**
 
@@ -483,7 +483,7 @@ Before you submit, verify:
 ✅ Starts with surprising fact (not definition)
 ✅ 3-4 "revelation" moments
 ✅ Concrete examples from research
-✅ {word_count}-word target met
+✅ Generate {word_count} words (±5% acceptable) met
 ✅ Sources documented at end
 ✅ Pure dialogue (no stage directions outside tags)
 ✅ Speaker A/B labels on every line
