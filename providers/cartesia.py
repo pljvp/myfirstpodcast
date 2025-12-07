@@ -445,52 +445,42 @@ class CartesiaProvider:
                 print(f"[ERROR] {type(e).__name__}: {e}")
                 return None, 0
         
-        # Combine audio chunks (PCM is safe to concatenate)
+        # Combine audio chunks with crossfading to eliminate clicks
         if audio_chunks:
-            combined_pcm = b''.join(audio_chunks)
+            import numpy as np
+            from pydub import AudioSegment
+            import io
             
-            # Convert float32 PCM to MP3 using pydub
-            # CRITICAL: Cartesia returns pcm_f32le (float), but pydub expects int PCM
-            try:
-                import numpy as np
-                from pydub import AudioSegment
-                import io
+            # Convert each chunk to AudioSegment first
+            audio_segments = []
+            for chunk in audio_chunks:
+                # Convert raw bytes to float32 numpy array
+                pcm_float_array = np.frombuffer(chunk, dtype=np.float32)
                 
-                # Step 1: Convert raw bytes to float32 numpy array
-                pcm_float_array = np.frombuffer(combined_pcm, dtype=np.float32)
-                
-                # Step 2: Convert float32 (-1.0 to 1.0) to int16 (-32768 to 32767)
-                # This is the critical conversion - pydub doesn't support float PCM directly
+                # Convert float32 to int16
                 pcm_int16_array = (pcm_float_array * 32767).astype(np.int16)
                 
-                # Step 3: Create AudioSegment from int16 PCM
-                audio = AudioSegment(
+                # Create AudioSegment
+                segment = AudioSegment(
                     data=pcm_int16_array.tobytes(),
-                    sample_width=2,  # 16-bit = 2 bytes (NOT 4!)
+                    sample_width=2,
                     frame_rate=44100,
                     channels=1
                 )
+                audio_segments.append(segment)
+            
+            # Concatenate with 10ms crossfade to eliminate clicks
+            combined_audio_segment = audio_segments[0]
+            for next_segment in audio_segments[1:]:
+                combined_audio_segment = combined_audio_segment.append(next_segment, crossfade=10)
+            
+            # Export to MP3
+            mp3_buffer = io.BytesIO()
+            combined_audio_segment.export(mp3_buffer, format="mp3", bitrate="192k")
+            combined_audio = mp3_buffer.getvalue()
+            
+            return combined_audio, total_chars
                 
-                # Step 4: Export to MP3
-                mp3_buffer = io.BytesIO()
-                audio.export(mp3_buffer, format="mp3", bitrate="192k")
-                combined_audio = mp3_buffer.getvalue()
-                
-                return combined_audio, total_chars
-                
-            except ImportError as e:
-                print(f"[ERROR] Missing required library: {e}")
-                print("[ERROR] Install required packages:")
-                print("[ERROR]   pip install numpy pydub")
-                print("[ERROR]   (and ensure ffmpeg is installed)")
-                return combined_pcm, total_chars
-            except Exception as e:
-                print(f"[ERROR] PCM to MP3 conversion failed: {e}")
-                import traceback
-                traceback.print_exc()
-                print("[WARNING] Returning raw float32 PCM instead of MP3")
-                return combined_pcm, total_chars
-        else:
             return None, 0
     
     def add_silence_padding(self, audio_bytes, intro_ms=1300, outro_ms=500):
