@@ -4,16 +4,34 @@
       "api_key_env": "ELEVENLABS_API_KEY",
       "voices": {
         "german": {
-          "speaker_a_female": "HKUbFf0kZdG11lOEhRi2",
-          "speaker_b_male": "dnSxHmjp9jQffMRfRzwo"
+          "speaker_a_female": {
+            "id": "HKUbFf0kZdG11lOEhRi2",
+            "default_speed": 1.0
+          },
+          "speaker_b_male": {
+            "id": "dnSxHmjp9jQffMRfRzwo",
+            "default_speed": 1.0
+          }
         },
         "english": {
-          "speaker_a_female": "Nhs7eitvQWFTQBsf0yiT",
-          "speaker_b_male": "oTQK6KgOJHp8UGGZjwUu"
+          "speaker_a_female": {
+            "id": "Nhs7eitvQWFTQBsf0yiT",
+            "default_speed": 1.0
+          },
+          "speaker_b_male": {
+            "id": "oTQK6KgOJHp8UGGZjwUu",
+            "default_speed": 1.0
+          }
         },
         "dutch": {
-          "speaker_a_female": "ANHrhmaFeVN0QJaa0PhL",
-          "speaker_b_male": "eWrnzOwO7JvyjacVxTzV"
+          "speaker_a_female": {
+            "id": "ANHrhmaFeVN0QJaa0PhL",
+            "default_speed": 1.0
+          },
+          "speaker_b_male": {
+            "id": "eWrnzOwO7JvyjacVxTzV",
+            "default_speed": 1.0
+          }
         }
       }
     },
@@ -22,16 +40,34 @@
       "model": "sonic-english",
       "voices": {
         "german": {
-          "speaker_a_female": "38aabb6a-f52b-4fb0-a3d1-988518f4dc06",
-          "speaker_b_male": "e00dd3df-19e7-4cd4-827a-7ff6687b6954"
+          "speaker_a_female": {
+            "id": "b9de4a89-2257-424b-94c2-db18ba68c81a",
+            "default_speed": 0.96
+          },
+          "speaker_b_male": {
+            "id": "e00dd3df-19e7-4cd4-827a-7ff6687b6954",
+            "default_speed": 1.0
+          }
         },
         "english": {
-          "speaker_a_female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b",
-          "speaker_b_male": "5cad89c9-d88a-4832-89fb-55f2f16d13d3"
+          "speaker_a_female": {
+            "id": "e07c00bc-4134-4eae-9ea4-1a55fb45746b",
+            "default_speed": 1.0
+          },
+          "speaker_b_male": {
+            "id": "5cad89c9-d88a-4832-89fb-55f2f16d13d3",
+            "default_speed": 1.0
+          }
         },
         "dutch": {
-          "speaker_a_female": "0eb213fe-4658-45bc-9442-33a48b24b133",
-          "speaker_b_male": "af482421-80f4-4379-b00c-a118def29cde"
+          "speaker_a_female": {
+            "id": "0eb213fe-4658-45bc-9442-33a48b24b133",
+            "default_speed": 0.96
+          },
+          "speaker_b_male": {
+            "id": "af482421-80f4-4379-b00c-a118def29cde",
+            "default_speed": 1.0
+          }
         }
       }
     }
@@ -64,7 +100,7 @@
         "speaker_a_female": "HKUbFf0kZdG11lOEhRi2",
         "speaker_b_male": "dnSxHmjp9jQffMRfRzwo"
       },
-      "speed": 1.00
+      "speed": 1.05
     },
     "english": {
       "name": "English",
@@ -73,7 +109,7 @@
         "speaker_a_female": "Nhs7eitvQWFTQBsf0yiT",
         "speaker_b_male": "oTQK6KgOJHp8UGGZjwUu"
       },
-      "speed": 1.00
+      "speed": 1.05
     },
     "dutch": {
       "name": "Nederlands (Dutch)",
@@ -82,7 +118,7 @@
         "speaker_a_female": "ANHrhmaFeVN0QJaa0PhL",
         "speaker_b_male": "eWrnzOwO7JvyjacVxTzV"
       },
-      "speed": 1.00
+      "speed": 1.05
     }
   },
   "elevenlabs_settings": {
@@ -95,5 +131,9 @@
       "quality": "high",
       "downsample_enabled": false
     }
+  },
+  "intro_outro": {
+    "intro_silence_ms": 1300,
+    "outro_silence_ms": 500
   }
 }

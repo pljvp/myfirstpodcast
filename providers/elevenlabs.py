@@ -17,9 +17,73 @@ class ElevenLabsProvider(TTSProvider):
     
     PROVIDER_TAG = "11LB"
     
-    def __init__(self, api_key: str, config: dict):
+    def __init__(self, api_key: str, config: dict, language='english'):
         super().__init__(api_key, config)
         self.api_url = "https://api.elevenlabs.io/v1/text-to-dialogue"
+        self.language = language
+    
+    def _get_voice_config(self, speaker, language):
+        """Get voice ID and default speed from config
+        
+        Supports both formats:
+        - Old: "voice_id_string"
+        - New: {"id": "voice_id", "default_speed": 0.97}
+        
+        Args:
+            speaker: 'speaker_a' or 'speaker_b'
+            language: Language code
+            
+        Returns:
+            dict with 'id' and 'default_speed'
+        """
+        # Determine gender key
+        gender = 'female' if speaker == 'speaker_a' else 'male'
+        voice_key = f"{speaker}_{gender}"
+        
+        # Get config
+        voice_config = self.config['voices'][language][voice_key]
+        
+        # Support both formats
+        if isinstance(voice_config, dict):
+            return {
+                'id': voice_config['id'],
+                'default_speed': voice_config.get('default_speed', 1.0)
+            }
+        else:
+            # Backwards compatible (just voice ID string)
+            return {
+                'id': voice_config,
+                'default_speed': 1.0
+            }
+    
+    def get_voice_speeds(self, language):
+        """Get default speeds for all voices (for display)
+        
+        Args:
+            language: Language code
+            
+        Returns:
+            dict with speaker keys and default speeds
+        """
+        speeds = {}
+        for speaker in ['speaker_a', 'speaker_b']:
+            config = self._get_voice_config(speaker, language)
+            gender = 'female' if speaker == 'speaker_a' else 'male'
+            speeds[f"{speaker}_{gender}"] = config['default_speed']
+        return speeds
+    
+    def _extract_voice_id(self, voice_config):
+        """Extract voice ID string from config (handles both old and new formats)
+        
+        Args:
+            voice_config: Either a string (old format) or dict with 'id' key (new format)
+            
+        Returns:
+            Voice ID string
+        """
+        if isinstance(voice_config, dict):
+            return voice_config.get('id', voice_config)
+        return voice_config
     
     def get_template_instructions(self) -> str:
         """Return ElevenLabs-optimized instructions"""
@@ -77,8 +141,9 @@ All standard emotion tags also supported:
             
             if is_speaker_a:
                 if current_text and current_speaker:
+                    voice_config = voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b']
                     dialogue.append({
-                        'voice_id': voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b'],
+                        'voice_id': self._extract_voice_id(voice_config),
                         'text': ' '.join(current_text).strip()
                     })
                 
@@ -88,8 +153,9 @@ All standard emotion tags also supported:
                 
             elif is_speaker_b:
                 if current_text and current_speaker:
+                    voice_config = voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b']
                     dialogue.append({
-                        'voice_id': voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b'],
+                        'voice_id': self._extract_voice_id(voice_config),
                         'text': ' '.join(current_text).strip()
                     })
                 
@@ -103,8 +169,11 @@ All standard emotion tags also supported:
         
         # FIXED: Correct syntax for final segment
         if current_text and current_speaker:
-            voice_id = voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b']
-            dialogue.append({'voice_id': voice_id, 'text': ' '.join(current_text).strip()})
+            voice_config = voice_ids['speaker_a' if current_speaker == 'speaker_a' else 'speaker_b']
+            dialogue.append({
+                'voice_id': self._extract_voice_id(voice_config),
+                'text': ' '.join(current_text).strip()
+            })
         
         return dialogue if dialogue else None
     
@@ -136,11 +205,34 @@ All standard emotion tags also supported:
         voice_ids: Dict[str, str],
         mode: str = 'prototype',
         speed: float = 1.0,
-        project_name: Optional[str] = None
+        project_name: Optional[str] = None,
+        use_config_speeds: bool = True
     ) -> Tuple[Optional[bytes], int]:
-        """Generate audio using ElevenLabs API"""
+        """Generate audio using ElevenLabs API
+        
+        Args:
+            script: Formatted script
+            voice_ids: Voice IDs for speakers
+            mode: 'prototype' or 'production'
+            speed: Base speed
+            project_name: Project name
+            use_config_speeds: If True, multiply by per-voice defaults (pipeline mode)
+                               If False, use speed directly (tune_audio mode)
+        """
         print(f"\n{'='*60}")
         print(f"TTS PROVIDER: ELEVENLABS")
+        print(f"Base speed: {speed}")
+        
+        # Show per-voice speeds if enabled
+        if use_config_speeds:
+            print(f"Per-voice speed mode: ENABLED (pipeline)")
+            voice_speeds = self.get_voice_speeds(self.language)
+            for voice, default in voice_speeds.items():
+                final = speed * default
+                print(f"  {voice}: {default:.2f} → final: {final:.2f}")
+        else:
+            print(f"Per-voice speed mode: DISABLED (tune_audio - using exact speeds)")
+        
         print(f"{'='*60}")
         
         dialogue = self.parse_script_to_dialogue(script, voice_ids)
@@ -149,12 +241,35 @@ All standard emotion tags also supported:
             print("\n[ERROR] Script format error - no Speaker A:/B: labels found")
             return None, 0
         
-        # Add voice settings
-        inputs = [{
-            "text": seg['text'], 
-            "voice_id": seg['voice_id'],
-            "voice_settings": {"speed": speed}
-        } for seg in dialogue]
+        # Add voice settings WITH per-voice speed support
+        inputs = []
+        for seg in dialogue:
+            if use_config_speeds:
+                # PIPELINE MODE: Apply per-voice default
+                voice_id = seg['voice_id']
+                # Find which speaker this is by comparing IDs
+                speaker = None
+                for spk in ['speaker_a', 'speaker_b']:
+                    spk_config = voice_ids.get(spk)
+                    spk_id = self._extract_voice_id(spk_config)
+                    if voice_id == spk_id:
+                        speaker = spk
+                        break
+                
+                if speaker:
+                    voice_cfg = self._get_voice_config(speaker, self.language)
+                    final_speed = speed * voice_cfg['default_speed']
+                else:
+                    final_speed = speed  # Fallback
+            else:
+                # TUNE_AUDIO MODE: Use speed directly
+                final_speed = speed
+            
+            inputs.append({
+                "text": seg['text'], 
+                "voice_id": seg['voice_id'],
+                "voice_settings": {"speed": final_speed}
+            })
         
         total_length = sum(len(item['text']) for item in inputs)
         print(f"[DEBUG] Total dialogue: {total_length} characters, {len(dialogue)} segments")
@@ -229,3 +344,37 @@ All standard emotion tags also supported:
         debug_file = debug_path / f"chunk_{chunk_num}_11LB.json"
         with open(debug_file, 'w', encoding='utf-8') as f:
             json.dump(chunk, f, indent=2, ensure_ascii=False)
+    
+    def add_silence_padding(self, audio_bytes, intro_ms=1300, outro_ms=500):
+        """Add silence before and after audio
+        
+        Args:
+            audio_bytes: Audio data (MP3)
+            intro_ms: Milliseconds of silence before
+            outro_ms: Milliseconds of silence after
+            
+        Returns:
+            Audio with silence padding
+        """
+        try:
+            from pydub import AudioSegment
+            import io
+            
+            # Load main audio
+            main_audio = AudioSegment.from_mp3(io.BytesIO(audio_bytes))
+            
+            # Create silence
+            intro_silence = AudioSegment.silent(duration=intro_ms)
+            outro_silence = AudioSegment.silent(duration=outro_ms)
+            
+            # Combine
+            final_audio = intro_silence + main_audio + outro_silence
+            
+            # Export
+            output = io.BytesIO()
+            final_audio.export(output, format="mp3", bitrate="192k")
+            return output.getvalue()
+            
+        except Exception as e:
+            print(f"[ERROR] Failed to add silence: {e}")
+            return audio_bytes  # Return original if fails
