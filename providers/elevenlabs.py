@@ -214,24 +214,33 @@ All standard emotion tags also supported:
             script: Formatted script
             voice_ids: Voice IDs for speakers
             mode: 'prototype' or 'production'
-            speed: Base speed
+            speed: Base speed (float) or per-speaker dict {'speaker_a': 0.95, 'speaker_b': 1.05}
             project_name: Project name
             use_config_speeds: If True, multiply by per-voice defaults (pipeline mode)
                                If False, use speed directly (tune_audio mode)
         """
+        # Check if speed is a dict (per-speaker) or float (single speed)
+        speed_is_dict = isinstance(speed, dict)
+        
         print(f"\n{'='*60}")
         print(f"TTS PROVIDER: ELEVENLABS")
-        print(f"Base speed: {speed}")
         
-        # Show per-voice speeds if enabled
-        if use_config_speeds:
-            print(f"Per-voice speed mode: ENABLED (pipeline)")
-            voice_speeds = self.get_voice_speeds(self.language)
-            for voice, default in voice_speeds.items():
-                final = speed * default
-                print(f"  {voice}: {default:.2f} → final: {final:.2f}")
+        if speed_is_dict:
+            print(f"Per-speaker speeds:")
+            print(f"  Speaker A: {speed['speaker_a']}")
+            print(f"  Speaker B: {speed['speaker_b']}")
         else:
-            print(f"Per-voice speed mode: DISABLED (tune_audio - using exact speeds)")
+            print(f"Base speed: {speed}")
+            
+            # Show per-voice speeds if enabled
+            if use_config_speeds:
+                print(f"Per-voice speed mode: ENABLED (pipeline)")
+                voice_speeds = self.get_voice_speeds(self.language)
+                for voice, default in voice_speeds.items():
+                    final = speed * default
+                    print(f"  {voice}: {default:.2f} → final: {final:.2f}")
+            else:
+                print(f"Per-voice speed mode: DISABLED (tune_audio - using exact speeds)")
         
         print(f"{'='*60}")
         
@@ -244,18 +253,19 @@ All standard emotion tags also supported:
         # Add voice settings WITH per-voice speed support
         inputs = []
         for seg in dialogue:
+            voice_id = seg['voice_id']
+            
+            # Find which speaker this is by comparing IDs
+            speaker = None
+            for spk in ['speaker_a', 'speaker_b']:
+                spk_config = voice_ids.get(spk)
+                spk_id = self._extract_voice_id(spk_config)
+                if voice_id == spk_id:
+                    speaker = spk
+                    break
+            
             if use_config_speeds:
                 # PIPELINE MODE: Apply per-voice default
-                voice_id = seg['voice_id']
-                # Find which speaker this is by comparing IDs
-                speaker = None
-                for spk in ['speaker_a', 'speaker_b']:
-                    spk_config = voice_ids.get(spk)
-                    spk_id = self._extract_voice_id(spk_config)
-                    if voice_id == spk_id:
-                        speaker = spk
-                        break
-                
                 if speaker:
                     voice_cfg = self._get_voice_config(speaker, self.language)
                     final_speed = speed * voice_cfg['default_speed']
@@ -263,7 +273,12 @@ All standard emotion tags also supported:
                     final_speed = speed  # Fallback
             else:
                 # TUNE_AUDIO MODE: Use speed directly
-                final_speed = speed
+                if speed_is_dict:
+                    # Per-speaker speeds provided
+                    final_speed = speed.get(speaker, 1.0) if speaker else 1.0
+                else:
+                    # Single speed for all
+                    final_speed = speed
             
             inputs.append({
                 "text": seg['text'], 
