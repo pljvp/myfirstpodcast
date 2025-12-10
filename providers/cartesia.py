@@ -323,46 +323,64 @@ class CartesiaProvider:
             print("[ERROR] No dialogue segments parsed from script")
             return None, 0
         
-        # Convert ElevenLabs speed range (0.7-1.2) to Cartesia range (-1.0 to 1.0)
-        # ElevenLabs: 0.7 = slow, 1.0 = normal, 1.2 = fast
-        # Cartesia: -1.0 = slow, 0.0 = normal, 1.0 = fast
-        cartesia_speed = (speed - 1.0) * 2.0  # Maps 0.7→-0.6, 1.0→0.0, 1.2→0.4
-        cartesia_speed = max(-1.0, min(1.0, cartesia_speed))  # Clamp to valid range
+        # Check if speed is a dict (per-speaker) or float (single speed)
+        speed_is_dict = isinstance(speed, dict)
         
-        print(f"\n{'='*60}")
-        print(f"TTS PROVIDER: CARTESIA")
-        print(f"Model: sonic-english")
-        print(f"Base speed: {speed} (ElevenLabs) → {cartesia_speed:.2f} (Cartesia)")
-        
-        # Show per-voice speeds if enabled
-        if use_config_speeds:
-            print(f"Per-voice speed mode: ENABLED (pipeline)")
-            voice_speeds = self.get_voice_speeds(self.language)
-            for voice, default in voice_speeds.items():
-                final = speed * default
-                print(f"  {voice}: {default:.2f} → final: {final:.2f}")
+        if speed_is_dict:
+            # tune_audio mode with per-speaker speeds
+            cartesia_speeds = {}
+            for speaker in ['speaker_a', 'speaker_b']:
+                spk_speed = speed.get(speaker, 1.0)
+                cartesia_speeds[speaker] = (spk_speed - 1.0) * 2.0
+                cartesia_speeds[speaker] = max(-1.0, min(1.0, cartesia_speeds[speaker]))
+            
+            print(f"\n{'='*60}")
+            print(f"TTS PROVIDER: CARTESIA")
+            print(f"Model: sonic-english")
+            print(f"Per-speaker speeds:")
+            print(f"  Speaker A: {speed['speaker_a']} → {cartesia_speeds['speaker_a']:.2f} (Cartesia)")
+            print(f"  Speaker B: {speed['speaker_b']} → {cartesia_speeds['speaker_b']:.2f} (Cartesia)")
+            print(f"{'='*60}")
         else:
-            print(f"Per-voice speed mode: DISABLED (tune_audio - using exact speeds)")
-        
-        print(f"{'='*60}")
+            # Convert ElevenLabs speed range (0.7-1.2) to Cartesia range (-1.0 to 1.0)
+            # ElevenLabs: 0.7 = slow, 1.0 = normal, 1.2 = fast
+            # Cartesia: -1.0 = slow, 0.0 = normal, 1.0 = fast
+            cartesia_speed = (speed - 1.0) * 2.0  # Maps 0.7→-0.6, 1.0→0.0, 1.2→0.4
+            cartesia_speed = max(-1.0, min(1.0, cartesia_speed))  # Clamp to valid range
+            
+            print(f"\n{'='*60}")
+            print(f"TTS PROVIDER: CARTESIA")
+            print(f"Model: sonic-english")
+            print(f"Base speed: {speed} (ElevenLabs) → {cartesia_speed:.2f} (Cartesia)")
+            
+            # Show per-voice speeds if enabled
+            if use_config_speeds:
+                print(f"Per-voice speed mode: ENABLED (pipeline)")
+                voice_speeds = self.get_voice_speeds(self.language)
+                for voice, default in voice_speeds.items():
+                    final = speed * default
+                    print(f"  {voice}: {default:.2f} → final: {final:.2f}")
+            else:
+                print(f"Per-voice speed mode: DISABLED (tune_audio - using exact speeds)")
+            
+            print(f"{'='*60}")
         
         # Apply speed to all segments WITH PER-VOICE DEFAULTS (if enabled)
         for segment in dialogue:
             if "__experimental_controls" not in segment:
                 segment["__experimental_controls"] = {}
             
+            # Determine which speaker this segment is for
+            voice_id = segment['voice_id']
+            speaker = None
+            for spk in ['speaker_a', 'speaker_b']:
+                config = self._get_voice_config(spk, self.language)
+                if config['id'] == voice_id:
+                    speaker = spk
+                    break
+            
             if use_config_speeds:
                 # PIPELINE MODE: Multiply by config defaults
-                # Determine which speaker this segment is for
-                voice_id = segment['voice_id']
-                speaker = None
-                for spk in ['speaker_a', 'speaker_b']:
-                    config = self._get_voice_config(spk, self.language)
-                    if config['id'] == voice_id:
-                        speaker = spk
-                        break
-                
-                # Get per-voice default speed
                 if speaker:
                     voice_cfg = self._get_voice_config(speaker, self.language)
                     voice_default = voice_cfg['default_speed']
@@ -380,7 +398,16 @@ class CartesiaProvider:
                     segment["__experimental_controls"]["speed"] = cartesia_speed
             else:
                 # TUNE_AUDIO MODE: Use speed directly (ignore config defaults)
-                segment["__experimental_controls"]["speed"] = cartesia_speed
+                if speed_is_dict:
+                    # Per-speaker speeds provided
+                    if speaker:
+                        segment["__experimental_controls"]["speed"] = cartesia_speeds[speaker]
+                    else:
+                        # Fallback to speaker_a speed
+                        segment["__experimental_controls"]["speed"] = cartesia_speeds['speaker_a']
+                else:
+                    # Single speed for all
+                    segment["__experimental_controls"]["speed"] = cartesia_speed
         
         total_chars = sum(len(seg['transcript']) for seg in dialogue)
         print(f"[DEBUG] Total dialogue: {total_chars} characters, {len(dialogue)} segments")
