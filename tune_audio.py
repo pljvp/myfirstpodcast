@@ -1,304 +1,375 @@
 #!/usr/bin/env python3
 """
-Tune Audio - Regenerate audio with different speaker speeds
-Uses existing script, only changes ElevenLabs voice settings
+Tune Audio - Adjust speaker speeds after script generation
+Supports per-speaker speed control for both Cartesia and ElevenLabs
 """
 
 import os
 import sys
-import json
 from pathlib import Path
-from datetime import datetime
 from dotenv import load_dotenv
 
-# Load environment variables
-config_path = Path(__file__).parent / 'config' / '.env'
-load_dotenv(config_path)
+# Load environment
+load_dotenv('config/.env')
 
+# Add parent to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
 
-def load_config():
-    """Load podcast configuration"""
-    config_path = Path('./config/podcast_config.json')
-    with open(config_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+from podcast_pipeline import load_config, get_provider_instance
+import re
 
 
 def list_projects():
     """List available projects"""
-    projects_path = Path('./projects')
-    if not projects_path.exists():
+    projects_dir = Path('./projects')
+    if not projects_dir.exists():
         return []
-    return [p.name for p in projects_path.iterdir() if p.is_dir()]
+    
+    return [d.name for d in projects_dir.iterdir() if d.is_dir() and d.name != '__pycache__']
 
 
 def list_scripts(project_name):
-    """List available scripts in project"""
-    scripts_path = Path(f'./projects/{project_name}/scripts')
-    if not scripts_path.exists():
+    """List available scripts for a project"""
+    scripts_dir = Path(f'./projects/{project_name}/scripts')
+    if not scripts_dir.exists():
         return []
     
-    scripts = []
-    for f in scripts_path.glob('*.txt'):
-        if not f.name.endswith('_sources.txt'):
-            scripts.append(f)
+    scripts = list(scripts_dir.glob('*.txt'))
+    # Filter out source files
+    scripts = [s for s in scripts if '_sources' not in s.name]
     return sorted(scripts, key=lambda x: x.stat().st_mtime, reverse=True)
 
 
-def detect_language(script):
-    """Detect script language from common words"""
-    # Simple heuristic based on common words
-    script_lower = script.lower()
-    
-    german_indicators = ['und', 'der', 'die', 'das', 'ist', 'aber', 'auch']
-    dutch_indicators = ['van', 'het', 'een', 'de', 'dat', 'ook', 'niet']
-    english_indicators = ['the', 'and', 'that', 'this', 'with', 'have']
-    
-    de_count = sum(1 for word in german_indicators if f' {word} ' in script_lower)
-    nl_count = sum(1 for word in dutch_indicators if f' {word} ' in script_lower)
-    en_count = sum(1 for word in english_indicators if f' {word} ' in script_lower)
-    
-    if de_count > max(nl_count, en_count):
-        return 'de'
-    elif nl_count > max(de_count, en_count):
-        return 'nl'
+def detect_provider_from_filename(filename):
+    """Detect provider from filename tag"""
+    if '_CRTS_' in filename:
+        return 'cartesia'
+    elif '_11LB_' in filename:
+        return 'elevenlabs'
     else:
-        return 'en'
+        print(f"WARNING: Could not detect provider from filename: {filename}")
+        print("Defaulting to ElevenLabs")
+        return 'elevenlabs'
 
 
-def generate_audio_with_custom_speeds(script, config, language_code, speed_a, speed_b, project_name, default_speed_a=1.0, default_speed_b=1.0):
-    """Generate audio with different speeds for Speaker A and B"""
+def get_language_from_filename(filename):
+    """Extract language code from filename"""
+    # Format: project_LANG_date_time_provider_draft.txt
+    match = re.search(r'_([A-Z]{2})_\d{4}-\d{2}-\d{2}', filename)
+    if match:
+        lang_code = match.group(1)
+        return lang_code.lower()
+    return 'de'  # default
+
+
+def parse_script_with_speaker_tracking(script, voice_ids):
+    """Parse script and track which segments belong to which speaker
     
-    # Import from main pipeline
-    sys.path.insert(0, str(Path(__file__).parent))
-    from podcast_pipeline import parse_script_to_dialogue, save_audio
+    Returns:
+        List of (text, speaker_key) tuples
+    """
+    lines = script.split('\n')
+    segments = []
+    current_speaker = None
+    current_text = []
     
-    import requests
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        
+        is_speaker_a = any(marker in line.lower() for marker in 
+                          ['speaker a:', '**speaker a', 'speaker a -'])
+        is_speaker_b = any(marker in line.lower() for marker in 
+                          ['speaker b:', '**speaker b', 'speaker b -'])
+        
+        if is_speaker_a:
+            if current_text and current_speaker:
+                segments.append((' '.join(current_text).strip(), current_speaker))
+            
+            current_speaker = 'speaker_a'
+            text = line.split(':', 1)[-1].strip().replace('**', '').strip()
+            current_text = [text] if text else []
+            
+        elif is_speaker_b:
+            if current_text and current_speaker:
+                segments.append((' '.join(current_text).strip(), current_speaker))
+            
+            current_speaker = 'speaker_b'
+            text = line.split(':', 1)[-1].strip().replace('**', '').strip()
+            current_text = [text] if text else []
+            
+        elif current_speaker:
+            if not line.startswith('#') and not line.startswith('---'):
+                current_text.append(line)
     
-    api_key = os.getenv('ELEVENLABS_API_KEY')
-    if not api_key:
-        print("ERROR: ELEVENLABS_API_KEY not found")
+    if current_text and current_speaker:
+        segments.append((' '.join(current_text).strip(), current_speaker))
+    
+    return segments
+
+
+def generate_audio_with_per_speaker_speeds(
+    script, 
+    config, 
+    language_code, 
+    provider_name, 
+    speed_a, 
+    speed_b, 
+    project_name
+):
+    """Generate audio with different speeds for Speaker A and Speaker B
+    
+    This is the TUNE_AUDIO mode - bypasses config defaults and uses exact speeds.
+    
+    Args:
+        script: Script text
+        config: Full config dict
+        language_code: 'de', 'en', 'nl'
+        provider_name: 'cartesia' or 'elevenlabs'
+        speed_a: Speed for Speaker A (0.7-1.2)
+        speed_b: Speed for Speaker B (0.7-1.2)
+        project_name: Project name
+        
+    Returns:
+        Tuple of (audio_data, character_count)
+    """
+    
+    print(f"\n{'='*60}")
+    print(f"TUNE AUDIO MODE - Per-Speaker Speed Control")
+    print(f"Provider: {provider_name.upper()}")
+    print(f"Speaker A speed: {speed_a}")
+    print(f"Speaker B speed: {speed_b}")
+    print(f"{'='*60}\n")
+    
+    # Get provider instance
+    provider = get_provider_instance(provider_name, config)
+    if not provider:
         return None, 0
     
-    # Get voice IDs from providers config (new structure)
-    language = 'german' if language_code == 'de' else 'dutch' if language_code == 'nl' else 'english'
+    # Get language mapping
+    language_map = {'de': 'german', 'en': 'english', 'nl': 'dutch'}
+    language = language_map.get(language_code, 'english')
     
-    # Determine provider from config
-    provider_name = config.get('tts_provider', 'elevenlabs')
+    # Set provider language
+    provider.language = language
     
-    # Get voice configs
+    # Get voice IDs from provider config
     provider_config = config['providers'][provider_name]
-    voice_configs = provider_config['voices'][language]
+    if language not in provider_config.get('voices', {}):
+        print(f"ERROR: No voices for {language} in provider {provider_name}")
+        return None, 0
     
-    # Extract voice IDs (handle both old string and new dict format)
-    def extract_voice_id(voice_config):
-        if isinstance(voice_config, dict):
-            return voice_config.get('id', voice_config)
-        return voice_config
+    voice_config = provider_config['voices'][language]
+    
+    # Extract voice IDs - handle both formats (string and dict)
+    def extract_voice_id(voice_data):
+        if isinstance(voice_data, dict):
+            return voice_data['id']
+        return voice_data
+    
+    voice_id_a = extract_voice_id(voice_config.get('speaker_a_female') or voice_config.get('speaker_a_male'))
+    voice_id_b = extract_voice_id(voice_config.get('speaker_b_male') or voice_config.get('speaker_b_female'))
     
     voice_ids = {
-        'speaker_a': extract_voice_id(voice_configs['speaker_a_female']),
-        'speaker_b': extract_voice_id(voice_configs['speaker_b_male'])
+        'speaker_a': voice_id_a,
+        'speaker_b': voice_id_b
     }
     
-    # Get per-voice default speeds for display
-    def get_default_speed(voice_config):
-        if isinstance(voice_config, dict):
-            return voice_config.get('default_speed', 1.0)
-        return 1.0
+    # Parse script to get segments with speaker tracking
+    segments_with_speakers = parse_script_with_speaker_tracking(script, voice_ids)
     
-    default_speed_a = get_default_speed(voice_configs['speaker_a_female'])
-    default_speed_b = get_default_speed(voice_configs['speaker_b_male'])
-    
-    print(f"[INFO] Per-voice default speeds: A={default_speed_a}, B={default_speed_b}")
-    print(f"[INFO] Using custom speeds (overriding defaults): Speaker A = {speed_a}, Speaker B = {speed_b}")
-    
-    # Parse script
-    dialogue = parse_script_to_dialogue(script, voice_ids)
-    
-    if not dialogue:
-        print("ERROR: Could not parse script")
+    if not segments_with_speakers:
+        print("[ERROR] Could not parse script into segments")
         return None, 0
     
-    # Add custom speeds per speaker
-    for item in dialogue:
-        if item['voice_id'] == voice_ids['speaker_a']:
-            item['voice_settings'] = {'speed': speed_a}
+    print(f"Generating {len(segments_with_speakers)} segments...\n")
+    
+    # Suppress provider debug output by redirecting stdout temporarily
+    import io
+    import contextlib
+    
+    audio_chunks = []
+    total_chars = 0
+    
+    for i, (text, speaker) in enumerate(segments_with_speakers, 1):
+        # Determine speed for this speaker
+        segment_speed = speed_a if speaker == 'speaker_a' else speed_b
+        
+        # Create a mini-script for this segment
+        speaker_label = "Speaker A" if speaker == 'speaker_a' else "Speaker B"
+        mini_script = f"{speaker_label}: {text}"
+        
+        # Simplified output
+        print(f"[Segment {i}/{len(segments_with_speakers)}] - {len(text)} chars")
+        
+        # Capture provider output to suppress verbose debug
+        with contextlib.redirect_stdout(io.StringIO()):
+            # Generate audio for this segment with specific speed
+            # CRITICAL: use_config_speeds=False to bypass config defaults
+            segment_audio, segment_chars = provider.generate_audio(
+                script=mini_script,
+                voice_ids=voice_ids,
+                mode='production',
+                speed=segment_speed,
+                project_name=project_name,
+                use_config_speeds=False  # TUNE_AUDIO MODE - exact speeds
+            )
+        
+        if segment_audio:
+            audio_chunks.append(segment_audio)
+            total_chars += segment_chars
         else:
-            item['voice_settings'] = {'speed': speed_b}
+            print(f"[WARNING] Segment {i} generation failed, skipping")
     
-    print(f"\n[INFO] Generating audio with custom speeds...")
-    print(f"  Dialogue segments: {len(dialogue)}")
+    if not audio_chunks:
+        print("[ERROR] No audio generated")
+        return None, 0
     
-    # Generate audio using ElevenLabs API
-    url = "https://api.elevenlabs.io/v1/text-to-dialogue"
-    headers = {
-        "xi-api-key": api_key,
-        "Content-Type": "application/json"
-    }
+    # Combine audio chunks
+    print(f"\n[INFO] Combining {len(audio_chunks)} audio segments...")
     
-    data = {
-        "dialogue": dialogue,
-        "output_format": "mp3_44100_128"
-    }
+    # Use provider's combine method if available (Cartesia has crossfading)
+    if hasattr(provider, 'combine_audio_segments'):
+        combined_audio = provider.combine_audio_segments(audio_chunks)
+    else:
+        # Simple concatenation for providers without combine method
+        combined_audio = b''.join(audio_chunks)
     
-    try:
-        response = requests.post(url, json=data, headers=headers)
-        response.raise_for_status()
-        
-        audio_data = response.content
-        total_chars = sum(len(item['text']) for item in dialogue)
-        
-        print(f"✓ Audio generated ({len(audio_data) / 1024 / 1024:.1f} MB)")
-        print(f"[USAGE] ElevenLabs - {total_chars} characters processed")
-        
-        return audio_data, total_chars
-        
-    except Exception as e:
-        print(f"[ERROR] Audio generation failed: {str(e)}")
+    if combined_audio:
+        print(f"✓ Audio generated ({len(combined_audio) / 1024 / 1024:.1f} MB)")
+        print(f"[USAGE] {provider_name.title()} - {total_chars} characters processed")
+        return combined_audio, total_chars
+    else:
+        print("[ERROR] Failed to combine audio segments")
         return None, 0
 
 
 def main():
     """Main audio tuning workflow"""
-    print("=== Tune Audio ===\n")
+    print("=== Tune Audio - Per-Speaker Speed Control ===\n")
     
     # Load config
-    config = load_config()
-    
-    if not os.getenv('ELEVENLABS_API_KEY'):
-        print("ERROR: ELEVENLABS_API_KEY not found in config/.env")
+    try:
+        config = load_config()
+    except Exception as e:
+        print(f"ERROR: Could not load config: {e}")
         return
     
     # Select project
     projects = list_projects()
     if not projects:
-        print("No projects found. Run podcast_pipeline.py first.")
+        print("No projects found in ./projects/")
         return
     
     print("Available projects:")
-    for i, proj in enumerate(projects, 1):
-        print(f"  {i}. {proj}")
+    for i, project in enumerate(projects, 1):
+        print(f"  {i}. {project}")
     
-    choice = input(f"\nSelect project (1-{len(projects)}): ").strip()
     try:
-        project_idx = int(choice) - 1
+        project_idx = int(input("\nSelect project number: ")) - 1
         project_name = projects[project_idx]
     except (ValueError, IndexError):
-        print("Invalid choice")
+        print("Invalid selection")
         return
     
     # Select script
     scripts = list_scripts(project_name)
     if not scripts:
-        print(f"No scripts found in project '{project_name}'")
+        print(f"No scripts found for project: {project_name}")
         return
     
-    print(f"\nAvailable scripts in '{project_name}':")
+    print(f"\nAvailable scripts for {project_name}:")
     for i, script in enumerate(scripts, 1):
-        mtime = datetime.fromtimestamp(script.stat().st_mtime)
-        print(f"  {i}. {script.name} ({mtime.strftime('%Y-%m-%d %H:%M')})")
+        print(f"  {i}. {script.name}")
     
-    choice = input(f"\nSelect script (1-{len(scripts)}): ").strip()
     try:
-        script_idx = int(choice) - 1
+        script_idx = int(input("\nSelect script number: ")) - 1
         script_path = scripts[script_idx]
     except (ValueError, IndexError):
-        print("Invalid choice")
+        print("Invalid selection")
         return
     
-    # Load script
+    # Detect provider and language from filename
+    provider_name = detect_provider_from_filename(script_path.name)
+    language_code = get_language_from_filename(script_path.name)
+    
+    print(f"\n[INFO] Detected provider: {provider_name.upper()}")
+    print(f"[INFO] Detected language: {language_code.upper()}")
+    
+    # Check API key availability
+    api_key_env = config['providers'][provider_name]['api_key_env']
+    if not os.getenv(api_key_env):
+        print(f"ERROR: {api_key_env} not found in config/.env")
+        return
+    
+    # Get default speed
+    default_speed = 1.0
+    
+    # Read script
     with open(script_path, 'r', encoding='utf-8') as f:
-        original_script = f.read()
+        script = f.read()
     
-    print(f"\nLoaded: {script_path.name} ({len(original_script)} chars)")
-    
-    # Detect language
-    detected_lang = detect_language(original_script)
-    print(f"Detected language: {detected_lang.upper()}")
-    
-    # Get per-voice default speeds
-    language = 'german' if detected_lang == 'de' else 'dutch' if detected_lang == 'nl' else 'english'
-    provider_name = config.get('tts_provider', 'elevenlabs')
-    provider_config = config['providers'][provider_name]
-    voice_configs = provider_config['voices'][language]
-    
-    def get_default_speed(voice_config):
-        if isinstance(voice_config, dict):
-            return voice_config.get('default_speed', 1.0)
-        return 1.0
-    
-    default_speed_a = get_default_speed(voice_configs['speaker_a_female'])
-    default_speed_b = get_default_speed(voice_configs['speaker_b_male'])
-    
-    print(f"\nPer-voice default speeds from config:")
-    print(f"  Speaker A (Female): {default_speed_a}")
-    print(f"  Speaker B (Male): {default_speed_b}")
+    # Get custom speeds per speaker
+    print(f"\n{'='*60}")
     print("Speed range: 0.7 (slow) to 1.2 (fast)")
-    print()
+    print("Default: 1.0 (normal)")
+    print(f"{'='*60}")
     
-    speed_a_input = input(f"Speaker A speed (default {default_speed_a}): ").strip()
-    if speed_a_input:
-        try:
-            speed_a = float(speed_a_input)
-            speed_a = max(0.7, min(1.2, speed_a))
-        except ValueError:
-            speed_a = default_speed_a
-    else:
-        speed_a = default_speed_a
-    
-    speed_b_input = input(f"Speaker B speed (default {default_speed_b}): ").strip()
-    if speed_b_input:
-        try:
-            speed_b = float(speed_b_input)
-            speed_b = max(0.7, min(1.2, speed_b))
-        except ValueError:
-            speed_b = default_speed_b
-    else:
-        speed_b = default_speed_b
-    
-    # Confirm
-    print(f"\nRegenerate audio with:")
-    print(f"  Speaker A (Female Lead): {speed_a}")
-    print(f"  Speaker B (Male Skeptic): {speed_b}")
-    confirm = input("\nContinue? (y/N): ").strip().lower()
-    if confirm != 'y':
-        print("Cancelled")
+    try:
+        speed_a_input = input(f"\nSpeaker A speed (0.7-1.2, default {default_speed}): ")
+        speed_a = float(speed_a_input) if speed_a_input.strip() else default_speed
+        
+        speed_b_input = input(f"Speaker B speed (0.7-1.2, default {default_speed}): ")
+        speed_b = float(speed_b_input) if speed_b_input.strip() else default_speed
+        
+        if not (0.7 <= speed_a <= 1.2) or not (0.7 <= speed_b <= 1.2):
+            print("ERROR: Speeds must be between 0.7 and 1.2")
+            return
+    except ValueError:
+        print("ERROR: Invalid speed value")
         return
     
-    # Clean script (remove sources)
-    sys.path.insert(0, str(Path(__file__).parent))
-    from podcast_pipeline import clean_script_for_audio, save_audio
+    # Generate audio with per-speaker custom speeds
+    print(f"\n[INFO] Generating audio with custom per-speaker speeds...")
     
-    cleaned_script = clean_script_for_audio(original_script)
-    
-    # Generate audio
-    audio_data, chars = generate_audio_with_custom_speeds(
-        cleaned_script, 
-        config, 
-        detected_lang, 
-        speed_a, 
-        speed_b, 
-        project_name,
-        default_speed_a,
-        default_speed_b
+    audio_data, char_count = generate_audio_with_per_speaker_speeds(
+        script=script,
+        config=config,
+        language_code=language_code,
+        provider_name=provider_name,
+        speed_a=speed_a,
+        speed_b=speed_b,
+        project_name=project_name
     )
     
-    if audio_data:
-        # Save audio with speeds in filename
-        timestamp = datetime.now().strftime('%Y-%m-%d')
-        filename = f"{project_name}_tuned_A{speed_a}_B{speed_b}_{detected_lang}_{timestamp}_TUNED.mp3"
-        audio_path = Path(f"./projects/{project_name}/audio/{filename}")
-        
-        with open(audio_path, 'wb') as f:
-            f.write(audio_data)
-        
-        print(f"\n✓ Audio saved: {audio_path}")
-        print(f"  Characters: {chars}")
-        print(f"  Speeds: A={speed_a}, B={speed_b}")
-    else:
-        print("\n✗ Audio generation failed")
+    if not audio_data:
+        print("ERROR: Audio generation failed")
+        return
     
-    print("\nDone!")
+    # Save audio with speeds in filename
+    from datetime import datetime
+    date = datetime.now().strftime('%Y-%m-%d')
+    time = datetime.now().strftime('%H-%M')
+    provider_tag = 'CRTS' if provider_name == 'cartesia' else '11LB'
+    
+    filename = f"{project_name}_A{speed_a:.2f}_B{speed_b:.2f}_{language_code}_{date}_{time}_{provider_tag}_TUNED.mp3"
+    output_path = Path(f'./projects/{project_name}/audio/{filename}')
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(output_path, 'wb') as f:
+        f.write(audio_data)
+    
+    print(f"\n{'='*60}")
+    print("✓ AUDIO SAVED")
+    print(f"{'='*60}")
+    print(f"File: {output_path.name}")
+    print(f"Location: {output_path}")
+    print(f"Speaker A speed: {speed_a}")
+    print(f"Speaker B speed: {speed_b}")
+    print(f"Provider: {provider_name.upper()}")
+    print(f"Characters processed: {char_count}")
+    print(f"{'='*60}")
 
 
 if __name__ == "__main__":
