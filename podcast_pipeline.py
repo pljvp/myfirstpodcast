@@ -436,7 +436,7 @@ Please revise this script according to the following guidance:
 {revision_guidance}
 
 Provide the complete revised script maintaining the same format with Speaker A and Speaker B labels."""
-    
+
     print("\n" + "="*60)
     print("CLAUDE IS REVISING SCRIPT...")
     print("="*60)
@@ -446,10 +446,637 @@ Provide the complete revised script maintaining the same format with Speaker A a
     print("")
     print("This may take 30-60 seconds...")
     print("="*60 + "\n")
-    
+
     return generate_script(prompt, api_key)
 
 
+# =============================================================================
+# MULTI-CALL ARCHITECTURE FUNCTIONS
+# =============================================================================
+
+import math
+
+def estimate_api_calls(duration_minutes, doc_count, web_source_count, config):
+    """
+    Calculate API calls needed and estimated cost.
+    Returns dict with breakdown and totals.
+    """
+    gen_config = config.get('script_generation', {})
+    words_per_call = gen_config.get('words_per_call', 2000)
+    docs_per_batch = gen_config.get('docs_per_batch', 3)
+    sources_per_call = gen_config.get('sources_per_research_call', 10)
+
+    word_count = duration_minutes * 222
+
+    # Research calls (sources_per_call sources per call)
+    research_calls = math.ceil(web_source_count / sources_per_call) if web_source_count > 0 else 0
+
+    # Document processing calls (docs_per_batch docs per batch)
+    doc_calls = math.ceil(doc_count / docs_per_batch) if doc_count > 0 else 0
+
+    # Outline call (always 1 for multi-call mode)
+    outline_calls = 1
+
+    # Script generation calls (~words_per_call words per call)
+    script_calls = math.ceil(word_count / words_per_call)
+
+    # Synthesis call (1 if multi-section, 0 if single section)
+    synthesis_calls = 1 if script_calls > 1 else 0
+
+    total_calls = research_calls + doc_calls + outline_calls + script_calls + synthesis_calls
+
+    # Cost estimation (Sonnet: ~$0.003/1K input + $0.015/1K output)
+    # Average call: ~3K input, ~2K output = ~$0.009 + ~$0.030 = ~$0.04
+    estimated_cost = total_calls * 0.04
+
+    return {
+        'word_count': word_count,
+        'research_calls': research_calls,
+        'doc_calls': doc_calls,
+        'outline_calls': outline_calls,
+        'script_calls': script_calls,
+        'synthesis_calls': synthesis_calls,
+        'total_calls': total_calls,
+        'estimated_cost': estimated_cost
+    }
+
+
+def display_generation_plan(duration, doc_count, web_source_count, config):
+    """
+    Display the generation plan and get user confirmation.
+    Returns True if user confirms, False otherwise.
+    """
+    estimate = estimate_api_calls(duration, doc_count, web_source_count, config)
+
+    print("\n" + "="*60)
+    print("GENERATION PLAN")
+    print("="*60)
+    print(f"  Duration: {duration} minutes (~{estimate['word_count']} words)")
+    print(f"  Web sources: {web_source_count} requested")
+    print(f"  Documents: {doc_count} file(s)")
+    print("-"*60)
+    print("  ESTIMATED CLAUDE API CALLS:")
+    if estimate['research_calls'] > 0:
+        print(f"  ├─ Research phase:     {estimate['research_calls']} call(s)")
+    if estimate['doc_calls'] > 0:
+        print(f"  ├─ Document summaries: {estimate['doc_calls']} call(s)")
+    print(f"  ├─ Outline generation: {estimate['outline_calls']} call")
+    print(f"  ├─ Script generation:  {estimate['script_calls']} call(s)")
+    if estimate['synthesis_calls'] > 0:
+        print(f"  └─ Synthesis pass:     {estimate['synthesis_calls']} call")
+    else:
+        print(f"  └─ Synthesis pass:     0 (single section)")
+    print("-"*60)
+    print(f"  TOTAL: {estimate['total_calls']} Claude API calls")
+    print(f"  Est. cost: ~${estimate['estimated_cost']:.2f}")
+    print("="*60)
+
+    confirm = input("\nProceed with generation? (Y/n): ").strip().lower()
+    return confirm != 'n'
+
+
+def research_web_sources(topic, research_context, source_count, api_key, config):
+    """
+    Conduct web research in multiple calls if needed.
+    Returns combined research findings.
+    """
+    gen_config = config.get('script_generation', {})
+    sources_per_call = gen_config.get('sources_per_research_call', 10)
+    show_progress = gen_config.get('show_progress', True)
+
+    client = Anthropic(api_key=api_key)
+
+    total_calls = math.ceil(source_count / sources_per_call)
+    all_findings = []
+    all_sources = []
+
+    for call_num in range(1, total_calls + 1):
+        sources_this_call = min(sources_per_call, source_count - (call_num - 1) * sources_per_call)
+
+        if show_progress:
+            print(f"\n[RESEARCH] Call {call_num}/{total_calls}: Finding {sources_this_call} sources...")
+
+        prompt = f"""You are a research assistant. Search the web and find {sources_this_call} high-quality, recent sources about:
+
+TOPIC: {topic}
+
+RESEARCH FOCUS:
+{research_context}
+
+For each source:
+1. Search for recent (2024-2025 preferred) authoritative content
+2. Extract key insights, facts, statistics, and expert opinions
+3. Note any controversies or different perspectives
+
+OUTPUT FORMAT:
+### SOURCE 1: [Title]
+URL: [url]
+KEY INSIGHTS:
+- [insight 1]
+- [insight 2]
+- [insight 3]
+
+### SOURCE 2: [Title]
+...
+
+After all sources, provide:
+### SYNTHESIS
+[2-3 paragraph summary of the most important findings across all sources]
+"""
+
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4000,
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            findings = response.content[0].text
+            all_findings.append(findings)
+
+            usage = response.usage
+            if show_progress:
+                print(f"    ✓ Found sources (Input: {usage.input_tokens}, Output: {usage.output_tokens} tokens)")
+
+        except Exception as e:
+            print(f"    ✗ Research call {call_num} failed: {e}")
+            continue
+
+    # Combine all findings
+    combined = "\n\n---\n\n".join(all_findings)
+    return combined
+
+
+def process_documents_batched(documents_text, project_name, api_key, config):
+    """
+    Process source documents in batches, creating summaries.
+    Returns combined document summaries.
+    """
+    gen_config = config.get('script_generation', {})
+    docs_per_batch = gen_config.get('docs_per_batch', 3)
+    show_progress = gen_config.get('show_progress', True)
+
+    # Split documents by the ### SOURCE: marker
+    doc_sections = documents_text.split('### SOURCE:')
+    doc_sections = [d.strip() for d in doc_sections if d.strip()]
+
+    if not doc_sections:
+        return ""
+
+    client = Anthropic(api_key=api_key)
+
+    # Create batches
+    batches = []
+    for i in range(0, len(doc_sections), docs_per_batch):
+        batch = doc_sections[i:i + docs_per_batch]
+        batches.append(batch)
+
+    all_summaries = []
+
+    for batch_num, batch in enumerate(batches, 1):
+        if show_progress:
+            print(f"\n[DOCUMENTS] Processing batch {batch_num}/{len(batches)} ({len(batch)} docs)...")
+
+        batch_text = "\n\n### SOURCE:".join(batch)
+
+        prompt = f"""Summarize the following source documents for use in a podcast script.
+
+For each document, extract:
+1. Main thesis/argument
+2. Key facts, statistics, and data points
+3. Notable quotes or expert opinions
+4. Practical examples or case studies
+
+DOCUMENTS:
+### SOURCE:{batch_text}
+
+OUTPUT FORMAT:
+### DOCUMENT SUMMARY 1: [filename]
+MAIN POINTS:
+- [point 1]
+- [point 2]
+KEY DATA:
+- [statistic or fact]
+USABLE QUOTES:
+- "[quote]"
+
+### DOCUMENT SUMMARY 2: [filename]
+...
+
+Keep summaries concise but preserve specific details that would be valuable for podcast discussion.
+"""
+
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=3000,
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            summary = response.content[0].text
+            all_summaries.append(summary)
+
+            usage = response.usage
+            if show_progress:
+                print(f"    ✓ Batch summarized (Input: {usage.input_tokens}, Output: {usage.output_tokens} tokens)")
+
+        except Exception as e:
+            print(f"    ✗ Document batch {batch_num} failed: {e}")
+            continue
+
+    return "\n\n".join(all_summaries)
+
+
+def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config):
+    """
+    Generate a structured outline for the podcast.
+    Returns outline text that guides script generation.
+    """
+    show_progress = config.get('script_generation', {}).get('show_progress', True)
+
+    if show_progress:
+        print(f"\n[OUTLINE] Generating story arc and section breakdown...")
+
+    client = Anthropic(api_key=api_key)
+
+    # Calculate sections based on word count
+    words_per_call = config.get('script_generation', {}).get('words_per_call', 2000)
+    num_sections = math.ceil(word_count / words_per_call)
+    words_per_section = word_count // num_sections
+    minutes_per_section = duration // num_sections
+
+    prompt = f"""Create a detailed podcast outline for a {duration}-minute episode (~{word_count} words total).
+
+TOPIC: {topic}
+STYLE: {style_description}
+LANGUAGE: {language}
+NUMBER OF SECTIONS: {num_sections} (each ~{words_per_section} words, ~{minutes_per_section} minutes)
+
+RESEARCH FINDINGS:
+{research_summary[:8000] if research_summary else "No web research provided."}
+
+DOCUMENT INSIGHTS:
+{doc_summary[:4000] if doc_summary else "No source documents provided."}
+
+CREATE AN OUTLINE WITH:
+
+1. **OVERALL ARC**: Describe the narrative journey (hook → exploration → insight → conclusion)
+
+2. **SPEAKER DYNAMICS**:
+   - Speaker A personality and role (e.g., curious interviewer, enthusiast)
+   - Speaker B personality and role (e.g., expert, skeptic, storyteller)
+
+3. **SECTION BREAKDOWN** (one for each of the {num_sections} sections):
+
+### SECTION 1: [Title] (~{words_per_section} words)
+TIME: 0:00 - {minutes_per_section}:00
+SPEAKER LEAD: [A or B]
+CONTENT:
+- Opening hook: [specific hook idea]
+- Key points to cover: [bullet list]
+- Facts/stats to include: [from research]
+- Emotional beats: [curiosity, surprise, humor, etc.]
+TRANSITION TO NEXT: "[Exact transition phrase]"
+
+### SECTION 2: [Title] (~{words_per_section} words)
+...
+
+4. **KEY MOMENTS**: List 3-5 specific moments that should feel memorable (a surprising fact, a funny exchange, an "aha" moment)
+
+5. **CLOSING**: How the episode should end (call to action, reflection, teaser)
+
+Be specific. Include actual facts from the research. This outline will guide multiple script-generation calls.
+"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=4000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        outline = response.content[0].text
+        usage = response.usage
+
+        if show_progress:
+            print(f"    ✓ Outline created (Input: {usage.input_tokens}, Output: {usage.output_tokens} tokens)")
+
+        return outline, usage
+
+    except Exception as e:
+        print(f"    ✗ Outline generation failed: {e}")
+        return None, None
+
+
+def generate_script_section(section_num, total_sections, outline, previous_section_end,
+                           target_words, style_template, language, api_key, config):
+    """
+    Generate a single section of the podcast script.
+    Returns the section text.
+    """
+    show_progress = config.get('script_generation', {}).get('show_progress', True)
+
+    if show_progress:
+        print(f"\n[SCRIPT] Generating section {section_num}/{total_sections} (~{target_words} words)...")
+
+    client = Anthropic(api_key=api_key)
+
+    # Context from previous section for continuity
+    continuity_context = ""
+    if previous_section_end:
+        continuity_context = f"""
+PREVIOUS SECTION ENDING (maintain continuity):
+{previous_section_end}
+
+Continue naturally from this point. Do NOT repeat content.
+"""
+
+    # Section-specific instructions
+    if section_num == 1:
+        section_instruction = "This is the OPENING section. Start with an engaging hook. Introduce the topic and speakers' dynamic."
+    elif section_num == total_sections:
+        section_instruction = "This is the CLOSING section. Build toward a satisfying conclusion. Include summary and call-to-action."
+    else:
+        section_instruction = f"This is the MIDDLE section {section_num}. Continue building on previous content. Maintain energy and introduce new angles."
+
+    prompt = f"""Generate section {section_num} of {total_sections} for a podcast script.
+
+TARGET: ~{target_words} words for this section
+LANGUAGE: {language}
+
+{section_instruction}
+
+OUTLINE (follow this structure):
+{outline}
+
+{continuity_context}
+
+STYLE REQUIREMENTS:
+{style_template[:2000] if style_template else "Natural, conversational dialogue between Speaker A and Speaker B."}
+
+OUTPUT REQUIREMENTS:
+1. Use "Speaker A:" and "Speaker B:" labels
+2. Include emotion tags: [excited], [thoughtful], [laughs], [surprised], etc.
+3. Include natural interruptions and reactions
+4. Write EXACTLY this section's content from the outline
+5. End at a natural transition point (NOT mid-sentence)
+6. Do NOT include sources list - just dialogue
+
+Generate the script section now:
+"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=4000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        section_text = response.content[0].text
+        usage = response.usage
+
+        if show_progress:
+            word_count = len(section_text.split())
+            print(f"    ✓ Section {section_num} generated ({word_count} words, Output: {usage.output_tokens} tokens)")
+
+        return section_text, usage
+
+    except Exception as e:
+        print(f"    ✗ Section {section_num} generation failed: {e}")
+        return None, None
+
+
+def generate_script_multi_call(topic, duration, word_count, outline, style_template, language, api_key, config):
+    """
+    Orchestrate multi-call script generation using the outline.
+    Returns complete script text.
+    """
+    gen_config = config.get('script_generation', {})
+    words_per_call = gen_config.get('words_per_call', 2000)
+
+    num_sections = math.ceil(word_count / words_per_call)
+    words_per_section = word_count // num_sections
+
+    print("\n" + "="*60)
+    print(f"GENERATING SCRIPT ({num_sections} sections)")
+    print("="*60)
+
+    sections = []
+    previous_ending = None
+    total_usage = {'input': 0, 'output': 0}
+
+    for section_num in range(1, num_sections + 1):
+        section_text, usage = generate_script_section(
+            section_num=section_num,
+            total_sections=num_sections,
+            outline=outline,
+            previous_section_end=previous_ending,
+            target_words=words_per_section,
+            style_template=style_template,
+            language=language,
+            api_key=api_key,
+            config=config
+        )
+
+        if not section_text:
+            print(f"    ✗ Failed to generate section {section_num}, aborting")
+            return None, None
+
+        sections.append(section_text)
+
+        # Keep last ~500 words for continuity
+        words = section_text.split()
+        if len(words) > 100:
+            previous_ending = ' '.join(words[-100:])
+        else:
+            previous_ending = section_text
+
+        if usage:
+            total_usage['input'] += usage.input_tokens
+            total_usage['output'] += usage.output_tokens
+
+    # Combine sections
+    combined_script = "\n\n".join(sections)
+
+    print(f"\n[SCRIPT] All {num_sections} sections generated")
+    print(f"[USAGE] Total - Input: {total_usage['input']}, Output: {total_usage['output']} tokens")
+
+    return combined_script, total_usage
+
+
+def synthesize_script(raw_script, outline, language, api_key, config):
+    """
+    Final pass to smooth transitions and ensure consistency.
+    Returns polished script.
+    """
+    show_progress = config.get('script_generation', {}).get('show_progress', True)
+
+    if show_progress:
+        print(f"\n[SYNTHESIS] Polishing transitions and consistency...")
+
+    client = Anthropic(api_key=api_key)
+
+    prompt = f"""Review and polish this podcast script. The script was generated in sections and may need smoothing.
+
+TASKS:
+1. Smooth any awkward transitions between sections
+2. Ensure consistent speaker personalities throughout
+3. Remove any redundant content (repeated facts or phrases)
+4. Ensure emotional tags are balanced (not too many, not too few)
+5. Fix any formatting inconsistencies
+6. Maintain the target language: {language}
+
+IMPORTANT:
+- Keep ALL content - only smooth and polish
+- Preserve all [emotion tags] and speaker labels
+- Do NOT add a sources section
+- Output the complete polished script
+
+OUTLINE (for reference):
+{outline[:2000]}
+
+SCRIPT TO POLISH:
+{raw_script}
+
+OUTPUT the polished script:
+"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=16000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        polished = response.content[0].text
+        usage = response.usage
+
+        if show_progress:
+            print(f"    ✓ Script polished (Input: {usage.input_tokens}, Output: {usage.output_tokens} tokens)")
+
+        return polished, usage
+
+    except Exception as e:
+        print(f"    ✗ Synthesis failed: {e}")
+        return raw_script, None  # Return unpolished if synthesis fails
+
+
+def run_multi_call_generation(topic, duration, word_count, research_context, source_documents,
+                              web_source_count, style_template, style_description, language,
+                              api_key, config, project_name):
+    """
+    Main orchestrator for multi-call script generation.
+    Returns final script text.
+    """
+    print("\n" + "="*60)
+    print("MULTI-CALL SCRIPT GENERATION")
+    print("="*60)
+
+    total_usage = {'input': 0, 'output': 0}
+
+    # Phase 1: Research
+    research_summary = ""
+    if web_source_count > 0:
+        print("\n[PHASE 1/5] Web Research")
+        research_summary = research_web_sources(
+            topic=topic,
+            research_context=research_context,
+            source_count=web_source_count,
+            api_key=api_key,
+            config=config
+        )
+    else:
+        print("\n[PHASE 1/5] Web Research - Skipped (0 sources requested)")
+
+    # Phase 2: Document Processing
+    doc_summary = ""
+    if source_documents:
+        print("\n[PHASE 2/5] Document Processing")
+        doc_summary = process_documents_batched(
+            documents_text=source_documents,
+            project_name=project_name,
+            api_key=api_key,
+            config=config
+        )
+    else:
+        print("\n[PHASE 2/5] Document Processing - Skipped (no documents)")
+
+    # Phase 3: Outline Generation
+    print("\n[PHASE 3/5] Outline Generation")
+    outline, outline_usage = generate_outline(
+        topic=topic,
+        duration=duration,
+        word_count=word_count,
+        research_summary=research_summary,
+        doc_summary=doc_summary,
+        style_description=style_description,
+        language=language,
+        api_key=api_key,
+        config=config
+    )
+
+    if not outline:
+        print("✗ Failed to generate outline")
+        return None
+
+    if outline_usage:
+        total_usage['input'] += outline_usage.input_tokens
+        total_usage['output'] += outline_usage.output_tokens
+
+    # Save outline for debugging
+    outline_path = Path(f"./projects/{project_name}/debug/outline.txt")
+    outline_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(outline_path, 'w', encoding='utf-8') as f:
+        f.write(outline)
+    print(f"    [DEBUG] Outline saved to: {outline_path}")
+
+    # Phase 4: Script Generation
+    print("\n[PHASE 4/5] Script Generation")
+    raw_script, script_usage = generate_script_multi_call(
+        topic=topic,
+        duration=duration,
+        word_count=word_count,
+        outline=outline,
+        style_template=style_template,
+        language=language,
+        api_key=api_key,
+        config=config
+    )
+
+    if not raw_script:
+        print("✗ Failed to generate script sections")
+        return None
+
+    # Phase 5: Synthesis (only if multiple sections)
+    gen_config = config.get('script_generation', {})
+    words_per_call = gen_config.get('words_per_call', 2000)
+    num_sections = math.ceil(word_count / words_per_call)
+
+    if num_sections > 1:
+        print("\n[PHASE 5/5] Synthesis & Polish")
+        final_script, synth_usage = synthesize_script(
+            raw_script=raw_script,
+            outline=outline,
+            language=language,
+            api_key=api_key,
+            config=config
+        )
+        if synth_usage:
+            total_usage['input'] += synth_usage.input_tokens
+            total_usage['output'] += synth_usage.output_tokens
+    else:
+        print("\n[PHASE 5/5] Synthesis - Skipped (single section)")
+        final_script = raw_script
+
+    print("\n" + "="*60)
+    print("✓ MULTI-CALL GENERATION COMPLETE")
+    print("="*60)
+    word_count_actual = len(final_script.split())
+    print(f"  Final script: {word_count_actual} words")
+    print(f"  Total tokens - Input: {total_usage['input']}, Output: {total_usage['output']}")
+    print("="*60)
+
+    return final_script
 
 
 def fetch_and_save_sources_separately(project_name, topic, api_key):
@@ -1420,7 +2047,26 @@ def main():
     
     word_count = duration * 222
     print(f"Calculated word count: ~{word_count} words (222 words/min)")
-    
+
+    # Web source count (for multi-call mode)
+    gen_config = config.get('script_generation', {})
+    if gen_config.get('enable_multi_call', False) and not is_test_mode:
+        default_sources = gen_config.get('default_web_sources', 8)
+        max_sources = gen_config.get('max_web_sources', 20)
+        print(f"\nWeb research sources (more sources = more thorough, more API calls)")
+        source_input = input(f"Number of sources to research (1-{max_sources}, default {default_sources}): ").strip()
+        if source_input:
+            try:
+                web_source_count = int(source_input)
+                web_source_count = max(1, min(max_sources, web_source_count))
+            except ValueError:
+                web_source_count = default_sources
+        else:
+            web_source_count = default_sources
+        print(f"Will research {web_source_count} web sources")
+    else:
+        web_source_count = 0  # Test mode or single-call mode
+
     # 2-4. Style, language, mode selection
     styles = list(config['styles'].keys())
     style_names = [config['styles'][s]['description'] for s in styles]
@@ -1722,7 +2368,21 @@ def main():
     """
             print(f"\n[INFO] Added {len(source_documents)} characters from source documents to prompt")
     
-        # 7b. Review final prompt (including source documents if added)
+        # 7b. Count documents for estimation
+        doc_count = 0
+        if source_documents:
+            doc_count = len([s for s in source_documents.split('### SOURCE:') if s.strip()])
+
+        # 7c. Multi-call mode: Show generation plan and get confirmation
+        gen_config = config.get('script_generation', {})
+        use_multi_call = gen_config.get('enable_multi_call', False) and not is_test_mode
+
+        if use_multi_call:
+            if not display_generation_plan(duration, doc_count, web_source_count, config):
+                print("Cancelled")
+                return
+
+        # 7d. Review final prompt (including source documents if added)
         print("\n" + "="*60)
         print("PROMPT REVIEW")
         print("="*60)
@@ -1730,42 +2390,90 @@ def main():
         print(f"Duration: {duration} minutes (~{word_count} words)")
         print(f"Style: {config['styles'][selected_style]['description']}")
         print(f"Language: {config['languages'][selected_language]['name']}")
-        if source_documents:
-            doc_count = len([s for s in source_documents.split('### SOURCE:') if s.strip()])
+        if use_multi_call:
+            print(f"Web Sources: {web_source_count} (multi-call research)")
+        if doc_count > 0:
             print(f"Source Documents: {doc_count} document(s) attached")
         else:
-            print(f"Source Documents: None (web research only)")
+            print(f"Source Documents: None")
+        if use_multi_call:
+            print(f"Mode: MULTI-CALL (scalable generation)")
+        else:
+            print(f"Mode: SINGLE-CALL (legacy)")
         print("="*60)
-        print("\nFull prompt saved for your review if needed.")
-        print(f"Location: {Path(f'./projects/{project_name}/prompts/temp_prompt.txt').absolute()}")
-        print("="*60)
-    
-        temp_prompt_path = Path(f"./projects/{project_name}/prompts/temp_prompt.txt")
-        save_prompt(prompt, project_name, "temp_prompt.txt")
-    
-        confirm = get_user_input("\nOptions", [
-            "Confirm and send to Claude",
-            "Edit prompt in text editor",
-            "Cancel"
-        ])
-    
-        if confirm == 1:
-            print(f"\nOpening prompt in your text editor...")
-            subprocess.run([get_text_editor(), str(temp_prompt_path)])
-            with open(temp_prompt_path, 'r', encoding='utf-8') as f:
-                prompt = f.read()
-            print("✓ Prompt updated")
-        elif confirm == 2:
-            print("Cancelled")
-            return
-    
+
+        if not use_multi_call:
+            # Legacy mode: show prompt file location
+            print("\nFull prompt saved for your review if needed.")
+            print(f"Location: {Path(f'./projects/{project_name}/prompts/temp_prompt.txt').absolute()}")
+            print("="*60)
+
+            temp_prompt_path = Path(f"./projects/{project_name}/prompts/temp_prompt.txt")
+            save_prompt(prompt, project_name, "temp_prompt.txt")
+
+            confirm = get_user_input("\nOptions", [
+                "Confirm and send to Claude",
+                "Edit prompt in text editor",
+                "Cancel"
+            ])
+
+            if confirm == 1:
+                print(f"\nOpening prompt in your text editor...")
+                subprocess.run([get_text_editor(), str(temp_prompt_path)])
+                with open(temp_prompt_path, 'r', encoding='utf-8') as f:
+                    prompt = f.read()
+                print("✓ Prompt updated")
+            elif confirm == 2:
+                print("Cancelled")
+                return
+        else:
+            # Multi-call mode: confirm to proceed (already confirmed in generation plan)
+            print("\n[INFO] Multi-call mode: Research, outline, and script will be generated in phases.")
+            proceed = input("Press Enter to start generation (or 'n' to cancel): ").strip().lower()
+            if proceed == 'n':
+                print("Cancelled")
+                return
+
         # 8. Generate script
-        script, claude_usage = generate_script(prompt, anthropic_key)
-        if not script:
-            print("Failed to generate script")
-            return
-    
-        script = extract_and_save_sources(script, project_name)
+        if use_multi_call:
+            # Multi-call generation
+            style_description = config['styles'][selected_style]['description']
+
+            # Get style template for reference
+            template_file = config['styles'][selected_style]['default_template_file']
+            template_file = template_file.replace('{language}', selected_language)
+            style_template = ""
+            if Path(template_file).exists():
+                with open(template_file, 'r', encoding='utf-8') as f:
+                    style_template = f.read()
+
+            script = run_multi_call_generation(
+                topic=topic,
+                duration=duration,
+                word_count=word_count,
+                research_context=research_context,
+                source_documents=source_documents,
+                web_source_count=web_source_count,
+                style_template=style_template,
+                style_description=style_description,
+                language=selected_language,
+                api_key=anthropic_key,
+                config=config,
+                project_name=project_name
+            )
+
+            if not script:
+                print("Failed to generate script")
+                return
+
+        else:
+            # Legacy single-call generation
+            script, claude_usage = generate_script(prompt, anthropic_key)
+            if not script:
+                print("Failed to generate script")
+                return
+
+            script = extract_and_save_sources(script, project_name)
     
         draft_num = 1
         if is_test_mode:

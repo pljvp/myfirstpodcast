@@ -1,4 +1,13 @@
 {
+  "script_generation": {
+    "enable_multi_call": true,
+    "words_per_call": 2000,
+    "docs_per_batch": 3,
+    "sources_per_research_call": 10,
+    "default_web_sources": 8,
+    "max_web_sources": 20,
+    "show_progress": true
+  },
   "providers": {
     "elevenlabs": {
       "api_key_env": "ELEVENLABS_API_KEY",
