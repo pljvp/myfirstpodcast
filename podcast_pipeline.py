@@ -814,15 +814,26 @@ OUTLINE (follow this structure):
 STYLE REQUIREMENTS:
 {style_template[:2000] if style_template else "Natural, conversational dialogue between Speaker A and Speaker B."}
 
-OUTPUT REQUIREMENTS:
-1. Use "Speaker A:" and "Speaker B:" labels
-2. Include emotion tags: [excited], [thoughtful], [laughs], [surprised], etc.
-3. Include natural interruptions and reactions
-4. Write EXACTLY this section's content from the outline
-5. End at a natural transition point (NOT mid-sentence)
-6. Do NOT include sources list - just dialogue
+CRITICAL FORMAT REQUIREMENTS:
+1. Start IMMEDIATELY with dialogue - NO title, NO header, NO introduction text
+2. Use EXACTLY this format: "Speaker A:" or "Speaker B:" (NO asterisks, NO bold, NO markdown)
+3. NO blank lines between dialogue segments - each line follows immediately after the previous
+4. Include emotion tags in square brackets: [excited], [thoughtful], [laughs], etc.
+5. Include natural interruptions and reactions
+6. End at a natural transition point (NOT mid-sentence)
+7. Do NOT include sources, titles, dividers (---), or any non-dialogue content
 
-Generate the script section now:
+CORRECT FORMAT EXAMPLE:
+Speaker A: [excited] This is amazing news!
+Speaker B: [curious] Tell me more about it.
+Speaker A: [thoughtful] Well, the research shows...
+
+WRONG FORMAT (DO NOT USE):
+**Speaker A:** [excited] This is amazing news!
+
+**Speaker B:** [curious] Tell me more about it.
+
+Generate the script section now (start directly with "Speaker A:" or "Speaker B:"):
 """
 
     try:
@@ -926,11 +937,22 @@ TASKS:
 5. Fix any formatting inconsistencies
 6. Maintain the target language: {language}
 
-IMPORTANT:
-- Keep ALL content - only smooth and polish
-- Preserve all [emotion tags] and speaker labels
-- Do NOT add a sources section
-- Output the complete polished script
+CRITICAL FORMAT REQUIREMENTS:
+- Use EXACTLY "Speaker A:" and "Speaker B:" format (NO asterisks, NO bold, NO markdown like **)
+- NO blank lines between dialogue segments - each line immediately follows the previous
+- NO title or header at the start - begin directly with dialogue
+- NO sources section, NO dividers (---), NO non-dialogue content
+- Preserve all [emotion tags] in square brackets
+
+CORRECT OUTPUT FORMAT:
+Speaker A: [excited] First line of dialogue here.
+Speaker B: [curious] Response follows immediately.
+Speaker A: [thoughtful] And so on...
+
+WRONG FORMAT (DO NOT USE):
+**Speaker A:** [excited] Wrong format with asterisks.
+
+**Speaker B:** [curious] Wrong with blank lines between.
 
 OUTLINE (for reference):
 {outline[:2000]}
@@ -938,7 +960,7 @@ OUTLINE (for reference):
 SCRIPT TO POLISH:
 {raw_script}
 
-OUTPUT the polished script:
+OUTPUT the polished script (start directly with "Speaker A:" or "Speaker B:"):
 """
 
     try:
@@ -959,6 +981,59 @@ OUTPUT the polished script:
     except Exception as e:
         print(f"    ✗ Synthesis failed: {e}")
         return raw_script, None  # Return unpolished if synthesis fails
+
+
+def clean_script_format(script):
+    """
+    Post-process script to ensure clean format for TTS.
+    Removes markdown, titles, blank lines between dialogue.
+    """
+    import re
+
+    lines = script.split('\n')
+    cleaned_lines = []
+    in_dialogue = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Skip empty lines
+        if not stripped:
+            continue
+
+        # Skip title lines (# headers)
+        if stripped.startswith('#'):
+            continue
+
+        # Skip divider lines (---)
+        if stripped.startswith('---') or stripped == '---':
+            continue
+
+        # Skip source sections
+        if 'SOURCES FOUND' in stripped.upper() or 'SOURCE:' in stripped.upper():
+            break  # Stop processing once we hit sources
+
+        # Check if this is a dialogue line
+        is_dialogue = any(marker in stripped.lower() for marker in
+                         ['speaker a:', 'speaker b:', '**speaker a', '**speaker b'])
+
+        if is_dialogue:
+            in_dialogue = True
+            # Remove markdown bold formatting
+            cleaned = stripped
+            cleaned = re.sub(r'\*\*Speaker ([AB]):\*\*', r'Speaker \1:', cleaned)
+            cleaned = re.sub(r'\*\*Speaker ([AB])\*\*:', r'Speaker \1:', cleaned)
+            cleaned = re.sub(r'\*\*(Speaker [AB]:)\*\*', r'\1', cleaned)
+            # Remove any remaining ** at start
+            cleaned = re.sub(r'^\*\*\s*', '', cleaned)
+            cleaned_lines.append(cleaned)
+        elif in_dialogue:
+            # Non-dialogue line after dialogue started - might be continuation or junk
+            # If it doesn't look like a header/title, include it
+            if not stripped.startswith('#') and not stripped.startswith('---'):
+                cleaned_lines.append(stripped)
+
+    return '\n'.join(cleaned_lines)
 
 
 def run_multi_call_generation(topic, duration, word_count, research_context, source_documents,
@@ -1067,6 +1142,11 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
     else:
         print("\n[PHASE 5/5] Synthesis - Skipped (single section)")
         final_script = raw_script
+
+    # Post-process to ensure clean format
+    print("\n[POST-PROCESS] Cleaning script format...")
+    final_script = clean_script_format(final_script)
+    print("    ✓ Removed markdown/titles/blank lines")
 
     print("\n" + "="*60)
     print("✓ MULTI-CALL GENERATION COMPLETE")
@@ -2426,52 +2506,8 @@ def main():
             # Multi-call mode: already confirmed in generation plan
             pass
 
-        # 7e. TTS CONFIGURATION (after generation plan confirmed)
         print("\n" + "="*60)
-        print("AUDIO CONFIGURATION")
-        print("="*60)
-        provider_options = [
-            "ElevenLabs (full emotion dynamics, interruptions)",
-            "Cartesia (faster generation, emotion-optimized)"
-        ]
-        provider_idx = get_user_input("\nSelect TTS provider", provider_options)
-        selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
-        provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
-
-        print(f"\n[INFO] Selected: {selected_provider.upper()}")
-
-        # Mode selection
-        if selected_provider == 'elevenlabs':
-            print("\n[INFO] ElevenLabs supports quality tiers:")
-            print("  - Prototype: 64kbps (lower cost, testing)")
-            print("  - Production: 128kbps+ (full quality)")
-        elif selected_provider == 'cartesia':
-            print("\n[INFO] Cartesia note: Always generates full quality")
-            print("  (API does not support quality tiers)")
-
-        mode_idx = get_user_input("\nSelect mode", [
-            "Prototype (lower quality, reduced cost for testing)",
-            "Production (full quality)"
-        ])
-        mode = "prototype" if mode_idx == 0 else "production"
-
-        # Get speed setting
-        default_speed = config['languages'][selected_language]['speed']
-        speed_input = input(f"\nSpeech speed (0.7-1.2, default {default_speed}, Enter to use default): ").strip()
-        if speed_input:
-            try:
-                speed = float(speed_input)
-                speed = max(0.7, min(1.2, speed))
-                print(f"Using speed: {speed}")
-            except ValueError:
-                speed = default_speed
-                print(f"Invalid, using default: {speed}")
-        else:
-            speed = default_speed
-            print(f"Using default speed: {speed}")
-
-        print("\n" + "="*60)
-        print("STARTING GENERATION...")
+        print("STARTING SCRIPT GENERATION...")
         print("="*60)
 
         # 8. Generate script
@@ -2516,10 +2552,12 @@ def main():
             script = extract_and_save_sources(script, project_name)
     
         draft_num = 1
+        # Use generic tag for scripts (scripts are provider-agnostic, TTS config comes after review)
+        script_tag = "MULTI" if use_multi_call else "SNGL"
         if is_test_mode:
-            script_path = save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_num)
+            script_path = save_script_test(script, project_name, language_code, topic_tag, script_tag, draft_num)
         else:
-            script_path = save_script(script, project_name, language_code, provider_tag, draft_num)
+            script_path = save_script(script, project_name, language_code, script_tag, draft_num)
         print(f"Script generated! ({len(script.split())} words)")
         print(f"Saved to: {script_path}")
     
@@ -2567,9 +2605,9 @@ def main():
                     script = extract_and_save_sources(revised, project_name)
                     draft_num += 1
                     if is_test_mode:
-                        script_path = save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_num)
+                        script_path = save_script_test(script, project_name, language_code, topic_tag, script_tag, draft_num)
                     else:
-                        script_path = save_script(script, project_name, language_code, provider_tag, draft_num)
+                        script_path = save_script(script, project_name, language_code, script_tag, draft_num)
                     print(f"✓ Revised script saved to: {script_path}")
                 else:
                     print("✗ Revision failed")
@@ -2605,9 +2643,9 @@ def main():
                     script = extract_and_save_sources(regenerated, project_name)
                     draft_num += 1
                     if is_test_mode:
-                        script_path = save_script_test(script, project_name, language_code, topic_tag, provider_tag, draft_num)
+                        script_path = save_script_test(script, project_name, language_code, topic_tag, script_tag, draft_num)
                     else:
-                        script_path = save_script(script, project_name, language_code, provider_tag, draft_num)
+                        script_path = save_script(script, project_name, language_code, script_tag, draft_num)
                     print(f"✓ Regenerated script saved to: {script_path}")
                 else:
                     print("✗ Regeneration failed")
@@ -2622,8 +2660,52 @@ def main():
             else:
                 print("Cancelled")
                 return
-    
-    # 10. Generate audio
+
+    # 10. TTS CONFIGURATION (after script approved)
+    print("\n" + "="*60)
+    print("AUDIO CONFIGURATION")
+    print("="*60)
+    provider_options = [
+        "ElevenLabs (full emotion dynamics, interruptions)",
+        "Cartesia (faster generation, emotion-optimized)"
+    ]
+    provider_idx = get_user_input("\nSelect TTS provider", provider_options)
+    selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
+    provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+
+    print(f"\n[INFO] Selected: {selected_provider.upper()}")
+
+    # Mode selection
+    if selected_provider == 'elevenlabs':
+        print("\n[INFO] ElevenLabs supports quality tiers:")
+        print("  - Prototype: 64kbps (lower cost, testing)")
+        print("  - Production: 128kbps+ (full quality)")
+    elif selected_provider == 'cartesia':
+        print("\n[INFO] Cartesia note: Always generates full quality")
+        print("  (API does not support quality tiers)")
+
+    mode_idx = get_user_input("\nSelect mode", [
+        "Prototype (lower quality, reduced cost for testing)",
+        "Production (full quality)"
+    ])
+    mode = "prototype" if mode_idx == 0 else "production"
+
+    # Get speed setting
+    default_speed = config['languages'][selected_language]['speed']
+    speed_input = input(f"\nSpeech speed (0.7-1.2, default {default_speed}, Enter to use default): ").strip()
+    if speed_input:
+        try:
+            speed = float(speed_input)
+            speed = max(0.7, min(1.2, speed))
+            print(f"Using speed: {speed}")
+        except ValueError:
+            speed = default_speed
+            print(f"Invalid, using default: {speed}")
+    else:
+        speed = default_speed
+        print(f"Using default speed: {speed}")
+
+    # 11. Generate audio
     print("\n" + "="*60)
     print(f"AUDIO GENERATION - {mode.upper()} MODE")
     print("="*60)
