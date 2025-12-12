@@ -2078,65 +2078,20 @@ def main():
     lang_idx = get_user_input("\nSelect language", language_names)
     selected_language = languages[lang_idx]
     language_code = config['languages'][selected_language]['code']
-    
-    # TTS Provider selection (NEW)
-    print("\n" + "="*60)
-    print("TTS PROVIDER SELECTION")
-    print("="*60)
-    provider_options = [
-        "ElevenLabs (full emotion dynamics, interruptions)",
-        "Cartesia (faster generation, emotion-optimized)"
-    ]
-    provider_idx = get_user_input("\nSelect TTS provider", provider_options)
-    selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
-    provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
-    
-    print(f"\n[INFO] Selected: {selected_provider.upper()}")
-    print(f"[INFO] Scripts will be tagged with: {provider_tag}")
 
-    # Mode selection
-    if selected_provider == 'elevenlabs':
-        print("\n[INFO] ElevenLabs supports quality tiers:")
-        print("  - Prototype: 64kbps (lower cost, testing)")
-        print("  - Production: 128kbps+ (full quality)")
-    elif selected_provider == 'cartesia':
-        print("\n[INFO] Cartesia note: Always generates full quality")
-        print("  (API does not support quality tiers)")
-
-    mode_idx = get_user_input("\nSelect mode", [
-        "Prototype (lower quality, reduced cost for testing)",
-        "Production (full quality)"
-    ])
-    mode = "prototype" if mode_idx == 0 else "production"
-    
-    # Get speed setting
-    default_speed = config['languages'][selected_language]['speed']
-    speed_input = input(f"\nSpeech speed (0.7-1.2, default {default_speed}, Enter to use default): ").strip()
-    if speed_input:
-        try:
-            speed = float(speed_input)
-            speed = max(0.7, min(1.2, speed))
-            print(f"Using speed: {speed}")
-        except ValueError:
-            speed = default_speed
-            print(f"Invalid, using default: {speed}")
-    else:
-        speed = default_speed
-        print(f"Using default speed: {speed}")
-    
-    # 5. Create project structure
+    # 5. Create project structure (before TTS selection - scripts are provider-agnostic)
     print(f"\nCreating project folder: ./projects/{project_name}/")
     project_path = create_project_structure(project_name)
     print(f"  ✓ Created subdirectories")
-    
-    # 5b. CHECK FOR EXISTING SCRIPTS
+
+    # 5b. CHECK FOR EXISTING SCRIPTS (any provider)
     if is_test_mode:
-        # For tests: filter by scenario tag too
-        pattern = f"{project_name}_{language_code.upper()}_*_{topic_tag}_{provider_tag}_draft*.txt"
+        # For tests: filter by scenario tag
+        pattern = f"{project_name}_{language_code.upper()}_*_{topic_tag}_*_draft*.txt"
     else:
-        # Normal pattern
-        pattern = f"{project_name}_{language_code.upper()}_*_{provider_tag}_draft*.txt"
-    
+        # Normal pattern - any provider
+        pattern = f"{project_name}_{language_code.upper()}_*_draft*.txt"
+
     existing_scripts = sorted(
         list(Path(f"./projects/{project_name}/scripts").glob(pattern)),
         key=lambda x: x.stat().st_mtime,
@@ -2144,21 +2099,21 @@ def main():
     )
     
     script_ready = False
-    
+
     if existing_scripts:
-        print(f"\n⚠️  Found {len(existing_scripts)} existing script(s) with {provider_tag} tag:")
-        
+        print(f"\n⚠️  Found {len(existing_scripts)} existing script(s):")
+
         # Show all scripts
         for i, script_file in enumerate(existing_scripts, 1):
             print(f"    {i}. {script_file.name}")
-        
+
         # Build options list
         options = [f"Use script #{i+1}" for i in range(len(existing_scripts))]
         options.append("Generate new script (continue with research/prompt setup)")
         options.append("Cancel")
-        
+
         action = get_user_input("", options)
-        
+
         # User selected an existing script (indices 0 to len-1)
         if action < len(existing_scripts):
             selected_script = existing_scripts[action]
@@ -2168,16 +2123,57 @@ def main():
             script_path = selected_script
             script_ready = True
             print("[INFO] Skipping to audio generation...\n")
-            
+
         # User selected "Generate new script"
         elif action == len(existing_scripts):
             print("\n[INFO] Continuing with new script generation...\n")
             script_ready = False
-            
+
         # User selected "Cancel"
         else:
             print("Cancelled")
             return
+
+    # If using existing script, get TTS settings and skip to audio
+    if script_ready:
+        # TTS CONFIGURATION for existing script
+        print("\n" + "="*60)
+        print("AUDIO CONFIGURATION")
+        print("="*60)
+        provider_options = [
+            "ElevenLabs (full emotion dynamics, interruptions)",
+            "Cartesia (faster generation, emotion-optimized)"
+        ]
+        provider_idx = get_user_input("\nSelect TTS provider", provider_options)
+        selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
+        provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+
+        print(f"\n[INFO] Selected: {selected_provider.upper()}")
+
+        if selected_provider == 'elevenlabs':
+            print("\n[INFO] ElevenLabs supports quality tiers:")
+            print("  - Prototype: 64kbps (lower cost, testing)")
+            print("  - Production: 128kbps+ (full quality)")
+        elif selected_provider == 'cartesia':
+            print("\n[INFO] Cartesia note: Always generates full quality")
+
+        mode_idx = get_user_input("\nSelect mode", [
+            "Prototype (lower quality, reduced cost for testing)",
+            "Production (full quality)"
+        ])
+        mode = "prototype" if mode_idx == 0 else "production"
+
+        default_speed = config['languages'][selected_language]['speed']
+        speed_input = input(f"\nSpeech speed (0.7-1.2, default {default_speed}, Enter to use default): ").strip()
+        if speed_input:
+            try:
+                speed = float(speed_input)
+                speed = max(0.7, min(1.2, speed))
+            except ValueError:
+                speed = default_speed
+        else:
+            speed = default_speed
+        print(f"Using speed: {speed}")
     
     # 5c. Research context (only if generating new)
     if not script_ready:
@@ -2427,12 +2423,56 @@ def main():
                 print("Cancelled")
                 return
         else:
-            # Multi-call mode: confirm to proceed (already confirmed in generation plan)
-            print("\n[INFO] Multi-call mode: Research, outline, and script will be generated in phases.")
-            proceed = input("Press Enter to start generation (or 'n' to cancel): ").strip().lower()
-            if proceed == 'n':
-                print("Cancelled")
-                return
+            # Multi-call mode: already confirmed in generation plan
+            pass
+
+        # 7e. TTS CONFIGURATION (after generation plan confirmed)
+        print("\n" + "="*60)
+        print("AUDIO CONFIGURATION")
+        print("="*60)
+        provider_options = [
+            "ElevenLabs (full emotion dynamics, interruptions)",
+            "Cartesia (faster generation, emotion-optimized)"
+        ]
+        provider_idx = get_user_input("\nSelect TTS provider", provider_options)
+        selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
+        provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+
+        print(f"\n[INFO] Selected: {selected_provider.upper()}")
+
+        # Mode selection
+        if selected_provider == 'elevenlabs':
+            print("\n[INFO] ElevenLabs supports quality tiers:")
+            print("  - Prototype: 64kbps (lower cost, testing)")
+            print("  - Production: 128kbps+ (full quality)")
+        elif selected_provider == 'cartesia':
+            print("\n[INFO] Cartesia note: Always generates full quality")
+            print("  (API does not support quality tiers)")
+
+        mode_idx = get_user_input("\nSelect mode", [
+            "Prototype (lower quality, reduced cost for testing)",
+            "Production (full quality)"
+        ])
+        mode = "prototype" if mode_idx == 0 else "production"
+
+        # Get speed setting
+        default_speed = config['languages'][selected_language]['speed']
+        speed_input = input(f"\nSpeech speed (0.7-1.2, default {default_speed}, Enter to use default): ").strip()
+        if speed_input:
+            try:
+                speed = float(speed_input)
+                speed = max(0.7, min(1.2, speed))
+                print(f"Using speed: {speed}")
+            except ValueError:
+                speed = default_speed
+                print(f"Invalid, using default: {speed}")
+        else:
+            speed = default_speed
+            print(f"Using default speed: {speed}")
+
+        print("\n" + "="*60)
+        print("STARTING GENERATION...")
+        print("="*60)
 
         # 8. Generate script
         if use_multi_call:
