@@ -704,8 +704,9 @@ def generate_outline(topic, duration, word_count, research_summary, doc_summary,
     overshoot_factor = config.get('script_generation', {}).get('overshoot_factor', 1.5)
     num_sections = math.ceil(word_count / words_per_call)
     words_per_section = int((word_count / num_sections) * overshoot_factor)
+    total_target_words = words_per_section * num_sections
 
-    prompt = f"""Create a detailed podcast outline for a {duration}-minute episode (~{word_count} words total).
+    prompt = f"""Create a detailed podcast outline for a {duration}-minute episode (~{total_target_words} words total).
 
 TOPIC: {topic}
 STYLE: {style_description}
@@ -835,10 +836,13 @@ WRONG FORMAT (DO NOT USE):
 Generate the script section now (start directly with "Speaker A:" or "Speaker B:"):
 """
 
+    # Calculate max_tokens based on target words (1.5 tokens/word + buffer)
+    section_max_tokens = int(target_words * 1.5) + 500
+
     try:
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=4000,
+            max_tokens=section_max_tokens,
             messages=[{"role": "user", "content": prompt}]
         )
 
