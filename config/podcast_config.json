@@ -2,6 +2,7 @@
   "script_generation": {
     "enable_multi_call": true,
     "words_per_call": 2500,
+    "overshoot_factor": 1.4,
     "docs_per_batch": 3,
     "sources_per_research_call": 10,
     "default_web_sources": 8,

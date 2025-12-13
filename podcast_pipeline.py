@@ -864,9 +864,11 @@ def generate_script_multi_call(topic, duration, word_count, outline, style_templ
     """
     gen_config = config.get('script_generation', {})
     words_per_call = gen_config.get('words_per_call', 2000)
+    # LLMs typically generate 65-70% of requested words - compensate with overshoot
+    overshoot_factor = gen_config.get('overshoot_factor', 1.4)
 
     num_sections = math.ceil(word_count / words_per_call)
-    words_per_section = word_count // num_sections
+    words_per_section = int((word_count / num_sections) * overshoot_factor)
 
     print("\n" + "="*60)
     print(f"GENERATING SCRIPT ({num_sections} sections)")
