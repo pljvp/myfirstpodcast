@@ -704,14 +704,13 @@ def generate_outline(topic, duration, word_count, research_summary, doc_summary,
     overshoot_factor = config.get('script_generation', {}).get('overshoot_factor', 1.5)
     num_sections = math.ceil(word_count / words_per_call)
     words_per_section = int((word_count / num_sections) * overshoot_factor)
-    minutes_per_section = duration // num_sections
 
     prompt = f"""Create a detailed podcast outline for a {duration}-minute episode (~{word_count} words total).
 
 TOPIC: {topic}
 STYLE: {style_description}
 LANGUAGE: {language}
-NUMBER OF SECTIONS: {num_sections} (each ~{words_per_section} words, ~{minutes_per_section} minutes)
+NUMBER OF SECTIONS: {num_sections} (each ~{words_per_section} words)
 
 RESEARCH FINDINGS:
 {research_summary[:8000] if research_summary else "No web research provided."}
@@ -730,7 +729,6 @@ CREATE AN OUTLINE WITH:
 3. **SECTION BREAKDOWN** (one for each of the {num_sections} sections):
 
 ### SECTION 1: [Title] (~{words_per_section} words)
-TIME: 0:00 - {minutes_per_section}:00
 SPEAKER LEAD: [A or B]
 CONTENT:
 - Opening hook: [specific hook idea]
