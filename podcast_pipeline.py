@@ -724,13 +724,13 @@ CREATE AN OUTLINE WITH:
 1. **OVERALL ARC**: Describe the narrative journey (hook → exploration → insight → conclusion)
 
 2. **SPEAKER DYNAMICS**:
-   - Speaker A personality and role (e.g., curious interviewer, enthusiast)
-   - Speaker B personality and role (e.g., expert, skeptic, storyteller)
+   - Speaker A (LEAD VOICE - female): knowledgeable expert, enthusiastic explainer, drives the conversation
+   - Speaker B (male): curious questioner, friendly skeptic, asks follow-up questions
 
 3. **SECTION BREAKDOWN** (one for each of the {num_sections} sections):
 
 ### SECTION 1: [Title] (~{words_per_section} words)
-SPEAKER LEAD: [A or B]
+SPEAKER LEAD: A (Speaker A should lead most sections)
 CONTENT:
 - Opening hook: [specific hook idea]
 - Key points to cover: [bullet list]
@@ -2163,6 +2163,11 @@ def main():
     lang_idx = get_user_input("\nSelect language", language_names)
     selected_language = languages[lang_idx]
     language_code = config['languages'][selected_language]['code']
+
+    # Recalculate word count using language default speed
+    default_speed = config['languages'][selected_language].get('speed', 1.0)
+    word_count = int(duration * 222 * default_speed)
+    print(f"Adjusted word count: ~{word_count} words (for {default_speed} speed)")
 
     # 5. Create project structure (before TTS selection - scripts are provider-agnostic)
     print(f"\nCreating project folder: ./projects/{project_name}/")
