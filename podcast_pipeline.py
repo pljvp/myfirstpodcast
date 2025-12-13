@@ -800,7 +800,7 @@ Continue naturally from this point. Do NOT repeat content.
 
     prompt = f"""Generate section {section_num} of {total_sections} for a podcast script.
 
-TARGET: ~{target_words} words for this section
+MINIMUM: {target_words} words for this section (do not write less)
 LANGUAGE: {language}
 
 {section_instruction}
