@@ -701,8 +701,9 @@ def generate_outline(topic, duration, word_count, research_summary, doc_summary,
 
     # Calculate sections based on word count
     words_per_call = config.get('script_generation', {}).get('words_per_call', 2000)
+    overshoot_factor = config.get('script_generation', {}).get('overshoot_factor', 1.5)
     num_sections = math.ceil(word_count / words_per_call)
-    words_per_section = word_count // num_sections
+    words_per_section = int((word_count / num_sections) * overshoot_factor)
     minutes_per_section = duration // num_sections
 
     prompt = f"""Create a detailed podcast outline for a {duration}-minute episode (~{word_count} words total).
