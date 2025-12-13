@@ -932,7 +932,7 @@ def synthesize_script(raw_script, outline, language, api_key, config):
 TASKS:
 1. Smooth any awkward transitions between sections
 2. Ensure consistent speaker personalities throughout
-3. Remove any redundant content (repeated facts or phrases)
+3. DO NOT remove any dialogue content - preserve all material, only smooth transitions
 4. Ensure emotional tags are balanced (not too many, not too few)
 5. Fix any formatting inconsistencies
 6. Maintain the target language: {language}
