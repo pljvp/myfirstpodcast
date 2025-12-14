@@ -16,7 +16,7 @@ from anthropic import Anthropic
 import requests
 
 # TTS Provider modules
-from providers import ElevenLabsProvider, CartesiaProvider
+from providers import ElevenLabsProvider, CartesiaProvider, substitute_template_placeholders
 
 # Document reading libraries (optional - graceful fallback if not installed)
 try:
@@ -691,108 +691,6 @@ Keep summaries concise but preserve specific details that would be valuable for 
     return "\n\n".join(all_summaries)
 
 
-def get_provider_emotion_instructions(provider):
-    """
-    Return provider-specific emotion tag instructions for script generation.
-
-    Args:
-        provider: 'elevenlabs' or 'cartesia'
-
-    Returns:
-        String with emotion tag instructions optimized for the provider
-    """
-    if provider == 'elevenlabs':
-        return """
-===================================
-EMOTION TAGS (ElevenLabs - Full Dynamics)
-===================================
-
-ElevenLabs supports the FULL range of emotion and delivery tags.
-Use these EXTENSIVELY throughout the script:
-
-**INTERRUPTIONS & DYNAMICS (use 5-10 times):**
-[interrupting] - Speaker cuts into other's speech
-[overlapping] - Brief simultaneous speech
-[interjecting] - Quick insertion
-
-**EMOTIONS (use liberally on most lines):**
-[excited] [enthusiastic] [happy] [cheerful] [energetic]
-[curious] [questioning] [interested] [thoughtful] [analytical]
-[surprised] [shocked] [amazed] [impressed]
-[worried] [concerned] [nervous] [anxious]
-[skeptical] [frustrated] [annoyed]
-[confused] [hesitant] [uncertain]
-[amused] [playful] [warm] [friendly]
-
-**REACTIONS (use 10+ times):**
-[laughs] [chuckles] [giggles] [sighs] [gasps]
-[gulps] [groans] [hmm] [uhh]
-
-**DELIVERY (vary throughout):**
-[whispers] [quietly] [loudly] [shouting]
-[fast-paced] [slowly] [pause] [hesitates]
-
-**COMBINE TAGS for nuanced delivery:**
-[nervous][hesitant] - Nervous AND hesitant
-[excited][fast-paced] - Very excited, rapid speech
-[skeptical][slowly] - Doubtful, measured delivery
-
-VARIETY REQUIREMENT: Use at least 15 different tag types per 100 lines.
-===================================
-"""
-    elif provider == 'cartesia':
-        return """
-===================================
-EMOTION TAGS (Cartesia - Native Emotions)
-===================================
-
-Cartesia supports 60+ native emotions directly by name.
-Use these tags liberally throughout the script:
-
-**POSITIVE/ENERGETIC:**
-[excited] [enthusiastic] [happy] [elated] [euphoric] [triumphant]
-[content] [peaceful] [serene] [calm] [grateful] [affectionate]
-
-**CURIOUS/THOUGHTFUL:**
-[curious] [contemplative] [mysterious] [anticipation]
-
-**SURPRISED/AMAZED:**
-[surprised] [amazed] [alarmed]
-
-**ANXIOUS/SAD:**
-[anxious] [panicked] [scared] [sad] [dejected] [melancholic]
-[disappointed] [hurt] [guilty] [nostalgic] [wistful] [resigned]
-
-**FRUSTRATED/ANGRY:**
-[frustrated] [agitated] [angry] [mad] [outraged] [disgusted] [contempt]
-
-**SKEPTICAL/NEUTRAL:**
-[skeptical] [sarcastic] [ironic] [bored] [tired] [neutral]
-[distant] [confident] [proud] [determined]
-
-**SOFT/HESITANT:**
-[hesitant] [insecure] [confused] [apologetic] [sympathetic]
-
-**REACTIONS (map to emotions):**
-[laughs] [chuckles] → happy
-[sighs] → resigned
-[gasps] → surprised
-
-⚠️ AVOID THESE TAGS (ElevenLabs-only, Cartesia skips them):
-[interrupting] [overlapping] [interjecting] [fast-paced] [slowly]
-[pause] [whispers] [shouting] [loudly] [hesitates]
-
-Instead of [pause], use natural sentence breaks or "..."
-Instead of [fast-paced], use [excited] or [enthusiastic]
-Instead of [slowly], use [contemplative] or [calm]
-
-VARIETY REQUIREMENT: Use at least 15 different emotions per 100 lines.
-===================================
-"""
-    else:
-        return ""
-
-
 def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config):
     """
     Generate a structured outline for the podcast.
@@ -890,9 +788,6 @@ def generate_script_section(section_num, total_sections, outline, previous_secti
 
     client = Anthropic(api_key=api_key)
 
-    # Get provider-specific emotion instructions
-    emotion_instructions = get_provider_emotion_instructions(provider)
-
     # Context from previous section for continuity
     continuity_context = ""
     if previous_section_end:
@@ -922,8 +817,6 @@ OUTLINE (follow this structure):
 {outline}
 
 {continuity_context}
-
-{emotion_instructions}
 
 STYLE REQUIREMENTS:
 {style_template[:2000] if style_template else "Natural, conversational dialogue between Speaker A and Speaker B."}
@@ -2832,6 +2725,10 @@ def main():
             if Path(template_file).exists():
                 with open(template_file, 'r', encoding='utf-8') as f:
                     style_template = f.read()
+                # Substitute provider-specific placeholders
+                style_template = substitute_template_placeholders(
+                    style_template, selected_provider, duration
+                )
 
             script = run_multi_call_generation(
                 topic=topic,

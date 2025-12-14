@@ -17,9 +17,9 @@ VERPLICHTE VEREISTEN:
 
 2. EMOTIE-DEKKING - Gebruik minstens 10 hiervan:
    [excited] [curious] [skeptical] [laughs] [amused]
-   [thoughtful] [worried] [dramatic] [gasps] [overlapping]
-   [fast-paced] [slowly] [quietly] [impressed] [passionate]
-   [interrupting] [enthusiastic] [concerned]
+   [thoughtful] [worried] [dramatic] [gasps]
+   [quietly] [impressed] [passionate]
+   [enthusiastic] [concerned]
 
 3. TEMPO-VARIATIE:
    - Snelle wisselingen inbouwen (fast-paced secties)

@@ -17,9 +17,9 @@ PFLICHT-ANFORDERUNGEN:
 
 2. EMOTIONS-ABDECKUNG - Verwende mindestens 10 davon:
    [excited] [curious] [skeptical] [laughs] [amused]
-   [thoughtful] [worried] [dramatic] [gasps] [overlapping]
-   [fast-paced] [slowly] [quietly] [impressed] [passionate]
-   [interrupting] [enthusiastic] [concerned]
+   [thoughtful] [worried] [dramatic] [gasps]
+   [quietly] [impressed] [passionate]
+   [enthusiastic] [concerned]
 
 3. TEMPO-VARIATION:
    - Schnelle Wechsel einbauen (fast-paced Abschnitte)

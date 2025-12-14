@@ -5,14 +5,14 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [analytical] The architecture is fascinating.
-Speaker B: [interrupting] [curious] Wait, how does that scale?
+Speaker B: [curious] Wait, how does that scale?
 Speaker A: [explaining] Let me walk through this...
 
 ❌ WRONG FORMAT (DO NOT USE):
@@ -26,22 +26,16 @@ Speaker A: *analytical* The architecture is fascinating.
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (For technical challenges):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions (Technical/Analytical focus):
-[analytical] [thoughtful] [curious] [skeptical] [impressed]
-[confused] [realizing] [explaining] [questioning] [concerned]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[hmm] [sighs] [pauses] [chuckles] [gasps]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery (For technical precision):
-[carefully] [precisely] [slowly] [emphasizing]
-[hesitates] [clarifying] [correcting]
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -59,7 +53,7 @@ CHARACTER DYNAMICS
 - Equally competent technically
 - Asks hard questions: [skeptical] [questioning]
 - Demands precision: [curious] [pressing]
-- Catches assumptions: [interrupting] [realizing]
+- Catches assumptions: [realizing]
 - Brings alternative perspectives
 - NO stereotypes (no "junior developer")
 
@@ -196,7 +190,7 @@ Acknowledge uncertainty:
 Speaker A: [analytical] The consensus mechanism uses a variant of PBFT.
 Speaker B: [curious] Byzantine fault tolerance—how many nodes can be malicious?
 Speaker A: [explaining] Up to one-third, minus one. So with 10 nodes...
-Speaker B: [interrupting] [realizing] Three could be compromised and it still works?
+Speaker B: [realizing] Three could be compromised and it still works?
 Speaker A: [confirming] Exactly. That's the theoretical limit.
 
 ===================================
@@ -212,12 +206,12 @@ Speaker A: [thoughtful] That introduces complexity with...
 **2. EDGE CASES:**
 
 Speaker B: [skeptical] But what if the cache is cold?
-Speaker A: [pauses] [carefully] Good question. In that scenario...
+Speaker A: [carefully] Good question. In that scenario...
 
 **3. REALIZATIONS:**
 
 Speaker A: [analytical] So the lock-free algorithm means—
-Speaker B: [interrupting] [realizing] Wait, that's ABA problem territory!
+Speaker B: [realizing] Wait, that's ABA problem territory!
 Speaker A: [impressed] Exactly! And that's why they use...
 
 **4. TRADEOFF ANALYSIS:**
@@ -229,7 +223,7 @@ Speaker A: [analytical] Depends on your requirements...
 **5. COLLABORATIVE PROBLEM-SOLVING:**
 
 Speaker B: [confused] I don't see how that scales past 1000 nodes.
-Speaker A: [hesitates] Hmm... [pauses] Unless they're sharding?
+Speaker A: [hesitant] Hmm... Unless they're sharding?
 Speaker B: [curious] That would make sense. Let me check...
 
 ===================================
@@ -439,7 +433,7 @@ FINAL CHECKLIST
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
-✅ 3-5 [interrupting] moments (technical challenges)
+✅ 3-5 moments (technical challenges)
 ✅ Heavy use of [analytical], [thoughtful], [explaining]
 ✅ Technically precise language
 ✅ 10-15 high-quality technical sources

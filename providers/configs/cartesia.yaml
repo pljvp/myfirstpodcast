@@ -1,0 +1,71 @@
+# Cartesia Provider Template Hooks
+# Used for script generation - substitutes {PROVIDER_*} placeholders in templates
+
+provider_name: cartesia
+provider_tag: CRTS
+
+# Main emotion/audio tag instructions
+# Cartesia supports 60+ native emotions - use directly by name
+emotion_tags: |
+  **POSITIVE/ENERGETIC:**
+  [excited] [enthusiastic] [happy] [elated] [euphoric] [triumphant]
+  [content] [peaceful] [serene] [calm] [grateful] [affectionate]
+
+  **CURIOUS/THOUGHTFUL:**
+  [curious] [contemplative] [mysterious] [anticipation]
+
+  **SURPRISED/AMAZED:**
+  [surprised] [amazed] [alarmed]
+
+  **ANXIOUS/SAD:**
+  [anxious] [panicked] [scared] [sad] [dejected] [melancholic]
+  [disappointed] [hurt] [guilty] [nostalgic] [wistful] [resigned]
+
+  **FRUSTRATED/ANGRY:**
+  [frustrated] [agitated] [angry] [mad] [outraged] [disgusted] [contempt]
+
+  **SKEPTICAL/NEUTRAL:**
+  [skeptical] [sarcastic] [ironic] [bored] [tired] [neutral]
+  [distant] [confident] [proud] [determined]
+
+  **SOFT/HESITANT:**
+  [hesitant] [insecure] [confused] [apologetic] [sympathetic]
+
+  **REACTIONS:**
+  [laughs] [chuckles] - Maps to happy delivery
+  [sighs] - Maps to resigned delivery
+  [gasps] - Maps to surprised delivery
+
+  **NOTE:** Cartesia does NOT support turn-taking tags like [interrupting]
+  or [overlapping]. Create natural conversation flow through:
+  - Sentence fragments: "But what about—" / "Exactly!"
+  - Quick exchanges with short responses
+  - Natural trailing off with "..."
+
+# Example dialogue snippets (Cartesia-optimized)
+examples: |
+  Speaker A: [excited] Okay, I just read something incredible—
+  Speaker B: [curious] Wait! Is this about quantum physics?
+  Speaker A: [laughs] Yes! But listen—
+  Speaker B: [skeptical] This sounds too good to be true...
+  Speaker A: [enthusiastic] No, really! So imagine...
+  Speaker B: [surprised] [amazed] Wait, that actually works?!
+  Speaker A: [happy] [amused] I know, right?
+
+# Checklist items for script quality (duration-aware)
+checklist: |
+  - Use all emotion categories throughout the script
+  - Include {variety_count} distinct emotion tags minimum
+  - Create {exchange_count} quick back-and-forth exchanges
+  - Vary between high-energy and reflective moments
+  - Use natural sentence breaks for conversational rhythm
+  - Avoid: [interrupting], [overlapping], [whispers], [pause], [fast-paced], [slowly]
+
+# Variety count formula: base + (duration_minutes / 3)
+# 10 min = 13-15, 20 min = 16-18, 30 min = 20+
+variety_base: 10
+variety_per_3min: 1
+
+# Quick exchanges formula: base + (duration_minutes / 5)
+exchange_base: 3
+exchange_per_5min: 1

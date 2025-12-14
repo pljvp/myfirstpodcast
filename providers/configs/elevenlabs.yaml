@@ -1,0 +1,58 @@
+# ElevenLabs Provider Template Hooks
+# Used for script generation - substitutes {PROVIDER_*} placeholders in templates
+
+provider_name: elevenlabs
+provider_tag: 11LB
+
+# Main emotion/audio tag instructions
+emotion_tags: |
+  **TURN-TAKING (use throughout for natural flow):**
+  [interrupting] - Speaker cuts into other's speech mid-sentence
+  [overlapping] - Brief simultaneous speech, natural crosstalk
+  [interjecting] - Quick insertion without full interruption
+
+  **EMOTIONS (use liberally on most lines):**
+  [excited] [enthusiastic] [happy] [cheerful] [energetic]
+  [curious] [questioning] [interested] [thoughtful] [analytical]
+  [surprised] [shocked] [amazed] [impressed]
+  [worried] [concerned] [nervous] [anxious]
+  [skeptical] [frustrated] [annoyed]
+  [confused] [hesitant] [uncertain]
+  [amused] [playful] [warm] [friendly]
+
+  **REACTIONS (use 10+ times per podcast):**
+  [laughs] [chuckles] [giggles] [sighs] [gasps]
+  [gulps] [groans] [hmm] [uhh]
+
+  **DELIVERY (vary throughout):**
+  [whispers] [quietly] [loudly] [shouting]
+  [fast-paced] [slowly] [pause] [hesitates]
+
+  **COMBINE TAGS for nuanced delivery:**
+  [nervous][hesitant] - Nervous AND hesitant
+  [excited][fast-paced] - Very excited, rapid speech
+  [skeptical][slowly] - Doubtful, measured delivery
+
+# Example dialogue snippets
+examples: |
+  Speaker A: [excited] [fast-paced] Okay, I just read something incredible—
+  Speaker B: [interrupting] [curious] Wait! Is this about quantum physics?
+  Speaker A: [laughs] [overlapping] Yes! But listen—
+  Speaker B: [skeptical] This sounds too good to be true...
+  Speaker A: [enthusiastic] No, really! [pause] So imagine...
+  Speaker B: [gasps] [surprised] Wait, that actually works?!
+  Speaker A: [chuckles] [amused] I know, right?
+
+# Checklist items for script quality (duration-aware)
+# {interruption_count} will be replaced based on duration
+checklist: |
+  - Use all emotion categories throughout the script
+  - Include {interruption_count} [interrupting] or [overlapping] moments
+  - Minimum 15 different tag types per 100 lines
+  - Vary between high-energy and reflective moments
+  - Use [laughs], [sighs], [gasps] for authentic reactions
+
+# Interruption count formula: base + (duration_minutes / 5)
+# 10 min = 5-7, 20 min = 7-9, 30 min = 9-11
+interruption_base: 5
+interruption_per_5min: 1

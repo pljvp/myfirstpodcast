@@ -17,9 +17,9 @@ MANDATORY REQUIREMENTS:
 
 2. EMOTION COVERAGE - Include at least 10 of these:
    [excited] [curious] [skeptical] [laughs] [amused]
-   [thoughtful] [worried] [dramatic] [gasps] [overlapping]
-   [fast-paced] [slowly] [quietly] [impressed] [passionate]
-   [interrupting] [enthusiastic] [concerned]
+   [thoughtful] [worried] [dramatic] [gasps]
+   [quietly] [impressed] [passionate]
+   [enthusiastic] [concerned]
 
 3. PACING VARIATION:
    - Include rapid exchanges (fast-paced sections)

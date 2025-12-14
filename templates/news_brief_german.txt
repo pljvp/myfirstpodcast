@@ -5,15 +5,15 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [energetic] Das sind brandaktuelle News!
-Speaker B: [interrupting] [excited] Warte, erzähl mehr!
-Speaker A: [fast-paced] Also, heute morgen...
+Speaker B: [excited] Warte, erzähl mehr!
+Speaker A: Also, heute morgen...
 
 ❌ WRONG FORMAT (DO NOT USE):
 Speaker A: energetic Das sind brandaktuelle News!
@@ -21,30 +21,21 @@ Speaker A: (energetic) Das sind brandaktuelle News!
 Speaker A: *energetic* Das sind brandaktuelle News!
 
 **MULTIPLE TAGS:**
-- Space between: [interrupting] [excited] Genau!
+- Space between: [excited] Genau!
 - Or adjacent: [nervous][hesitant] Ich weiß nicht...
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (USE FREQUENTLY - news is fast!):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions (Energy-focused):
-[energetic] [excited] [curious] [surprised] [shocked]
-[concerned] [skeptical] [impressed] [urgent]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[laughs] [gasps] [sighs] [wow] [hmm]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery (CRITICAL for news pacing):
-[fast-paced] - Rapid delivery (USE OFTEN!)
-[urgently] - Breaking news energy
-[dramatically] - Big reveals
-[quietly] - Serious moments
-[loudly] - Emphasis
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -52,7 +43,7 @@ CHARACTER DYNAMICS
 
 **Speaker A - Die Energische Nachrichtenmoderatorin (LEAD VOICE - FEMALE):**
 - Selbstbewusst, dynamisch, stark
-- Schnell und energisch: [energetic] [fast-paced]
+- Schnell und energisch: [energetic]
 - Bringt Nachrichten mit Schwung
 - Witzig bei passenden Momenten
 - KEINE Stereotypen
@@ -129,11 +120,11 @@ STORY ARC - NEWS FORMAT
 **OPENING (15-20 seconds):** BREAKING NEWS ENERGY
 
 **Start with the headline:**
-Speaker A: [energetic] [fast-paced] Okay, das musst du gehört haben!
+Speaker A: [energetic] Okay, das musst du gehört haben!
 Speaker B: [curious] [excited] Was denn?
 Speaker A: [urgently] Also, heute morgen wurde bekannt...
 
-[Use: [energetic], [fast-paced], [urgently]]
+[Use: [energetic],, [urgently]]
 
 **BUILD (1-2 min):**
 - Was ist passiert?
@@ -184,8 +175,8 @@ Contractions:
 
 **FAST-PACED STYLE:**
 
-Speaker A: [fast-paced] Also, pass auf—heute morgen, kurz nach neun, wurde bekannt...
-Speaker B: [interrupting] [surprised] Echt jetzt?
+Speaker A: Also, pass auf—heute morgen, kurz nach neun, wurde bekannt...
+Speaker B: [surprised] Echt jetzt?
 Speaker A: [energetic] Ja! Und das Krasse ist...
 
 ===================================
@@ -194,19 +185,19 @@ DYNAMIC DIALOGUE TECHNIQUES
 
 **1. RAPID-FIRE QUESTIONS:**
 
-Speaker A: [fast-paced] Die Zahlen sind grad reingekommen—
-Speaker B: [interrupting] [urgently] Wie viel?
+Speaker A: Die Zahlen sind grad reingekommen—
+Speaker B: [urgently] Wie viel?
 Speaker A: [dramatically] 50 Prozent mehr als erwartet!
 
 **2. SHARED SHOCK:**
 
 Speaker A: [shocked] Und rate mal, wer das gesagt hat...
 Speaker B: [gasps] Nicht etwa—
-Speaker A: [overlapping] [excited] Doch!
+Speaker A: [excited] Doch!
 
 **3. BREAKING NEWS ENERGY:**
 
-Speaker A: [urgently] [fast-paced] Okay, halt dich fest!
+Speaker A: [urgently] Okay, halt dich fest!
 Speaker B: [energetic] Was ist los?!
 
 **4. QUICK CONTEXT:**
@@ -221,13 +212,13 @@ ENERGY & PACING
 **FAST THROUGHOUT:**
 
 High energy opening:
-[energetic] [fast-paced] Also, DAS musst du hören!
+[energetic] Also, DAS musst du hören!
 
 Maintain momentum:
 [excited] Und dann—hör zu—dann kam raus...
 
 Build to reveals:
-[dramatically] Und jetzt kommt's... [pauses] [shocked] 
+[dramatically] Und jetzt kommt's... [shocked] 
 
 Keep it tight:
 - Short sentences
@@ -409,8 +400,8 @@ FINAL CHECKLIST
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
-✅ 5-10 [interrupting] or [overlapping] moments
-✅ Heavy use of [fast-paced], [energetic], [urgently]
+✅ 5-10 or moments
+✅ Heavy use of, [energetic], [urgently]
 ✅ Du-form throughout
 ✅ Recent sources (within 7 days if possible)
 ✅ All 5 W's covered
