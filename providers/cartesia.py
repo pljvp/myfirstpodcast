@@ -282,6 +282,11 @@ class CartesiaProvider:
             'serious': 'neutral',
             'realizing': 'surprised',
             'impressed': 'amazed',
+            'dramatic': 'excited',
+            'defensive': 'agitated',
+            'dismissive': 'contempt',
+            'teasing': 'happy',
+            'mocking': 'sarcastic',
 
             # Vocal reactions - map to closest emotion
             'laughs': 'happy',

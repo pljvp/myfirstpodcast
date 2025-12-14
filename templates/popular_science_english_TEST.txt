@@ -65,60 +65,14 @@ Remember: This tests voice quality, pacing, and emotion range.
 Make it engaging, natural, and UNDER 500 WORDS!
 
 ===================================
-INTRO & OUTRO INSTRUCTIONS
+TEST MODE - NO INTRO/OUTRO
 ===================================
 
-**CRITICAL: START YOUR SCRIPT WITH AN INTRO!**
-
-**INTRO (2-3 LINES - REQUIRED!):**
-Your FIRST lines MUST be a greeting. DO NOT start directly with content!
-
-Popular Science:
-Speaker A: [friendly] Willkommen zurück!
-Speaker B: [warm] Schön, dass ihr dabei seid!
-Speaker A: [excited] Heute geht's um...
-
-Technical Deep Dive:
-Speaker A: [professional] Hallo zusammen!
-Speaker B: [curious] Bereit für eine technische Diskussion?
-Speaker A: [analytical] Heute analysieren wir...
-
-News Brief:
-Speaker A: [energetic] Guten Tag!
-Speaker B: [professional] Die aktuellen Nachrichten.
-Speaker A: [clear] Erste Meldung...
-
-**IMPORTANT:**
-- VARY the greeting each time (don't repeat same words)
-- Keep it SHORT (2-3 lines max)
-- NO fake names ("Ich bin Anna")
-- NO show titles ("Willkommen bei TechTalk")
-- System adds 1.3s silence BEFORE your first line
-
-**YOUR SCRIPT STRUCTURE:**
-1. Greeting (2-3 lines) ← START HERE!
-2. Main content
-3. Goodbye (2-3 lines) ← END HERE!
-
-**OUTRO (2-3 LINES - REQUIRED!):**
-End with natural goodbye:
-
-Popular Science:
-Speaker A: [satisfied] Das war's für heute!
-Speaker B: [warm] Danke fürs Zuhören!
-
-Technical Deep Dive:
-Speaker A: [thoughtful] Interessant.
-Speaker B: [impressed] Definitiv. Bis bald!
-
-News Brief:
-Speaker A: [professional] Das waren die Nachrichten.
-Speaker B: [formal] Bleiben Sie informiert!
-
-**IMPORTANT:**
-- VARY the goodbye each time
-- Both speakers participate
-- System adds 2.0s silence AFTER your last line
+**IMPORTANT: Jump straight into the scenario!**
+- NO greetings ("Welcome back!")
+- NO goodbyes ("Thanks for listening!")
+- Start immediately in the middle of the scene
+- End when the scene naturally concludes
 
 ===================================
 YEAR PRONUNCIATION GUIDE
