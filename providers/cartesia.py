@@ -76,107 +76,97 @@ class CartesiaProvider:
             speeds[f"{speaker}_{gender}"] = config['default_speed']
         return speeds
         
-    def parse_script_to_dialogue(self, script, voice_ids):
-        """Parse script into Cartesia dialogue format
-        
-        Args:
-            script: Raw script text with Speaker A:/B: and [tags]
-            voice_ids: Dict with speaker_a and speaker_b voice IDs
-            
-        Returns:
-            List of dialogue items for Cartesia API
+    def _split_text_at_emotions(self, text):
         """
-        dialogue = []
-        lines = script.split('\n')
-        
-        current_speaker = None
-        current_text = []
-        current_emotions = []
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-                
-            # Check for speaker labels
-            if line.startswith('Speaker A:'):
-                # Save previous segment
-                if current_speaker and current_text:
-                    dialogue.append(self._create_segment(
-                        current_speaker,
-                        ' '.join(current_text),
-                        current_emotions,
-                        voice_ids
-                    ))
-                
-                current_speaker = 'speaker_a'
-                current_text = []
-                current_emotions = []
-                
-                # Get text after "Speaker A:"
-                text = line[10:].strip()
-                if text:
-                    emotions, clean_text = self._extract_emotions(text)
-                    current_text.append(clean_text)
-                    current_emotions.extend(emotions)
-                    
-            elif line.startswith('Speaker B:'):
-                # Save previous segment
-                if current_speaker and current_text:
-                    dialogue.append(self._create_segment(
-                        current_speaker,
-                        ' '.join(current_text),
-                        current_emotions,
-                        voice_ids
-                    ))
-                
-                current_speaker = 'speaker_b'
-                current_text = []
-                current_emotions = []
-                
-                # Get text after "Speaker B:"
-                text = line[10:].strip()
-                if text:
-                    emotions, clean_text = self._extract_emotions(text)
-                    current_text.append(clean_text)
-                    current_emotions.extend(emotions)
-                    
+        Split text into segments at mid-sentence emotion tags.
+
+        Args:
+            text: Text that may contain [emotion] tags mid-sentence
+
+        Returns:
+            List of (emotions_list, clean_text) tuples
+        """
+        # Pattern to find emotion tags
+        tag_pattern = r'\[([^\]]+)\]'
+
+        # Find all tags and their positions
+        tags_with_positions = [(m.group(1), m.start(), m.end()) for m in re.finditer(tag_pattern, text)]
+
+        if not tags_with_positions:
+            # No tags - return text with empty emotions
+            return [([], text.strip())]
+
+        # Check if tags are only at the start (before any substantial text)
+        first_non_tag_char = 0
+        temp_text = text
+        while True:
+            temp_text = temp_text.strip()
+            if temp_text.startswith('['):
+                end_bracket = temp_text.find(']')
+                if end_bracket > 0:
+                    temp_text = temp_text[end_bracket + 1:]
+                    first_non_tag_char = text.find(temp_text.strip()) if temp_text.strip() else len(text)
+                else:
+                    break
             else:
-                # Continuation of current speaker
-                if current_speaker:
-                    emotions, clean_text = self._extract_emotions(line)
-                    current_text.append(clean_text)
-                    current_emotions.extend(emotions)
-        
-        # Don't forget last segment
-        if current_speaker and current_text:
-            dialogue.append(self._create_segment(
-                current_speaker,
-                ' '.join(current_text),
-                current_emotions,
-                voice_ids
-            ))
-        
-        return dialogue
-    
-    def _extract_emotions(self, text):
-        """Extract emotion tags from text
-        
-        Args:
-            text: Text potentially containing [emotion] tags
-            
-        Returns:
-            Tuple of (emotions_list, clean_text)
-        """
-        emotions = []
-        
-        # Find all [tag] patterns
-        tags = re.findall(r'\[([^\]]+)\]', text)
-        
-        # COMPREHENSIVE Cartesia emotion mapping (50+ tags)
-        # Cartesia supports 5 emotions with intensity: positivity, curiosity, surprise, sadness, anger
-        # Intensities: highest, high, low, lowest
-        emotion_map = {
+                break
+
+        # Get tags that are at the start (before any text content)
+        start_tags = []
+        for tag, start, end in tags_with_positions:
+            if start < first_non_tag_char:
+                start_tags.append(tag)
+
+        # Get tags that are mid-sentence (after text content has started)
+        mid_tags_with_positions = [(tag, start, end) for tag, start, end in tags_with_positions
+                                    if start >= first_non_tag_char]
+
+        if not mid_tags_with_positions:
+            # All tags are at start - simple case
+            emotions, clean_text = self._extract_emotions(text)
+            return [(emotions, clean_text)] if clean_text.strip() else []
+
+        # Split at mid-sentence tags
+        segments = []
+        current_pos = 0
+        current_emotions = start_tags.copy()
+
+        for tag, tag_start, tag_end in mid_tags_with_positions:
+            # Get text before this tag
+            text_before = text[current_pos:tag_start]
+            # Remove any tags from text_before and get the clean text
+            clean_before = re.sub(tag_pattern, '', text_before).strip()
+
+            if clean_before:
+                # Map emotions to Cartesia format
+                mapped_emotions = []
+                for t in current_emotions:
+                    t_lower = t.lower()
+                    if t_lower in self._get_emotion_map():
+                        mapped_emotions.append(self._get_emotion_map()[t_lower])
+                segments.append((mapped_emotions, clean_before))
+
+            # This tag starts a new segment
+            current_emotions = [tag]
+            current_pos = tag_end
+
+        # Get remaining text after last tag
+        remaining_text = text[current_pos:]
+        clean_remaining = re.sub(tag_pattern, '', remaining_text).strip()
+
+        if clean_remaining:
+            mapped_emotions = []
+            for t in current_emotions:
+                t_lower = t.lower()
+                if t_lower in self._get_emotion_map():
+                    mapped_emotions.append(self._get_emotion_map()[t_lower])
+            segments.append((mapped_emotions, clean_remaining))
+
+        return segments if segments else [([], text.strip())]
+
+    def _get_emotion_map(self):
+        """Return the emotion mapping dictionary"""
+        return {
             # Positive/Excited
             'excited': 'positivity:high',
             'enthusiastic': 'positivity:high',
@@ -189,7 +179,12 @@ class CartesiaProvider:
             'satisfied': 'positivity:low',
             'hopeful': 'positivity:low',
             'proud': 'positivity:high',
-            
+            'confident': 'positivity:low',
+            'encouraging': 'positivity:low',
+            'passionate': 'positivity:high',
+            'animated': 'positivity:high',
+            'playful': 'positivity:high',
+
             # Curious/Thoughtful
             'curious': 'curiosity:high',
             'questioning': 'curiosity:high',
@@ -203,7 +198,13 @@ class CartesiaProvider:
             'clarifying': 'curiosity:low',
             'carefully': 'curiosity:low',
             'precisely': 'curiosity:low',
-            
+            'reflective': 'curiosity:low',
+            'understanding': 'curiosity:low',
+            'professional': 'curiosity:low',
+            'formal': 'curiosity:low',
+            'serious': 'curiosity:low',
+            'uncertain': 'curiosity:high',
+
             # Surprised
             'surprised': 'surprise:high',
             'shocked': 'surprise:highest',
@@ -212,7 +213,7 @@ class CartesiaProvider:
             'wow': 'surprise:high',
             'realizing': 'surprise:low',
             'impressed': 'surprise:low',
-            
+
             # Concerned/Sad
             'worried': 'sadness:low',
             'concerned': 'sadness:low',
@@ -223,7 +224,8 @@ class CartesiaProvider:
             'quietly': 'sadness:low',
             'sadly': 'sadness:high',
             'somber': 'sadness:low',
-            
+            'emotional': 'sadness:low',
+
             # Skeptical/Frustrated
             'skeptical': 'anger:low',
             'frustrated': 'anger:low',
@@ -234,71 +236,140 @@ class CartesiaProvider:
             'dramatically': 'anger:low',
             'intensely': 'anger:high',
             'pressing': 'anger:low',
-            
+            'determined': 'anger:low',
+            'emphatic': 'positivity:high',
+
             # Laughter
             'laughs': 'positivity:high',
             'chuckles': 'positivity:low',
             'giggles': 'positivity:high',
-            
+            'chuckling': 'positivity:low',
+
             # Vocal reactions
             'hmm': 'curiosity:low',
             'uhh': 'curiosity:low',
             'gulps': 'surprise:low',
-            
-            # Additional nuanced tags
-            'professional': 'curiosity:low',
-            'formal': 'curiosity:low',
-            'casual': 'positivity:low',
-            'playful': 'positivity:high',
-            'serious': 'curiosity:low',
-            'determined': 'anger:low',
-            'confident': 'positivity:low',
-            'uncertain': 'curiosity:high',
+
+            # Additional tags from scripts
+            'switching gears': 'curiosity:low',
+            'building': 'curiosity:high',
+            'building emotion': 'positivity:high',
+            'confirming': 'positivity:low',
+            'agreeing': 'positivity:low',
+            'inspired': 'positivity:high',
+            'warmly': 'positivity:low',
+            'final push': 'positivity:high',
+            'slowly': 'curiosity:low',
         }
-        
+
+    def parse_script_to_dialogue(self, script, voice_ids):
+        """Parse script into Cartesia dialogue format
+
+        Handles mid-sentence emotion tags by splitting into multiple segments.
+        Same speaker can have consecutive segments with different emotions.
+
+        Args:
+            script: Raw script text with Speaker A:/B: and [tags]
+            voice_ids: Dict with speaker_a and speaker_b voice IDs
+
+        Returns:
+            List of dialogue items for Cartesia API
+        """
+        dialogue = []
+        lines = script.split('\n')
+
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+
+            # Determine speaker
+            speaker = None
+            text_content = None
+
+            if line.startswith('Speaker A:'):
+                speaker = 'speaker_a'
+                text_content = line[10:].strip()
+            elif line.startswith('Speaker B:'):
+                speaker = 'speaker_b'
+                text_content = line[10:].strip()
+
+            if speaker and text_content:
+                # Split text at mid-sentence emotion tags
+                segments = self._split_text_at_emotions(text_content)
+
+                for emotions, clean_text in segments:
+                    if clean_text.strip():
+                        dialogue.append(self._create_segment(
+                            speaker,
+                            clean_text,
+                            emotions,
+                            voice_ids
+                        ))
+
+        return dialogue
+    
+    def _extract_emotions(self, text):
+        """Extract emotion tags from text
+
+        Args:
+            text: Text potentially containing [emotion] tags
+
+        Returns:
+            Tuple of (emotions_list, clean_text)
+        """
+        emotions = []
+
+        # Find all [tag] patterns
+        tags = re.findall(r'\[([^\]]+)\]', text)
+
+        # Use centralized emotion map
+        emotion_map = self._get_emotion_map()
+
         for tag in tags:
             tag_lower = tag.lower()
             if tag_lower in emotion_map:
                 emotions.append(emotion_map[tag_lower])
-            # Note: Tags like [interrupting], [fast-paced] are kept in text but not mapped
-            # They're valid for ElevenLabs and future Cartesia support
-        
+            # Note: Tags not in map are ignored for Cartesia
+            # They may be valid for ElevenLabs
+
         # Remove tags from text
         clean_text = re.sub(r'\[([^\]]+)\]', '', text).strip()
-        
+
         return emotions, clean_text
     
     def _create_segment(self, speaker, text, emotions, voice_ids):
         """Create a Cartesia dialogue segment
-        
+
         Args:
             speaker: 'speaker_a' or 'speaker_b'
             text: Clean dialogue text
-            emotions: List of emotion strings
+            emotions: List of emotion strings (already mapped to Cartesia format)
             voice_ids: Voice ID mapping (can be string or dict with 'id' key)
-            
+
         Returns:
             Dict in Cartesia format
         """
         voice_config = voice_ids[speaker]
-        
+
         # Extract ID - handle both formats (string or dict)
         if isinstance(voice_config, dict):
             voice_id = voice_config.get('id', voice_config)
         else:
             voice_id = voice_config
-        
+
         segment = {
             "voice_id": voice_id,  # Must be STRING for Cartesia API
             "transcript": text,
             "__experimental_controls": {}
         }
-        
-        # CRITICAL FIX: Cartesia expects emotion as ARRAY, not string
+
+        # Cartesia expects emotion as ARRAY
+        # Use up to 2 emotions for richer expression
         if emotions:
-            # Take the first emotion (or could combine them)
-            segment["__experimental_controls"]["emotion"] = [emotions[0]]
-        
+            unique_emotions = list(dict.fromkeys(emotions))  # Remove duplicates, preserve order
+            segment["__experimental_controls"]["emotion"] = unique_emotions[:2]
+
         return segment
     
     def generate_audio(self, script, voice_ids, mode='production', speed=1.0, project_name=None, use_config_speeds=True):

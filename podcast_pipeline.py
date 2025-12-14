@@ -691,6 +691,102 @@ Keep summaries concise but preserve specific details that would be valuable for 
     return "\n\n".join(all_summaries)
 
 
+def get_provider_emotion_instructions(provider):
+    """
+    Return provider-specific emotion tag instructions for script generation.
+
+    Args:
+        provider: 'elevenlabs' or 'cartesia'
+
+    Returns:
+        String with emotion tag instructions optimized for the provider
+    """
+    if provider == 'elevenlabs':
+        return """
+===================================
+EMOTION TAGS (ElevenLabs - Full Dynamics)
+===================================
+
+ElevenLabs supports the FULL range of emotion and delivery tags.
+Use these EXTENSIVELY throughout the script:
+
+**INTERRUPTIONS & DYNAMICS (use 5-10 times):**
+[interrupting] - Speaker cuts into other's speech
+[overlapping] - Brief simultaneous speech
+[interjecting] - Quick insertion
+
+**EMOTIONS (use liberally on most lines):**
+[excited] [enthusiastic] [happy] [cheerful] [energetic]
+[curious] [questioning] [interested] [thoughtful] [analytical]
+[surprised] [shocked] [amazed] [impressed]
+[worried] [concerned] [nervous] [anxious]
+[skeptical] [frustrated] [annoyed]
+[confused] [hesitant] [uncertain]
+[amused] [playful] [warm] [friendly]
+
+**REACTIONS (use 10+ times):**
+[laughs] [chuckles] [giggles] [sighs] [gasps]
+[gulps] [groans] [hmm] [uhh]
+
+**DELIVERY (vary throughout):**
+[whispers] [quietly] [loudly] [shouting]
+[fast-paced] [slowly] [pause] [hesitates]
+
+**COMBINE TAGS for nuanced delivery:**
+[nervous][hesitant] - Nervous AND hesitant
+[excited][fast-paced] - Very excited, rapid speech
+[skeptical][slowly] - Doubtful, measured delivery
+
+VARIETY REQUIREMENT: Use at least 15 different tag types per 100 lines.
+===================================
+"""
+    elif provider == 'cartesia':
+        return """
+===================================
+EMOTION TAGS (Cartesia - 5 Core Emotions)
+===================================
+
+Cartesia uses 5 CORE EMOTIONS with INTENSITY levels.
+Use ONLY these tags - they map directly to Cartesia's voice controls:
+
+**POSITIVITY (energy/happiness):**
+HIGH: [excited] [enthusiastic] [happy] [cheerful] [energetic] [laughs] [playful]
+LOW: [friendly] [warm] [amused] [satisfied] [hopeful] [chuckles] [confident]
+
+**CURIOSITY (interest/thinking):**
+HIGH: [curious] [questioning] [interested] [confused] [uncertain]
+LOW: [thoughtful] [analytical] [pondering] [explaining] [carefully] [hmm]
+
+**SURPRISE (amazement/realization):**
+HIGH: [surprised] [shocked] [amazed] [gasps] [wow]
+LOW: [realizing] [impressed]
+
+**SADNESS (concern/softness):**
+HIGH: [disappointed] [sadly]
+LOW: [worried] [concerned] [nervous] [anxious] [sighs] [quietly] [somber]
+
+**ANGER (intensity/skepticism):**
+HIGH: [angry] [intensely]
+LOW: [skeptical] [frustrated] [annoyed] [urgently] [determined]
+
+⚠️ AVOID THESE TAGS (Cartesia cannot process them):
+[interrupting] [overlapping] [interjecting] [fast-paced] [slowly]
+[pause] [whispers] [shouting] [loudly] [hesitates]
+
+Instead of [pause], use natural sentence breaks or "..."
+Instead of [fast-paced], use [excited] or [enthusiastic]
+Instead of [slowly], use [thoughtful] or [carefully]
+
+VARIETY REQUIREMENT:
+- Use all 5 emotion categories throughout the script
+- Vary between HIGH and LOW intensity
+- Minimum 15 different tags per 100 lines
+===================================
+"""
+    else:
+        return ""
+
+
 def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config):
     """
     Generate a structured outline for the podcast.
@@ -773,10 +869,13 @@ Be specific. Include actual facts from the research. This outline will guide mul
 
 
 def generate_script_section(section_num, total_sections, outline, previous_section_end,
-                           target_words, style_template, language, api_key, config):
+                           target_words, style_template, language, api_key, config, provider='elevenlabs'):
     """
     Generate a single section of the podcast script.
     Returns the section text.
+
+    Args:
+        provider: 'elevenlabs' or 'cartesia' - determines emotion tag instructions
     """
     show_progress = config.get('script_generation', {}).get('show_progress', True)
 
@@ -784,6 +883,9 @@ def generate_script_section(section_num, total_sections, outline, previous_secti
         print(f"\n[SCRIPT] Generating section {section_num}/{total_sections} (~{target_words} words)...")
 
     client = Anthropic(api_key=api_key)
+
+    # Get provider-specific emotion instructions
+    emotion_instructions = get_provider_emotion_instructions(provider)
 
     # Context from previous section for continuity
     continuity_context = ""
@@ -815,6 +917,8 @@ OUTLINE (follow this structure):
 
 {continuity_context}
 
+{emotion_instructions}
+
 STYLE REQUIREMENTS:
 {style_template[:2000] if style_template else "Natural, conversational dialogue between Speaker A and Speaker B."}
 
@@ -822,8 +926,8 @@ CRITICAL FORMAT REQUIREMENTS:
 1. Start IMMEDIATELY with dialogue - NO title, NO header, NO introduction text
 2. Use EXACTLY this format: "Speaker A:" or "Speaker B:" (NO asterisks, NO bold, NO markdown)
 3. NO blank lines between dialogue segments - each line follows immediately after the previous
-4. Include emotion tags in square brackets: [excited], [thoughtful], [laughs], etc.
-5. Include natural interruptions and reactions
+4. Place emotion tags at the START of each line, AFTER "Speaker A:" or "Speaker B:"
+5. If emotion changes mid-thought, START A NEW LINE with the new speaker label and emotion
 6. End at a natural transition point (NOT mid-sentence)
 7. Do NOT include sources, titles, dividers (---), or any non-dialogue content
 
@@ -831,11 +935,14 @@ CORRECT FORMAT EXAMPLE:
 Speaker A: [excited] This is amazing news!
 Speaker B: [curious] Tell me more about it.
 Speaker A: [thoughtful] Well, the research shows...
+Speaker A: [surprised] And this is the fascinating part!
 
 WRONG FORMAT (DO NOT USE):
-**Speaker A:** [excited] This is amazing news!
+Speaker A: [excited] This is amazing! [thoughtful] But we need to consider...
+(Mid-line emotion changes are NOT allowed - start a new line instead)
 
-**Speaker B:** [curious] Tell me more about it.
+**Speaker A:** [excited] This is amazing news!
+(Asterisks/bold are NOT allowed)
 
 Generate the script section now (start directly with "Speaker A:" or "Speaker B:"):
 """
@@ -864,10 +971,13 @@ Generate the script section now (start directly with "Speaker A:" or "Speaker B:
         return None, None
 
 
-def generate_script_multi_call(topic, duration, word_count, outline, style_template, language, api_key, config):
+def generate_script_multi_call(topic, duration, word_count, outline, style_template, language, api_key, config, provider='elevenlabs'):
     """
     Orchestrate multi-call script generation using the outline.
     Returns complete script text.
+
+    Args:
+        provider: 'elevenlabs' or 'cartesia' - determines emotion tag instructions
     """
     gen_config = config.get('script_generation', {})
     words_per_call = gen_config.get('words_per_call', 2000)
@@ -895,7 +1005,8 @@ def generate_script_multi_call(topic, duration, word_count, outline, style_templ
             style_template=style_template,
             language=language,
             api_key=api_key,
-            config=config
+            config=config,
+            provider=provider
         )
 
         if not section_text:
@@ -1208,10 +1319,13 @@ def synthesize_transitions(sections, language, api_key, config):
 
 def run_multi_call_generation(topic, duration, word_count, research_context, source_documents,
                               web_source_count, style_template, style_description, language,
-                              api_key, config, project_name):
+                              api_key, config, project_name, provider='elevenlabs'):
     """
     Main orchestrator for multi-call script generation.
     Returns final script text.
+
+    Args:
+        provider: 'elevenlabs' or 'cartesia' - determines emotion tag instructions
     """
     print("\n" + "="*60)
     print("MULTI-CALL SCRIPT GENERATION")
@@ -1285,7 +1399,8 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
         style_template=style_template,
         language=language,
         api_key=api_key,
-        config=config
+        config=config,
+        provider=provider
     )
 
     if not sections:
@@ -2333,7 +2448,22 @@ def main():
     word_count = int(duration * 222 * default_speed)
     print(f"Adjusted word count: ~{word_count} words (for {default_speed} speed)")
 
-    # 5. Create project structure (before TTS selection - scripts are provider-agnostic)
+    # 4b. TTS Provider Selection (BEFORE script generation for provider-optimized emotion tags)
+    print("\n" + "="*60)
+    print("TTS PROVIDER SELECTION")
+    print("="*60)
+    print("Select provider BEFORE script generation for optimized emotion tags.")
+    provider_options = [
+        "ElevenLabs (full emotion dynamics, interruptions, overlapping)",
+        "Cartesia (5 core emotions with intensity levels)"
+    ]
+    provider_idx = get_user_input("\nSelect TTS provider", provider_options)
+    selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
+    provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+    print(f"\n[INFO] Selected: {selected_provider.upper()}")
+    print("[INFO] Script will use provider-optimized emotion tags.")
+
+    # 5. Create project structure
     print(f"\nCreating project folder: ./projects/{project_name}/")
     project_path = create_project_structure(project_name)
     print(f"  ✓ Created subdirectories")
@@ -2709,7 +2839,8 @@ def main():
                 language=selected_language,
                 api_key=anthropic_key,
                 config=config,
-                project_name=project_name
+                project_name=project_name,
+                provider=selected_provider
             )
 
             if not script:
@@ -2835,19 +2966,11 @@ def main():
                 print("Cancelled")
                 return
 
-    # 10. TTS CONFIGURATION (after script approved)
+    # 10. TTS CONFIGURATION (mode and speed - provider already selected)
     print("\n" + "="*60)
     print("AUDIO CONFIGURATION")
     print("="*60)
-    provider_options = [
-        "ElevenLabs (full emotion dynamics, interruptions)",
-        "Cartesia (faster generation, emotion-optimized)"
-    ]
-    provider_idx = get_user_input("\nSelect TTS provider", provider_options)
-    selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
-    provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
-
-    print(f"\n[INFO] Selected: {selected_provider.upper()}")
+    print(f"Provider: {selected_provider.upper()} (selected before script generation)")
 
     # Mode selection
     if selected_provider == 'elevenlabs':
