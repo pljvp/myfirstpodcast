@@ -106,6 +106,7 @@ CARTESIA_API_KEY=...
 | `podcast_pipeline.py` | Generate podcasts |
 | `tune_audio.py` | Adjust speaker speeds |
 | `translate_script.py` | Translate scripts |
+| `smart_update.py` | Safe updates with backups |
 
 ---
 
