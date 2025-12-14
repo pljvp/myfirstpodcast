@@ -1,6 +1,6 @@
 AA# 🎙️ AI Podcast Pipeline
 
-Two-person dialogue podcast generator with natural conversations, emotions, and interruptions.
+Two-person dialogue podcast generator with natural conversations and emotions.
 
 **Use AI responsibly.**
 
@@ -12,7 +12,7 @@ Two-person dialogue podcast generator with natural conversations, emotions, and 
 # 1. Install
 pip install -r requirements.txt
 
-# 2. Configure (see INSTALL_AND_SETUP.md)
+# 2. Configure
 cp config/.env.template config/.env
 # Add your API keys
 
@@ -20,129 +20,37 @@ cp config/.env.template config/.env
 python podcast_pipeline.py
 ```
 
-**Full setup guide:** [INSTALL_AND_SETUP.md](INSTALL_AND_SETUP.md)
-
 ---
 
 ## 🎯 Features
 
 ### **Natural Dialogue**
-- ✅ Emotions (`[excited]`, `[skeptical]`, `[laughs]`)
-- ✅ Interruptions (`[overlapping]`, `[interrupting]`)
-- ✅ Reactions (`[chuckles]`, `[sighs]`, `[gasps]`)
-- ✅ 65+ emotion mappings for realistic variety
+- ✅ Provider-specific emotion tags (auto-selected per provider)
+- ✅ Reactions (`[laughs]`, `[sighs]`, `[gasps]`)
+- ✅ 60+ Cartesia native emotions, full ElevenLabs dynamics
 
 ### **Two TTS Providers**
-- **Cartesia** - Fast, affordable (~$0.05/min), 10ms crossfading eliminates clicks
-- **ElevenLabs** - Premium voices, full emotion dynamics
+- **Cartesia** - Fast, affordable (~$0.05/min), native emotion support
+- **ElevenLabs** - Premium voices, interruptions & overlapping speech
 
-### **Flexible Control**
-- Per-voice speed settings (tune each speaker independently)
-- Custom research contexts per project
-- Document upload support (PDF, DOCX, PPTX)
-- Multi-draft workflow with auto-versioning
+### **Scalable Architecture**
+- Provider config files (`providers/configs/*.yaml`)
+- Template placeholders for easy 3rd provider addition
+- Per-voice speed settings
 
 ### **Post-Processing Tools**
 - `tune_audio.py` - Adjust speaker speeds post-generation
 - `translate_script.py` - Translate to other languages
-- `smart_update.py` - Safe system updates with backups
-
----
-
-## 📊 Audio Quality
-
-### **Recent Improvements**
-- ✅ **Crossfading** - 10ms overlap eliminates clicks between segments
-- ✅ **Emotion variety** - 65+ tags mapped across 5 base emotions
-- ✅ **Duration accuracy** - Adjusted word count formula (222 wpm)
-- ✅ **PCM processing** - Clean Cartesia audio without artifacts
 
 ---
 
 ## 🎛️ Primary Workflow
 
-### **Standard Podcast Generation**
-
 ```bash
 python podcast_pipeline.py
 ```
 
-**Terminal prompts:**
-
-```
-1. Project name: myprojectname
-   └─> Creates: projects/myprojectname/
-
-2. Topic: myprojectname topic in building automation
-   └─> Used for research & script generation
-
-3. Duration (minutes): 15
-   └─> Target length (actual: ±5% with 222 wpm formula)
-
-4. Style:
-   1. Dynamic, friendly science (Popular Scientific)
-   2. In-depth technical analysis (Technical Deep Dive)
-   3. Quick news update (News Brief)
-
-5. Language:
-   1. Deutsch (German)
-   2. English
-   3. Nederlands (Dutch)
-
-6. Provider:
-   1. ElevenLabs (Premium voices)
-   2. Cartesia (Fast, affordable)
-
-7. Mode:
-   1. Prototype (standard quality, 64k bitrate)
-   2. Production (high quality, full bitrate)
-
-8. Speed (0.7-1.2, default 1.0): [Enter]
-   └─> Optional: Override default speed
-
-9. Research Context Options
-   1. Use as-is (proceed with current context)
-   2. Edit current context (Define audience & focus)
-   3. Reset to default template (if you made mistakes)
-   4. Show current context
-
-   └─> CRUCIAL STEP: Option 2 opens editor to customize:
-       • Target audience (experts, general public, students)
-       • Focus areas (technical depth, practical examples, theory)
-       • Topics to emphasize or avoid
-       • Tone and style preferences
-
-   ★ Example customizations:
-       ┌────────────────────────────────────────────────────────┐
-       │ Topics:                                                │
-       │ 1. Introduce topic ABC                                 │
-       │ 2. Give examples of DEF                                │
-       │ 3. Project future state - but keep to the facts!       │
-       │                                                        │
-       │ Target audience:                                       │
-       │ Building automation engineers                          │
-       │ Focus: Practical implementation, not theory            │
-       │ Emphasize: Real-world examples, troubleshooting        │
-       │ Avoid: Marketing fluff, basic concepts                 │
-       └────────────────────────────────────────────────────────┘
-
-10. Prompt Template Options
-    1. Use default template (popular_scientific / german)
-    2. Load existing template from project's prompts folder
-    3. Copy template from templates folder to project and customize
-    4. Edit the chosen template before generating
-    5. Start with blank prompt
-
-11. Source Documents Check
-    Options:
-      1. Proceed (use existing documents if any)
-      2. List current documents
-      3. Add new source files
-
-    └─> If no documents: Web research only
-    └─> If documents added: Combined with web research
-
-```
+**Prompts:** Project name → Topic → Duration → Style → Language → Provider → Mode
 
 **Output:**
 ```
@@ -150,114 +58,6 @@ projects/myprojectname/
 ├── scripts/myprojectname_DE_2025-12-06_14-30_CRTS_draft1.txt
 ├── audio/myprojectname_de_2025-12-06_CRTS_PRODUCTION.mp3
 └── sources/myprojectname_sources.txt
-```
-
----
-
-### **Test Mode Workflow**
-
-**For quick voice testing (1-1.5 min outputs):**
-
-```bash
-python podcast_pipeline.py
-```
-
-**Special prompts when project = "test":**
-
-```
-1. Project name: test
-   └─> Activates test mode
-
-2. Scenario:
-   1. Road trip argument
-   2. Cooking disaster
-   3. Movie scene analysis
-   4. Random scenario
-
-3. Topic: My Neighbor Totoro
-   └─> Combined with scenario
-
-4. Duration: 2 minutes
-   └─> Always generates 1-1.5 min regardless
-
-5-8. [Same as standard: Style, Language, Provider, Mode, Speed]
-
-9-11. [Research context, templates, source docs - same options]
-```
-
-**Output:**
-```
-test_de_2025-12-06_mvie-totr_CRTS_OS1.00_MS1.00_FS1.00_PROTOTYPE.mp3
-                    └─ scenario code (mvie-totr = movie + totoro)
-                                     └─ speed settings encoded
-```
-
-**Use for:**
-- Testing voices before full generation
-- Experimenting with speeds
-- Validating emotion tags
-- Quick iteration cycles
-
----
-
-## 🎛️ Per-Voice Speed Control
-
-### **In Config** (Default speeds)
-```json
-{
-  "providers": {
-    "cartesia": {
-      "voices": {
-        "german": {
-          "speaker_a_female": {
-            "id": "voice-id-here",
-            "default_speed": 0.97
-          },
-          "speaker_b_male": {
-            "id": "voice-id-here",
-            "default_speed": 1.0
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-### **Post-Generation Tuning**
-```bash
-python tune_audio.py
-# Select script
-# Set individual speeds: Speaker A: 0.95, Speaker B: 1.05
-# Regenerates audio with new speeds (no script changes)
-```
-
-**Use cases:**
-- Balance volume between speakers (slower = quieter)
-- Match pacing preferences
-- Fix rushed/slow sections
-
----
-
-## 🌍 Multi-Language Support
-
-**Supported:** German, English, Dutch
-
-**Translation workflow:**
-```bash
-# 1. Generate in German
-python podcast_pipeline.py
-# Topic: "myprojectname topic"
-# Language: German
-
-# 2. Translate script
-python translate_script.py
-# Select script → Choose English
-# Preserves emotions & formatting
-
-# 3. Generate English audio
-python podcast_pipeline.py
-# (Pipeline detects translated script, offers to reuse)
 ```
 
 ---
@@ -270,44 +70,17 @@ myfirstpodcast/
 │   ├── .env                    # API keys (gitignored)
 │   └── podcast_config.json     # Voice IDs, speeds, styles
 ├── templates/                   # Script templates (3 styles × 3 languages)
-│   └── research_contexts/      # Default research contexts
-├── providers/                   # TTS provider implementations
-│   ├── cartesia.py             # Cartesia with crossfading
-│   └── elevenlabs.py           # ElevenLabs implementation
+├── providers/
+│   ├── configs/                # Provider-specific emotion configs
+│   │   ├── cartesia.yaml
+│   │   └── elevenlabs.yaml
+│   ├── cartesia.py
+│   └── elevenlabs.py
 ├── projects/                    # Your podcasts (gitignored)
-│   └── {project}/
-│       ├── audio/              # Generated MP3s
-│       ├── scripts/            # Dialogue scripts
-│       ├── sources/            # Your documents + research_context.txt
-│       ├── prompts/            # Custom templates
-│       └── debug/              # API payloads for troubleshooting
 ├── podcast_pipeline.py         # Main generator
-├── tune_audio.py              # Post-processing: Speed adjustment
-├── translate_script.py        # Script translation
-└── smart_update.py            # Safe system updates
+├── tune_audio.py              # Speed adjustment
+└── translate_script.py        # Script translation
 ```
-
----
-
-## 🎨 Podcast Styles
-
-### **1. Popular Scientific** (Default)
-- Dynamic, friendly science communication
-- Natural dialogue with humor
-- Target: 15 minutes
-- Template: `popular_science_{language}_dynamic.txt`
-
-### **2. Technical Deep Dive**
-- In-depth technical analysis
-- Expert-level discussion
-- Target: 20 minutes
-- Template: `technical_deep_dive_{language}.txt`
-
-### **3. News Brief**
-- Quick news update format
-- Fast-paced, informative
-- Target: 5 minutes
-- Template: `news_brief_{language}.txt`
 
 ---
 
@@ -321,115 +94,24 @@ CARTESIA_API_KEY=...
 ```
 
 ### **Voice IDs** (`config/podcast_config.json`)
-- 2 providers × 3 languages × 2 speakers = **12 voice IDs**
-- Get from provider voice libraries
+- 2 providers × 3 languages × 2 speakers = 12 voice IDs
 - Optional: Set per-voice default speeds
-
-### **Research Contexts**
-- **Global:** `templates/research_contexts/default.txt`
-- **Project-specific:** `projects/{project}/sources/research_context.txt`
-
-**⚡ CRITICAL for quality:** Customize `research_context.txt` per project to define:
-- Target audience expertise level
-- Focus areas and depth
-- Topics to emphasize/avoid
-- Desired tone and style
-
----
-
-## 📈 Performance
-
-**Generation Speed:**
-- Research: 2-4 minutes
-- Script: 3-5 minutes
-- Audio (15 min podcast): 3-5 minutes
-- **Total: ~10 minutes for 15-minute podcast**
 
 ---
 
 ## 🛠️ Tools Reference
 
-| Tool | Purpose | Usage |
-|------|---------|-------|
-| `podcast_pipeline.py` | Generate podcasts | Interactive prompts |
-| `tune_audio.py` | Adjust speaker speeds | Post-generation tuning |
-| `translate_script.py` | Translate scripts | Multi-language workflow |
-| `smart_update.py` | Safe system updates | Backs up data, updates code |
-
----
-
-## 📝 File Naming
-
-**Scripts:**
-```
-{project}_{LANG}_{DATE}_{TIME}_{PROVIDER}_draft{N}.txt
-Example: myprojectname_DE_2025-12-06_14-30_CRTS_draft1.txt
-```
-
-**Audio:**
-```
-{project}_{lang}_{date}_{provider}_{MODE}.mp3
-Example: myprojectname_de_2025-12-06_CRTS_PRODUCTION.mp3
-```
-
-**Test Audio:**
-```
-test_{lang}_{date}_{scenario-topic}_{provider}_OS{sp}_MS{sp}_FS{sp}_{MODE}.mp3
-Example: test_de_2025-12-06_mvie-totr_CRTS_OS1.00_MS1.00_FS1.00_PROTOTYPE.mp3
-```
-
-**Provider tags:** `CRTS` (Cartesia), `11LB` (ElevenLabs)
-
----
-
-## 🔄 Updates
-
-```bash
-# Automatic (recommended)
-python smart_update.py
-
-# Manual
-cp {file}_FIXED.py {destination}
-pip install -r requirements.txt
-```
-
-**smart_update.py features:**
-- ✅ Backs up all data (.env, configs, projects)
-- ✅ Updates only core files
-- ✅ Checks dependencies (Python + ffmpeg)
-- ✅ Cleans up temporary files
-- ✅ Shows status report
-
----
-
-## 📚 Documentation
-
-- **[INSTALL_AND_SETUP.md](INSTALL_AND_SETUP.md)** - Complete setup guide
+| Tool | Purpose |
+|------|---------|
+| `podcast_pipeline.py` | Generate podcasts |
+| `tune_audio.py` | Adjust speaker speeds |
+| `translate_script.py` | Translate scripts |
 
 ---
 
 ## 📄 License
 
-**CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International)
-
-**You are free to:**
-- ✅ Share - Copy and redistribute
-- ✅ Adapt - Remix, transform, and build upon
-
-**Under these terms:**
-- 📌 **Attribution** - You must give appropriate credit, provide a link to the license, and indicate if changes were made
-- 🚫 **NonCommercial** - You may not use the material for commercial purposes
-- 🔄 **ShareAlike** - If you remix, transform, or build upon the material, you must distribute your contributions under the same license
-
-**Full license:** https://creativecommons.org/licenses/by-nc-sa/4.0/
-
----
-
-## 🙏 Acknowledgments
-
-- **Anthropic Claude** - Script generation & research
-- **Cartesia** - Fast, high-quality TTS
-- **ElevenLabs** - Premium voice synthesis
+**CC BY-NC-SA 4.0** - Attribution, NonCommercial, ShareAlike
 
 ---
 

@@ -15,24 +15,24 @@ FILE_UPDATES = {
     # Core pipeline files
     'podcast_pipeline_FIXED.py': 'podcast_pipeline.py',
     'podcast_pipeline_UPDATED.py': 'podcast_pipeline.py',
-    'podcast_pipeline_NEW.py': 'podcast_pipeline.py',
-    'podcast_pipeline_new.py': 'podcast_pipeline.py',
-    
+
     # Utility scripts
     'tune_audio_FIXED.py': 'tune_audio.py',
-    'tune_audio_UPDATED.py': 'tune_audio.py',
     'translate_script_FIXED.py': 'translate_script.py',
-    'translate_script_UPDATED.py': 'translate_script.py',
-    
+
     # Provider files
     'cartesia_FIXED.py': 'providers/cartesia.py',
     'elevenlabs_FIXED.py': 'providers/elevenlabs.py',
-    
+    'template_hooks_FIXED.py': 'providers/template_hooks.py',
+
+    # Provider configs (emotion hooks)
+    'cartesia_config.yaml': 'providers/configs/cartesia.yaml',
+    'elevenlabs_config.yaml': 'providers/configs/elevenlabs.yaml',
+
     # Config and requirements
     'requirements_UPDATED.txt': 'requirements.txt',
-    'README_UPDATED_INSTALL.md': 'README.md',
-    
-    # Templates
+
+    # Templates (all 12)
     'popular_science_dutch_TEST.txt': 'templates/popular_science_dutch_TEST.txt',
     'popular_science_english_TEST.txt': 'templates/popular_science_english_TEST.txt',
     'popular_science_german_TEST.txt': 'templates/popular_science_german_TEST.txt',
@@ -324,13 +324,14 @@ def cleanup_root_files():
 def check_dependencies():
     """Check Python package dependencies"""
     print("\n📋 Dependency Status:\n")
-    
+
     packages = [
         ('pydub', 'required'),
         ('anthropic', 'required'),
         ('cartesia', 'required'),
         ('requests', 'required'),
         ('dotenv', 'required'),
+        ('yaml', 'required'),
         ('docx', 'optional'),
         ('PyPDF2', 'optional'),
         ('pptx', 'optional'),

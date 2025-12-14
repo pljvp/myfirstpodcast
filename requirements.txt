@@ -2,15 +2,16 @@
 anthropic>=0.40.0
 requests>=2.31.0
 python-dotenv>=1.0.0
+PyYAML>=6.0.0
 
 # TTS Providers
 cartesia>=1.1.0
 
-# Audio Processing (required for Cartesia PCM to MP3 conversion)
-pydub>=0.25.1  # Audio manipulation
-numpy>=1.24.0  # CRITICAL: Float32 to int16 PCM conversion for Cartesia
+# Audio Processing
+pydub>=0.25.1
+numpy>=1.24.0
 
-# Document Reading (optional but recommended)
+# Document Reading (optional)
 python-docx>=1.1.0
 PyPDF2>=3.0.0
 python-pptx>=0.6.23
