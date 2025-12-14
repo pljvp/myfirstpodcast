@@ -743,44 +743,50 @@ VARIETY REQUIREMENT: Use at least 15 different tag types per 100 lines.
     elif provider == 'cartesia':
         return """
 ===================================
-EMOTION TAGS (Cartesia - 5 Core Emotions)
+EMOTION TAGS (Cartesia - Native Emotions)
 ===================================
 
-Cartesia uses 5 CORE EMOTIONS with INTENSITY levels.
-Use ONLY these tags - they map directly to Cartesia's voice controls:
+Cartesia supports 60+ native emotions directly by name.
+Use these tags liberally throughout the script:
 
-**POSITIVITY (energy/happiness):**
-HIGH: [excited] [enthusiastic] [happy] [cheerful] [energetic] [laughs] [playful]
-LOW: [friendly] [warm] [amused] [satisfied] [hopeful] [chuckles] [confident]
+**POSITIVE/ENERGETIC:**
+[excited] [enthusiastic] [happy] [elated] [euphoric] [triumphant]
+[content] [peaceful] [serene] [calm] [grateful] [affectionate]
 
-**CURIOSITY (interest/thinking):**
-HIGH: [curious] [questioning] [interested] [confused] [uncertain]
-LOW: [thoughtful] [analytical] [pondering] [explaining] [carefully] [hmm]
+**CURIOUS/THOUGHTFUL:**
+[curious] [contemplative] [mysterious] [anticipation]
 
-**SURPRISE (amazement/realization):**
-HIGH: [surprised] [shocked] [amazed] [gasps] [wow]
-LOW: [realizing] [impressed]
+**SURPRISED/AMAZED:**
+[surprised] [amazed] [alarmed]
 
-**SADNESS (concern/softness):**
-HIGH: [disappointed] [sadly]
-LOW: [worried] [concerned] [nervous] [anxious] [sighs] [quietly] [somber]
+**ANXIOUS/SAD:**
+[anxious] [panicked] [scared] [sad] [dejected] [melancholic]
+[disappointed] [hurt] [guilty] [nostalgic] [wistful] [resigned]
 
-**ANGER (intensity/skepticism):**
-HIGH: [angry] [intensely]
-LOW: [skeptical] [frustrated] [annoyed] [urgently] [determined]
+**FRUSTRATED/ANGRY:**
+[frustrated] [agitated] [angry] [mad] [outraged] [disgusted] [contempt]
 
-⚠️ AVOID THESE TAGS (Cartesia cannot process them):
+**SKEPTICAL/NEUTRAL:**
+[skeptical] [sarcastic] [ironic] [bored] [tired] [neutral]
+[distant] [confident] [proud] [determined]
+
+**SOFT/HESITANT:**
+[hesitant] [insecure] [confused] [apologetic] [sympathetic]
+
+**REACTIONS (map to emotions):**
+[laughs] [chuckles] → happy
+[sighs] → resigned
+[gasps] → surprised
+
+⚠️ AVOID THESE TAGS (ElevenLabs-only, Cartesia skips them):
 [interrupting] [overlapping] [interjecting] [fast-paced] [slowly]
 [pause] [whispers] [shouting] [loudly] [hesitates]
 
 Instead of [pause], use natural sentence breaks or "..."
 Instead of [fast-paced], use [excited] or [enthusiastic]
-Instead of [slowly], use [thoughtful] or [carefully]
+Instead of [slowly], use [contemplative] or [calm]
 
-VARIETY REQUIREMENT:
-- Use all 5 emotion categories throughout the script
-- Vary between HIGH and LOW intensity
-- Minimum 15 different tags per 100 lines
+VARIETY REQUIREMENT: Use at least 15 different emotions per 100 lines.
 ===================================
 """
     else:
