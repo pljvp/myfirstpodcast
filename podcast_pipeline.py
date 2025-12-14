@@ -480,14 +480,18 @@ def estimate_api_calls(duration_minutes, doc_count, web_source_count, config):
     # Script generation calls (~words_per_call words per call)
     script_calls = math.ceil(word_count / words_per_call)
 
-    # Synthesis call (1 if multi-section, 0 if single section)
-    synthesis_calls = 1 if script_calls > 1 else 0
+    # Lightweight synthesis: 1 small call per transition (N-1 for N sections)
+    synthesis_calls = script_calls - 1 if script_calls > 1 else 0
 
     total_calls = research_calls + doc_calls + outline_calls + script_calls + synthesis_calls
 
     # Cost estimation (Sonnet: ~$0.003/1K input + $0.015/1K output)
-    # Average call: ~3K input, ~2K output = ~$0.009 + ~$0.030 = ~$0.04
-    estimated_cost = total_calls * 0.04
+    # Script calls: ~3K input, ~2K output = ~$0.04 each
+    # Synthesis calls: ~500 input, ~500 output = ~$0.01 each (lightweight)
+    script_cost = script_calls * 0.04
+    synthesis_cost = synthesis_calls * 0.01
+    other_cost = (research_calls + doc_calls + outline_calls) * 0.04
+    estimated_cost = script_cost + synthesis_cost + other_cost
 
     return {
         'word_count': word_count,
@@ -523,9 +527,9 @@ def display_generation_plan(duration, doc_count, web_source_count, config):
     print(f"  ├─ Outline generation: {estimate['outline_calls']} call")
     print(f"  ├─ Script generation:  {estimate['script_calls']} call(s)")
     if estimate['synthesis_calls'] > 0:
-        print(f"  └─ Synthesis pass:     {estimate['synthesis_calls']} call")
+        print(f"  └─ Transition smoothing: {estimate['synthesis_calls']} call(s) (lightweight)")
     else:
-        print(f"  └─ Synthesis pass:     0 (single section)")
+        print(f"  └─ Transition smoothing: 0 (single section)")
     print("-"*60)
     print(f"  TOTAL: {estimate['total_calls']} Claude API calls")
     print(f"  Est. cost: ~${estimate['estimated_cost']:.2f}")
@@ -911,13 +915,11 @@ def generate_script_multi_call(topic, duration, word_count, outline, style_templ
             total_usage['input'] += usage.input_tokens
             total_usage['output'] += usage.output_tokens
 
-    # Combine sections
-    combined_script = "\n\n".join(sections)
-
     print(f"\n[SCRIPT] All {num_sections} sections generated")
     print(f"[USAGE] Total - Input: {total_usage['input']}, Output: {total_usage['output']} tokens")
 
-    return combined_script, total_usage
+    # Return sections list (not combined) for lightweight synthesis
+    return sections, total_usage
 
 
 def synthesize_script(raw_script, outline, language, api_key, config):
@@ -1041,6 +1043,169 @@ def clean_script_format(script):
     return '\n'.join(cleaned_lines)
 
 
+def parse_script_to_segments(script):
+    """
+    Parse a script into dialogue segments.
+    Returns list of tuples: [(speaker, full_line), ...]
+    """
+    segments = []
+    for line in script.split('\n'):
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        # Check if this is a speaker line
+        lower = stripped.lower()
+        if lower.startswith('speaker a:') or lower.startswith('speaker b:'):
+            # Determine speaker
+            speaker = 'A' if 'speaker a:' in lower else 'B'
+            segments.append((speaker, stripped))
+        elif '**speaker a' in lower or '**speaker b' in lower:
+            # Handle markdown format
+            speaker = 'A' if 'speaker a' in lower else 'B'
+            segments.append((speaker, stripped))
+
+    return segments
+
+
+def synthesize_single_transition(segments_before, segments_after, language, api_key):
+    """
+    Smooth the transition between two sections.
+    Takes last N segments of section 1 and first N segments of section 2.
+    Returns smoothed segments as text.
+    """
+    client = Anthropic(api_key=api_key)
+
+    # Detect collision (same speaker ends section 1 and starts section 2)
+    last_speaker = segments_before[-1][0] if segments_before else None
+    first_speaker = segments_after[0][0] if segments_after else None
+    collision = last_speaker == first_speaker
+
+    # Build segment text
+    before_text = '\n'.join([seg[1] for seg in segments_before])
+    after_text = '\n'.join([seg[1] for seg in segments_after])
+
+    collision_instruction = ""
+    if collision:
+        collision_instruction = f"""
+COLLISION DETECTED: Section 1 ends with Speaker {last_speaker} and Section 2 starts with Speaker {last_speaker}.
+You MUST fix this by either:
+- Merging the two {last_speaker} segments into one natural segment
+- Adding a brief bridge line from Speaker {'B' if last_speaker == 'A' else 'A'} between them
+The final output MUST alternate A-B-A-B properly."""
+
+    prompt = f"""Smooth this podcast transition between two sections.
+
+END OF SECTION (last 4 segments):
+{before_text}
+
+START OF NEXT SECTION (first 4 segments):
+{after_text}
+{collision_instruction}
+
+TASKS:
+1. Create a smooth, natural transition between these segments
+2. Maintain A-B-A-B alternation (fix any collision)
+3. Preserve ALL factual content - do not remove information
+4. Keep all [emotion tags] in square brackets
+5. Maintain the language: {language}
+
+FORMAT REQUIREMENTS:
+- Use EXACTLY "Speaker A:" or "Speaker B:" format (NO asterisks, NO markdown)
+- NO blank lines between segments
+- Start output directly with a Speaker line
+
+OUTPUT the smoothed transition (typically 6-10 segments):"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=2000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.content[0].text.strip(), response.usage
+    except Exception as e:
+        print(f"    ✗ Transition synthesis failed: {e}")
+        # Fallback: just join the segments
+        return before_text + '\n' + after_text, None
+
+
+def synthesize_transitions(sections, language, api_key, config):
+    """
+    Lightweight synthesis: only smooth the join points between sections.
+    Takes list of section texts, returns combined script with smoothed transitions.
+    """
+    if len(sections) <= 1:
+        return sections[0] if sections else "", None
+
+    show_progress = config.get('script_generation', {}).get('show_progress', True)
+    num_joins = len(sections) - 1
+
+    if show_progress:
+        print(f"\n[SYNTHESIS] Smoothing {num_joins} transition(s)...")
+
+    total_usage = {'input': 0, 'output': 0}
+
+    # Parse all sections into segments
+    parsed_sections = [parse_script_to_segments(section) for section in sections]
+
+    # Process each join point
+    smoothed_sections = []
+
+    for i in range(len(sections)):
+        if i == 0:
+            # First section: keep all but last 4 segments, they'll be in the transition
+            if len(parsed_sections[i]) > 4:
+                kept_segments = parsed_sections[i][:-4]
+                smoothed_sections.append('\n'.join([seg[1] for seg in kept_segments]))
+            # else: entire section is in transition
+
+        if i < len(sections) - 1:
+            # Get segments for this transition
+            segments_before = parsed_sections[i][-4:] if len(parsed_sections[i]) >= 4 else parsed_sections[i]
+            segments_after = parsed_sections[i+1][:4] if len(parsed_sections[i+1]) >= 4 else parsed_sections[i+1]
+
+            if show_progress:
+                print(f"    Smoothing transition {i+1}/{num_joins}...")
+
+            # Synthesize this transition
+            smoothed_transition, usage = synthesize_single_transition(
+                segments_before=segments_before,
+                segments_after=segments_after,
+                language=language,
+                api_key=api_key
+            )
+
+            smoothed_sections.append(smoothed_transition)
+
+            if usage:
+                total_usage['input'] += usage.input_tokens
+                total_usage['output'] += usage.output_tokens
+                if show_progress:
+                    print(f"    ✓ Transition {i+1} smoothed ({usage.output_tokens} tokens)")
+
+        if i == len(sections) - 1:
+            # Last section: keep all but first 4 segments (they were in the transition)
+            if len(parsed_sections[i]) > 4:
+                kept_segments = parsed_sections[i][4:]
+                smoothed_sections.append('\n'.join([seg[1] for seg in kept_segments]))
+            # else: entire section was in transition
+        elif i > 0:
+            # Middle sections: remove first 4 (in prev transition) and last 4 (in next transition)
+            if len(parsed_sections[i]) > 8:
+                kept_segments = parsed_sections[i][4:-4]
+                smoothed_sections.append('\n'.join([seg[1] for seg in kept_segments]))
+            # else: entire section covered by transitions
+
+    # Combine all parts
+    final_script = '\n'.join([s for s in smoothed_sections if s.strip()])
+
+    if show_progress:
+        print(f"    ✓ All transitions smoothed (Total: {total_usage['input']} in, {total_usage['output']} out)")
+
+    return final_script, total_usage
+
+
 def run_multi_call_generation(topic, duration, word_count, research_context, source_documents,
                               web_source_count, style_template, style_description, language,
                               api_key, config, project_name):
@@ -1112,7 +1277,7 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
 
     # Phase 4: Script Generation
     print("\n[PHASE 4/5] Script Generation")
-    raw_script, script_usage = generate_script_multi_call(
+    sections, script_usage = generate_script_multi_call(
         topic=topic,
         duration=duration,
         word_count=word_count,
@@ -1123,30 +1288,29 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
         config=config
     )
 
-    if not raw_script:
+    if not sections:
         print("✗ Failed to generate script sections")
         return None
 
-    # Phase 5: Synthesis (only if multiple sections)
-    gen_config = config.get('script_generation', {})
-    words_per_call = gen_config.get('words_per_call', 2000)
-    num_sections = math.ceil(word_count / words_per_call)
+    if script_usage:
+        total_usage['input'] += script_usage['input']
+        total_usage['output'] += script_usage['output']
 
-    if num_sections > 1:
-        print("\n[PHASE 5/5] Synthesis & Polish")
-        final_script, synth_usage = synthesize_script(
-            raw_script=raw_script,
-            outline=outline,
+    # Phase 5: Lightweight Synthesis (smooth transitions between sections)
+    if len(sections) > 1:
+        print(f"\n[PHASE 5/5] Lightweight Synthesis ({len(sections)-1} transition(s))")
+        final_script, synth_usage = synthesize_transitions(
+            sections=sections,
             language=language,
             api_key=api_key,
             config=config
         )
         if synth_usage:
-            total_usage['input'] += synth_usage.input_tokens
-            total_usage['output'] += synth_usage.output_tokens
+            total_usage['input'] += synth_usage['input']
+            total_usage['output'] += synth_usage['output']
     else:
         print("\n[PHASE 5/5] Synthesis - Skipped (single section)")
-        final_script = raw_script
+        final_script = sections[0]
 
     # Post-process to ensure clean format
     print("\n[POST-PROCESS] Cleaning script format...")
