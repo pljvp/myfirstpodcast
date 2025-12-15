@@ -5,53 +5,62 @@ provider_name: cartesia
 provider_tag: CRTS
 
 # Main emotion/audio tag instructions
-# Cartesia uses 5 base emotions with intensity levels
+# Cartesia uses SSML tags for 60+ emotions (not limited to 5 API emotions)
 emotion_tags: |
-  Cartesia uses 5 BASE EMOTIONS with INTENSITY levels.
-  Use these tags liberally - they map to Cartesia's voice controls:
+  Cartesia supports 60+ SSML emotions via inline tags.
+  Use these tags liberally - they map directly to Cartesia's voice controls:
 
-  **POSITIVITY (energy/happiness):**
-  HIGH: [excited] [enthusiastic] [happy] [laughs] [energetic] [passionate]
-  LOW: [friendly] [warm] [content] [amused] [cheerful] [chuckles] [playful]
+  **PRIMARY EMOTIONS (best quality):**
+  [excited] [angry] [content] [sad] [scared] [neutral]
 
-  **CURIOSITY (interest/thinking):**
-  HIGH: [curious] [questioning] [interested] [confused]
-  LOW: [thoughtful] [contemplative] [analytical] [pondering] [hmm]
+  **POSITIVE/ENERGY:**
+  [happy] [enthusiastic] [elated] [euphoric] [triumphant]
+  [friendly] [warm] [peaceful] [serene] [calm]
+  [grateful] [affectionate] [cheerful] [amused] [playful]
 
-  **SURPRISE (amazement):**
-  HIGH: [surprised] [shocked] [amazed] [gasps] [wow]
-  LOW: [realizing] [impressed]
+  **CURIOSITY/THINKING:**
+  [curious] [questioning] [interested] [confused]
+  [thoughtful] [contemplative] [analytical]
 
-  **SADNESS (concern/softness):**
-  HIGH: [disappointed] [sad] [hurt]
-  LOW: [worried] [concerned] [nervous] [anxious] [sighs] [quietly]
+  **SURPRISE:**
+  [surprised] [amazed] [alarmed] [impressed]
 
-  **ANGER (intensity/skepticism):**
-  HIGH: [angry] [intensely]
-  LOW: [skeptical] [frustrated] [annoyed] [defensive] [determined]
+  **SADNESS/CONCERN:**
+  [disappointed] [dejected] [melancholic] [hurt] [guilty]
+  [worried] [concerned] [nervous] [anxious]
+  [resigned] [wistful] [nostalgic]
 
-  **NEUTRAL:** [neutral] [professional] [serious] [confident]
+  **ANGER/INTENSITY:**
+  [frustrated] [agitated] [sarcastic] [ironic] [contempt]
+  [skeptical] [determined] [emphatic]
 
-  ⚠️ AVOID (Cartesia skips these - ElevenLabs only):
+  **VOCAL REACTIONS:**
+  [laughs] [chuckles] [giggles] [sighs] [gasps]
+
+  **NEUTRAL/PROFESSIONAL:**
+  [professional] [serious] [confident] [proud]
+
+  AVOID (ElevenLabs only - Cartesia skips these):
   [interrupting] [overlapping] [fast-paced] [slowly] [pause] [whispers]
 
-# Example dialogue snippets (Cartesia-optimized)
+# Example dialogue snippets (Cartesia SSML-optimized)
 examples: |
-  Speaker A: [excited] Okay, I just read something incredible—
-  Speaker B: [curious] Wait! Is this about quantum physics?
-  Speaker A: [laughs] Yes! But listen—
-  Speaker B: [skeptical] This sounds too good to be true...
+  Speaker A: [excited] Okay, I just read something incredible!
+  Speaker B: [curious] Wait, is this about quantum physics?
+  Speaker A: [laughs] Yes! But listen to this...
+  Speaker B: [skeptical] This sounds too good to be true.
   Speaker A: [enthusiastic] No, really! So imagine...
-  Speaker B: [surprised] Wait, that actually works?!
+  Speaker B: [amazed] Wait, that actually works?!
   Speaker A: [amused] I know, right?
 
 # Checklist items for script quality (duration-aware)
 checklist: |
-  - Use all 5 emotion categories (positivity, curiosity, surprise, sadness, anger)
-  - Vary between HIGH and LOW intensity
+  - Use varied emotions from different categories (positive, curious, surprised, etc.)
+  - Include PRIMARY emotions for key moments: [excited], [sad], [angry], [scared]
   - Include {variety_count} distinct emotion tags minimum
   - Use natural sentence breaks for conversational rhythm
-  - Reactions: [laughs], [sighs], [gasps] for authenticity
+  - Add reactions: [laughs], [sighs], [gasps] for authenticity
+  - Vary intensity: calm moments vs high-energy moments
 
 # Variety count formula: base + (duration_minutes / 3)
 variety_base: 10
