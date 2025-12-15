@@ -1495,8 +1495,9 @@ def clean_script_for_audio(script):
     # Remove stage directions (but NOT audio tags!)
     script = re.sub(r'^\*[^\[]*\*$', '', script, flags=re.MULTILINE)
     
-    # Remove word counts
-    script = re.sub(r'(?:Total|Approximately)?\s*\d+\s*words?', '', script, flags=re.IGNORECASE)
+    # Remove word counts (various formats including markdown bold)
+    script = re.sub(r'^\s*\*?\*?Word count:?\s*\d+\s*words?\*?\*?\s*$', '', script, flags=re.MULTILINE|re.IGNORECASE)
+    script = re.sub(r'^\s*\*?\*?(?:Total|Approximate)?\s*(?:script\s+)?(?:length|count)?:?\s*~?\d+\s*words?\*?\*?\s*$', '', script, flags=re.MULTILINE|re.IGNORECASE)
     script = re.sub(r'Total script length:.*$', '', script, flags=re.MULTILINE|re.IGNORECASE)
     
     # Clean up extra blank lines
