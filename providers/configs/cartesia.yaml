@@ -5,42 +5,35 @@ provider_name: cartesia
 provider_tag: CRTS
 
 # Main emotion/audio tag instructions
-# Cartesia supports 60+ native emotions - use directly by name
+# Cartesia uses 5 base emotions with intensity levels
 emotion_tags: |
-  **POSITIVE/ENERGETIC:**
-  [excited] [enthusiastic] [happy] [elated] [euphoric] [triumphant]
-  [content] [peaceful] [serene] [calm] [grateful] [affectionate]
+  Cartesia uses 5 BASE EMOTIONS with INTENSITY levels.
+  Use these tags liberally - they map to Cartesia's voice controls:
 
-  **CURIOUS/THOUGHTFUL:**
-  [curious] [contemplative] [mysterious] [anticipation]
+  **POSITIVITY (energy/happiness):**
+  HIGH: [excited] [enthusiastic] [happy] [laughs] [energetic] [passionate]
+  LOW: [friendly] [warm] [content] [amused] [cheerful] [chuckles] [playful]
 
-  **SURPRISED/AMAZED:**
-  [surprised] [amazed] [alarmed]
+  **CURIOSITY (interest/thinking):**
+  HIGH: [curious] [questioning] [interested] [confused]
+  LOW: [thoughtful] [contemplative] [analytical] [pondering] [hmm]
 
-  **ANXIOUS/SAD:**
-  [anxious] [panicked] [scared] [sad] [dejected] [melancholic]
-  [disappointed] [hurt] [guilty] [nostalgic] [wistful] [resigned]
+  **SURPRISE (amazement):**
+  HIGH: [surprised] [shocked] [amazed] [gasps] [wow]
+  LOW: [realizing] [impressed]
 
-  **FRUSTRATED/ANGRY:**
-  [frustrated] [agitated] [angry] [mad] [outraged] [disgusted] [contempt]
+  **SADNESS (concern/softness):**
+  HIGH: [disappointed] [sad] [hurt]
+  LOW: [worried] [concerned] [nervous] [anxious] [sighs] [quietly]
 
-  **SKEPTICAL/NEUTRAL:**
-  [skeptical] [sarcastic] [ironic] [bored] [tired] [neutral]
-  [distant] [confident] [proud] [determined]
+  **ANGER (intensity/skepticism):**
+  HIGH: [angry] [intensely]
+  LOW: [skeptical] [frustrated] [annoyed] [defensive] [determined]
 
-  **SOFT/HESITANT:**
-  [hesitant] [insecure] [confused] [apologetic] [sympathetic]
+  **NEUTRAL:** [neutral] [professional] [serious] [confident]
 
-  **REACTIONS:**
-  [laughs] [chuckles] - Maps to happy delivery
-  [sighs] - Maps to resigned delivery
-  [gasps] - Maps to surprised delivery
-
-  **NOTE:** Cartesia does NOT support turn-taking tags like [interrupting]
-  or [overlapping]. Create natural conversation flow through:
-  - Sentence fragments: "But what about—" / "Exactly!"
-  - Quick exchanges with short responses
-  - Natural trailing off with "..."
+  ⚠️ AVOID (Cartesia skips these - ElevenLabs only):
+  [interrupting] [overlapping] [fast-paced] [slowly] [pause] [whispers]
 
 # Example dialogue snippets (Cartesia-optimized)
 examples: |
@@ -49,23 +42,17 @@ examples: |
   Speaker A: [laughs] Yes! But listen—
   Speaker B: [skeptical] This sounds too good to be true...
   Speaker A: [enthusiastic] No, really! So imagine...
-  Speaker B: [surprised] [amazed] Wait, that actually works?!
-  Speaker A: [happy] [amused] I know, right?
+  Speaker B: [surprised] Wait, that actually works?!
+  Speaker A: [amused] I know, right?
 
 # Checklist items for script quality (duration-aware)
 checklist: |
-  - Use all emotion categories throughout the script
+  - Use all 5 emotion categories (positivity, curiosity, surprise, sadness, anger)
+  - Vary between HIGH and LOW intensity
   - Include {variety_count} distinct emotion tags minimum
-  - Create {exchange_count} quick back-and-forth exchanges
-  - Vary between high-energy and reflective moments
   - Use natural sentence breaks for conversational rhythm
-  - Avoid: [interrupting], [overlapping], [whispers], [pause], [fast-paced], [slowly]
+  - Reactions: [laughs], [sighs], [gasps] for authenticity
 
 # Variety count formula: base + (duration_minutes / 3)
-# 10 min = 13-15, 20 min = 16-18, 30 min = 20+
 variety_base: 10
 variety_per_3min: 1
-
-# Quick exchanges formula: base + (duration_minutes / 5)
-exchange_base: 3
-exchange_per_5min: 1

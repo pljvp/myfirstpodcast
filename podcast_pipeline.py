@@ -2353,12 +2353,12 @@ def main():
     print("="*60)
     print("Select provider BEFORE script generation for optimized emotion tags.")
     provider_options = [
-        "ElevenLabs (full emotion dynamics, interruptions, overlapping)",
-        "Cartesia (5 core emotions with intensity levels)"
+        "Cartesia (fast, affordable, 5 core emotions)",
+        "ElevenLabs (premium, interruptions, overlapping)"
     ]
     provider_idx = get_user_input("\nSelect TTS provider", provider_options)
-    selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
-    provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+    selected_provider = "cartesia" if provider_idx == 0 else "elevenlabs"
+    provider_tag = "CRTS" if selected_provider == "cartesia" else "11LB"
     print(f"\n[INFO] Selected: {selected_provider.upper()}")
     print("[INFO] Script will use provider-optimized emotion tags.")
 
@@ -2424,12 +2424,12 @@ def main():
         print("AUDIO CONFIGURATION")
         print("="*60)
         provider_options = [
-            "ElevenLabs (full emotion dynamics, interruptions)",
-            "Cartesia (faster generation, emotion-optimized)"
+            "Cartesia (fast, affordable, 5 core emotions)",
+            "ElevenLabs (premium, interruptions, overlapping)"
         ]
         provider_idx = get_user_input("\nSelect TTS provider", provider_options)
-        selected_provider = "elevenlabs" if provider_idx == 0 else "cartesia"
-        provider_tag = "11LB" if selected_provider == "elevenlabs" else "CRTS"
+        selected_provider = "cartesia" if provider_idx == 0 else "elevenlabs"
+        provider_tag = "CRTS" if selected_provider == "cartesia" else "11LB"
 
         print(f"\n[INFO] Selected: {selected_provider.upper()}")
 
