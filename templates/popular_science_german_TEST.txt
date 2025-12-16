@@ -1,9 +1,20 @@
 TESTING TEMPLATE - Stimmen-Tuning & Emotions-Test
 Dauer: 1-1,5 Minuten (STRIKTE OBERGRENZE: 500 WÖRTER)
 
-KRITISCHE ANWEISUNG:
-Deine Antwort DARF 500 WÖRTER NICHT ÜBERSCHREITEN. Zähle sorgfältig.
-Dies ist ein Stimmen-Test-Skript - Kürze ist zwingend erforderlich.
+===================================
+AUSGABE-BESCHRÄNKUNG - KRITISCH
+===================================
+Deine Ausgabe darf NUR Dialog-Zeilen enthalten.
+NICHT ausgeben:
+- Wortzählungen ("Word count: X words" / "Wortanzahl: X")
+- Zusammenfassungen oder Meta-Kommentare
+- Überschriften oder Abschnittstitel
+- Jeglicher Text der nicht Speaker A: oder Speaker B: Zeilen ist
+
+BEGINNE deine Antwort mit "Speaker A:" oder "Speaker B:"
+BEENDE deine Antwort mit der letzten Dialog-Zeile
+NICHTS ANDERES.
+===================================
 
 Thema: {SCENARIO_DESCRIPTION}
 
@@ -15,16 +26,12 @@ PFLICHT-ANFORDERUNGEN:
 
 1. Generate {word_count} words as specified in terminal (±5% acceptable)
 
-2. EMOTIONS-ABDECKUNG - Verwende mindestens 10 davon:
-   [excited] [curious] [skeptical] [laughs] [amused]
-   [thoughtful] [worried] [dramatic] [gasps]
-   [quietly] [impressed] [passionate]
-   [enthusiastic] [concerned]
+2. EMOTIONS-TAGS - Verwende NUR diese Tags (Provider: {PROVIDER_TAG}):
+{PROVIDER_EMOTION_TAGS}
 
 3. TEMPO-VARIATION:
-   - Schnelle Wechsel einbauen (fast-paced Abschnitte)
-   - Nachdenkliche Pausen einbauen (slowly, quietly)
-   - Natürliche Unterbrechungen und Überlappungen
+   - Schnelle Wechsel einbauen
+   - Nachdenkliche Momente einbauen
    - Satzlängen variieren
 
 4. SPRECHER-CHARAKTERISTIKEN:
@@ -37,38 +44,23 @@ PFLICHT-ANFORDERUNGEN:
    - Aufbau zu einem kleinen Höhepunkt oder Erkenntnis
    - Ende mit Auflösung oder Pointe
 
-6. STIL-KONSISTENZ:
-   - Gleiche enthusiastische Energie wie vollständige Popular Science Podcasts
-   - Zugängliche Sprache (kein Fachjargon ohne Erklärung)
-   - Natürliche Konversation (nicht geskriptet klingend)
-   - Echte Reaktionen und Entdeckungen
-   - WICHTIG: Verwende "Du"-Form (informell, freundlich)
-
 FORMAT-ANFORDERUNGEN (SEHR WICHTIG):
 - Verwende "Speaker A:" und "Speaker B:" Labels
 - ABSOLUT KEINE MARKDOWN FORMATIERUNG
 - ABSOLUT KEINE STERNCHEN (**) UM SPEAKER LABELS
 - KORREKT: Speaker A: [excited] Text
 - FALSCH: **Speaker A:** [excited] Text
-- FALSCH: *Speaker A:* [excited] Text
 - Emotions-Tags in [eckigen Klammern]
-- Natürlicher deutscher Gesprächsstil
-- KEINE Quellen-Sektion (nur Testing)
-- KEINE Einleitung oder Meta-Kommentare
-
-KRITISCHE ERINNERUNG:
-Verwende PLAIN TEXT "Speaker A:" und "Speaker B:" - KEIN BOLD, KEINE STERNCHEN!
+- KEINE Quellen-Sektion
+- KEINE Wortzählungen, KEINE Meta-Kommentare
+- WICHTIG: Verwende "Du"-Form (informell, freundlich)
 
 SZENARIO-KONTEXT:
 {SCENARIO_SPECIFIC_INSTRUCTIONS}
 
-Denk daran: Dies testet Stimmqualität, Tempo und Emotions-Reichweite.
-Mach es fesselnd, natürlich und UNTER 500 WÖRTERN!
-
 ===================================
 TEST MODE - KEIN INTRO/OUTRO
 ===================================
-
 **WICHTIG: Springe direkt ins Szenario!**
 - KEINE Begrüßung ("Willkommen zurück!")
 - KEINE Verabschiedung ("Danke fürs Zuhören!")
@@ -76,52 +68,15 @@ TEST MODE - KEIN INTRO/OUTRO
 - Ende wenn die Szene natürlich endet
 
 ===================================
-YEAR PRONUNCIATION GUIDE
+JAHRES-AUSSPRACHE
 ===================================
-
-**CRITICAL - Years must be written for natural pronunciation:**
-
-1900s (1900-1999):
-❌ WRONG: "1972" → spoken as "one thousand nine hundred seventy-two"
-✅ CORRECT: "nineteen seventy-two" OR "neunzehnhundertzweiundsiebzig"
-
-2000-2009:
-❌ WRONG: "2001" → spoken as "two thousand and one"  
-✅ CORRECT: "two thousand one" OR "zweitausendundeins"
-
-2010-2099:
-❌ WRONG: "2025" → spoken as "two thousand and twenty-five"
-✅ CORRECT: "twenty twenty-five" OR "zweitausendfünfundzwanzig"
-
-**HOW TO WRITE YEARS IN SCRIPTS:**
-
-English:
-- 1900 → "nineteen hundred"
-- 1984 → "nineteen eighty-four"  
-- 2000 → "two thousand"
-- 2001 → "two thousand one"
-- 2024 → "twenty twenty-four"
+**KRITISCH - Jahre phonetisch schreiben:**
 
 German:
-- 1900 → "neunzehnhundert"
 - 1984 → "neunzehnhundertvierundachtzig"
 - 2000 → "zweitausend"
-- 2001 → "zweitausendundeins"
 - 2024 → "zweitausendvierundzwanzig"
 
-Dutch:
-- 1900 → "negentienhonderd"
-- 1984 → "negentienhonderdvierentachtig"
-- 2000 → "tweeduizend"
-- 2001 → "tweeduizend één"
-- 2024 → "tweeduizend vierentwintig"
-
-**WHEN REFERENCING YEARS:**
-Always write them phonetically, not as digits!
-
-❌ "In 1972 wurde..."
-✅ "In nineteen seventy-two wurde..." (English)
-✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
-
+Immer Jahre als Wörter schreiben, nicht als Ziffern!
 ===================================
 

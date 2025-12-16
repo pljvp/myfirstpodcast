@@ -1,9 +1,20 @@
 TESTING TEMPLATE - Voice Tuning & Emotion Testing
 Duration: 1-1.5 minutes (STRICT 500 WORD MAXIMUM)
 
-CRITICAL INSTRUCTION:
-Your response MUST NOT EXCEED 500 WORDS. Count carefully.
-This is a voice testing script - brevity is mandatory.
+===================================
+OUTPUT RESTRICTION - CRITICAL
+===================================
+Your output must contain ONLY dialogue lines.
+DO NOT include:
+- Word counts ("Word count: X words")
+- Summaries or meta-commentary
+- Headers or section titles
+- Any text that is not Speaker A: or Speaker B: lines
+
+START your response with "Speaker A:" or "Speaker B:"
+END your response with the final dialogue line
+NOTHING ELSE.
+===================================
 
 Topic: {SCENARIO_DESCRIPTION}
 
@@ -15,16 +26,12 @@ MANDATORY REQUIREMENTS:
 
 1. Generate {word_count} words as specified in terminal (±5% acceptable)
 
-2. EMOTION COVERAGE - Include at least 10 of these:
-   [excited] [curious] [skeptical] [laughs] [amused]
-   [thoughtful] [worried] [dramatic] [gasps]
-   [quietly] [impressed] [passionate]
-   [enthusiastic] [concerned]
+2. EMOTION TAGS - Use ONLY these tags (provider: {PROVIDER_TAG}):
+{PROVIDER_EMOTION_TAGS}
 
 3. PACING VARIATION:
-   - Include rapid exchanges (fast-paced sections)
-   - Include thoughtful pauses (slowly, quietly)
-   - Include natural interruptions and overlaps
+   - Include rapid exchanges
+   - Include thoughtful moments
    - Vary sentence lengths
 
 4. SPEAKER CHARACTERISTICS:
@@ -37,37 +44,22 @@ MANDATORY REQUIREMENTS:
    - Build to a small climax or realization
    - End with resolution or punchline
 
-6. STYLE CONSISTENCY:
-   - Same enthusiastic energy as full Popular Science podcasts
-   - Accessible language (no jargon without explanation)
-   - Natural conversation (not scripted-sounding)
-   - Genuine reactions and discoveries
-
 FORMAT REQUIREMENTS (VERY IMPORTANT):
 - Use "Speaker A:" and "Speaker B:" labels
 - ABSOLUTELY NO MARKDOWN FORMATTING
 - ABSOLUTELY NO ASTERISKS (**) AROUND SPEAKER LABELS
 - CORRECT: Speaker A: [excited] Text
 - WRONG: **Speaker A:** [excited] Text
-- WRONG: *Speaker A:* [excited] Text
 - Include emotion tags in [brackets]
-- Natural English conversation style
-- NO sources section (testing only)
-- NO preamble or meta-commentary
-
-CRITICAL REMINDER:
-Use PLAIN TEXT "Speaker A:" and "Speaker B:" - NO BOLD, NO ASTERISKS!
+- NO sources section
+- NO preamble, NO word counts, NO meta-commentary
 
 SCENARIO CONTEXT:
 {SCENARIO_SPECIFIC_INSTRUCTIONS}
 
-Remember: This tests voice quality, pacing, and emotion range.
-Make it engaging, natural, and UNDER 500 WORDS!
-
 ===================================
 TEST MODE - NO INTRO/OUTRO
 ===================================
-
 **IMPORTANT: Jump straight into the scenario!**
 - NO greetings ("Welcome back!")
 - NO goodbyes ("Thanks for listening!")
@@ -77,50 +69,13 @@ TEST MODE - NO INTRO/OUTRO
 ===================================
 YEAR PRONUNCIATION GUIDE
 ===================================
-
 **CRITICAL - Years must be written for natural pronunciation:**
 
-1900s (1900-1999):
-❌ WRONG: "1972" → spoken as "one thousand nine hundred seventy-two"
-✅ CORRECT: "nineteen seventy-two" OR "neunzehnhundertzweiundsiebzig"
-
-2000-2009:
-❌ WRONG: "2001" → spoken as "two thousand and one"  
-✅ CORRECT: "two thousand one" OR "zweitausendundeins"
-
-2010-2099:
-❌ WRONG: "2025" → spoken as "two thousand and twenty-five"
-✅ CORRECT: "twenty twenty-five" OR "zweitausendfünfundzwanzig"
-
-**HOW TO WRITE YEARS IN SCRIPTS:**
-
 English:
-- 1900 → "nineteen hundred"
-- 1984 → "nineteen eighty-four"  
+- 1984 → "nineteen eighty-four"
 - 2000 → "two thousand"
-- 2001 → "two thousand one"
 - 2024 → "twenty twenty-four"
 
-German:
-- 1900 → "neunzehnhundert"
-- 1984 → "neunzehnhundertvierundachtzig"
-- 2000 → "zweitausend"
-- 2001 → "zweitausendundeins"
-- 2024 → "zweitausendvierundzwanzig"
-
-Dutch:
-- 1900 → "negentienhonderd"
-- 1984 → "negentienhonderdvierentachtig"
-- 2000 → "tweeduizend"
-- 2001 → "tweeduizend één"
-- 2024 → "tweeduizend vierentwintig"
-
-**WHEN REFERENCING YEARS:**
-Always write them phonetically, not as digits!
-
-❌ "In 1972 wurde..."
-✅ "In nineteen seventy-two wurde..." (English)
-✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
-
+Always write years phonetically, not as digits!
 ===================================
 
