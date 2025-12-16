@@ -538,7 +538,7 @@ class CartesiaProvider:
             
             print(f"\n{'='*60}")
             print(f"TTS PROVIDER: CARTESIA")
-            print(f"Model: sonic-english")
+            print(f"Model: sonic-3")
             print(f"Per-speaker speeds:")
             print(f"  Speaker A: {speed['speaker_a']} → {cartesia_speeds['speaker_a']:.2f} (Cartesia)")
             print(f"  Speaker B: {speed['speaker_b']} → {cartesia_speeds['speaker_b']:.2f} (Cartesia)")
@@ -552,7 +552,7 @@ class CartesiaProvider:
             
             print(f"\n{'='*60}")
             print(f"TTS PROVIDER: CARTESIA")
-            print(f"Model: sonic-english")
+            print(f"Model: sonic-3")
             print(f"Base speed: {speed} (ElevenLabs) → {cartesia_speed:.2f} (Cartesia)")
             
             # Show per-voice speeds if enabled
@@ -648,7 +648,7 @@ class CartesiaProvider:
             }
             
             payload = {
-                "model_id": "sonic-english",
+                "model_id": "sonic-3",
                 "transcript": segment['transcript'],
                 "voice": {
                     "mode": "id",

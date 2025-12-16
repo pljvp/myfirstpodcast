@@ -5,63 +5,65 @@ provider_name: cartesia
 provider_tag: CRTS
 
 # Main emotion/audio tag instructions
-# Cartesia uses SSML tags for 60+ emotions (not limited to 5 API emotions)
+# NOTE: Dialogue is LEADING. Emotions are SUPPORTIVE - they enhance delivery, not drive content.
 emotion_tags: |
-  Cartesia supports 60+ SSML emotions via inline tags.
-  Use these tags liberally - they map directly to Cartesia's voice controls:
+  Cartesia uses SSML emotion tags. Use ONE tag per line to set emotional tone.
+  Choose tags that SUPPORT the dialogue's natural emotion.
 
-  **PRIMARY EMOTIONS (best quality):**
+  **PRIMARY (best quality):**
   [excited] [angry] [content] [sad] [scared] [neutral]
 
   **POSITIVE/ENERGY:**
-  [happy] [enthusiastic] [elated] [euphoric] [triumphant]
-  [friendly] [warm] [peaceful] [serene] [calm]
-  [grateful] [affectionate] [cheerful] [amused] [playful]
+  [happy] [enthusiastic] [cheerful] [friendly] [warm] [playful]
+  [grateful] [affectionate] [calm] [peaceful] [amused]
 
   **CURIOSITY/THINKING:**
-  [curious] [questioning] [interested] [confused]
-  [thoughtful] [contemplative] [analytical]
+  [curious] [interested] [confused] [thoughtful] [contemplative]
 
-  **SURPRISE:**
-  [surprised] [amazed] [alarmed] [impressed]
+  **SURPRISE/AMAZEMENT:**
+  [surprised] [amazed] [impressed] [alarmed] [gasps]
 
-  **SADNESS/CONCERN:**
-  [disappointed] [dejected] [melancholic] [hurt] [guilty]
-  [worried] [concerned] [nervous] [anxious]
-  [resigned] [wistful] [nostalgic]
+  **CONCERN/WORRY:**
+  [worried] [concerned] [nervous] [anxious] [stressed]
+  [disappointed] [hurt] [guilty] [resigned] [nostalgic]
 
-  **ANGER/INTENSITY:**
-  [frustrated] [agitated] [sarcastic] [ironic] [contempt]
-  [skeptical] [determined] [emphatic]
+  **INTENSITY/FRUSTRATION:**
+  [frustrated] [skeptical] [sarcastic] [defensive] [determined]
+  [emphatic] [urgent]
 
-  **VOCAL REACTIONS:**
-  [laughs] [chuckles] [giggles] [sighs] [gasps]
+  **REACTIONS:**
+  [laughs] [chuckles] [sighs] [panicked] [hesitant]
 
-  **NEUTRAL/PROFESSIONAL:**
-  [professional] [serious] [confident] [proud]
+  **PROFESSIONAL:**
+  [confident] [serious] [proud]
 
-  AVOID (ElevenLabs only - Cartesia skips these):
-  [interrupting] [overlapping] [fast-paced] [slowly] [pause] [whispers]
+  RULES:
+  - ONE emotion tag per line (no compounds like [laughs nervously])
+  - Place tag at START of line: Speaker A: [excited] Text here
+  - NOT every line needs a tag - use when emotion shifts
 
-# Example dialogue snippets (Cartesia SSML-optimized)
+  AVOID (ElevenLabs only):
+  [interrupting] [overlapping] [whispers] [slowly] [fast-paced] [pause]
+
+# Example dialogue snippets
 examples: |
-  Speaker A: [excited] Okay, I just read something incredible!
-  Speaker B: [curious] Wait, is this about quantum physics?
-  Speaker A: [laughs] Yes! But listen to this...
-  Speaker B: [skeptical] This sounds too good to be true.
-  Speaker A: [enthusiastic] No, really! So imagine...
-  Speaker B: [amazed] Wait, that actually works?!
-  Speaker A: [amused] I know, right?
+  Speaker A: [excited] I just discovered something incredible!
+  Speaker B: [curious] Wait, what did you find?
+  Speaker A: [enthusiastic] So you know how everyone thought...
+  Speaker B: [skeptical] That sounds too good to be true.
+  Speaker A: [laughs] I know, right? But here's the thing...
+  Speaker B: [amazed] No way, that actually works?
+  Speaker A: [confident] Exactly. And the implications are huge.
 
 # Checklist items for script quality (duration-aware)
 checklist: |
-  - Use varied emotions from different categories (positive, curious, surprised, etc.)
-  - Include PRIMARY emotions for key moments: [excited], [sad], [angry], [scared]
-  - Include {variety_count} distinct emotion tags minimum
-  - Use natural sentence breaks for conversational rhythm
-  - Add reactions: [laughs], [sighs], [gasps] for authenticity
-  - Vary intensity: calm moments vs high-energy moments
+  - Dialogue drives the conversation, emotions support it
+  - Use ONE emotion tag per line (never compound tags)
+  - Include {variety_count}+ distinct emotion tags
+  - Mix intensities: calm moments AND high-energy moments
+  - Use [laughs], [sighs], [gasps] sparingly for authenticity
+  - Not every line needs an emotion tag
 
 # Variety count formula: base + (duration_minutes / 3)
-variety_base: 10
+variety_base: 8
 variety_per_3min: 1
