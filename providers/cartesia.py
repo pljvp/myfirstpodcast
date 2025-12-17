@@ -662,18 +662,36 @@ class CartesiaProvider:
                 }
             }
             
-            try:
-                response = requests.post(url, headers=headers, json=payload, timeout=30)
-                
-                if response.status_code == 200:
-                    audio_chunks.append(response.content)
-                else:
-                    print(f"[ERROR] Status {response.status_code}: {response.text}")
+            # Retry logic for connection errors
+            max_retries = 3
+            retry_delay = 2  # seconds
+
+            for attempt in range(max_retries):
+                try:
+                    response = requests.post(url, headers=headers, json=payload, timeout=30)
+
+                    if response.status_code == 200:
+                        audio_chunks.append(response.content)
+                        break  # Success, exit retry loop
+                    else:
+                        print(f"[ERROR] Status {response.status_code}: {response.text}")
+                        return None, 0
+
+                except (requests.exceptions.ConnectionError,
+                        requests.exceptions.ChunkedEncodingError,
+                        ConnectionResetError) as e:
+                    if attempt < max_retries - 1:
+                        wait_time = retry_delay * (2 ** attempt)  # Exponential backoff
+                        print(f"[RETRY] Connection error on segment {i}, attempt {attempt + 1}/{max_retries}. Waiting {wait_time}s...")
+                        import time
+                        time.sleep(wait_time)
+                    else:
+                        print(f"[ERROR] Failed after {max_retries} attempts: {type(e).__name__}: {e}")
+                        return None, 0
+
+                except Exception as e:
+                    print(f"[ERROR] {type(e).__name__}: {e}")
                     return None, 0
-                    
-            except Exception as e:
-                print(f"[ERROR] {type(e).__name__}: {e}")
-                return None, 0
         
         # Combine audio chunks with crossfading to eliminate clicks
         if audio_chunks:

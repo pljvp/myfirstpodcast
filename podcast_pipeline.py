@@ -2761,8 +2761,8 @@ def main():
             script = extract_and_save_sources(script, project_name)
     
         draft_num = 1
-        # Use generic tag for scripts (scripts are provider-agnostic, TTS config comes after review)
-        script_tag = "MULTI" if use_multi_call else "SNGL"
+        # Use provider tag (CRTS/11LB) in script filename
+        script_tag = provider_tag
         if is_test_mode:
             script_path = save_script_test(script, project_name, language_code, topic_tag, script_tag, draft_num)
         else:

@@ -1,4 +1,4 @@
-AA# 🎙️ AI Podcast Pipeline
+# 🎙️ AI Podcast Pipeline
 
 Two-person dialogue podcast generator with natural conversations and emotions.
 
@@ -27,10 +27,10 @@ python podcast_pipeline.py
 ### **Natural Dialogue**
 - ✅ Provider-specific emotion tags (auto-selected per provider)
 - ✅ Reactions (`[laughs]`, `[sighs]`, `[gasps]`)
-- ✅ 60+ Cartesia native emotions, full ElevenLabs dynamics
+- ✅ 60+ Cartesia SSML emotions, full ElevenLabs dynamics
 
 ### **Two TTS Providers**
-- **Cartesia** - Fast, affordable (~$0.05/min), native emotion support
+- **Cartesia** - sonic-3 model, SSML emotions in transcript (`<emotion value="excited" />`)
 - **ElevenLabs** - Premium voices, interruptions & overlapping speech
 
 ### **Scalable Architecture**
