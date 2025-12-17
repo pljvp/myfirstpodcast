@@ -42,6 +42,12 @@ cd myfirstpodcast
 ```bash
 pip install -r requirements.txt
 ```
+or 
+```bash
+# Install requirements using the default Python
+py -m pip install -r requirements.txt
+```
+
 
 **Includes:**
 - `anthropic` - Claude API
