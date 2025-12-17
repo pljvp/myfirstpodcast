@@ -27,10 +27,10 @@ python podcast_pipeline.py
 ### **Natural Dialogue**
 - ✅ Provider-specific emotion tags (auto-selected per provider)
 - ✅ Reactions (`[laughs]`, `[sighs]`, `[gasps]`)
-- ✅ 60+ Cartesia SSML emotions, full ElevenLabs dynamics
+- ✅ Cartesia 5 base emotions + intensity, full ElevenLabs dynamics
 
 ### **Two TTS Providers**
-- **Cartesia** - sonic-3 model, SSML emotions in transcript (`<emotion value="excited" />`)
+- **Cartesia** - sonic-3 model, API emotion controls (`positivity:high`, `curiosity:medium`, etc.)
 - **ElevenLabs** - Premium voices, interruptions & overlapping speech
 
 ### **Scalable Architecture**

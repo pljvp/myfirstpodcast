@@ -7,35 +7,29 @@ provider_tag: CRTS
 # Main emotion/audio tag instructions
 # NOTE: Dialogue is LEADING. Emotions are SUPPORTIVE - they enhance delivery, not drive content.
 emotion_tags: |
-  Cartesia uses SSML emotion tags. Use ONE tag per line to set emotional tone.
+  Cartesia uses 5 base emotions with intensity. Use ONE tag per line.
   Choose tags that SUPPORT the dialogue's natural emotion.
 
-  **PRIMARY (best quality):**
-  [excited] [angry] [content] [sad] [scared] [neutral]
+  **POSITIVITY (happy, excited, content):**
+  [excited] [happy] [enthusiastic] [cheerful] [content] [friendly]
+  [warm] [grateful] [playful] [amused] [laughs] [proud]
 
-  **POSITIVE/ENERGY:**
-  [happy] [enthusiastic] [cheerful] [friendly] [warm] [playful]
-  [grateful] [affectionate] [calm] [peaceful] [amused]
+  **CURIOSITY (interested, thinking):**
+  [curious] [interested] [thoughtful] [intrigued] [fascinated] [skeptical]
 
-  **CURIOSITY/THINKING:**
-  [curious] [interested] [confused] [thoughtful] [contemplative]
+  **SURPRISE (shocked, amazed):**
+  [surprised] [amazed] [shocked] [gasps] [impressed] [confused]
 
-  **SURPRISE/AMAZEMENT:**
-  [surprised] [amazed] [impressed] [alarmed] [gasps]
+  **SADNESS (worried, disappointed):**
+  [sad] [disappointed] [worried] [concerned] [nervous] [anxious]
+  [sighs] [resigned] [nostalgic] [hesitant]
 
-  **CONCERN/WORRY:**
-  [worried] [concerned] [nervous] [anxious] [stressed]
-  [disappointed] [hurt] [guilty] [resigned] [nostalgic]
+  **ANGER (frustrated, intense):**
+  [angry] [frustrated] [annoyed] [defensive] [determined] [urgent]
+  [panicked] [scared]
 
-  **INTENSITY/FRUSTRATION:**
-  [frustrated] [skeptical] [sarcastic] [defensive] [determined]
-  [emphatic] [urgent]
-
-  **REACTIONS:**
-  [laughs] [chuckles] [sighs] [panicked] [hesitant]
-
-  **PROFESSIONAL:**
-  [confident] [serious] [proud]
+  **NEUTRAL (no emotion):**
+  [neutral] [serious] [calm]
 
   RULES:
   - ONE emotion tag per line (no compounds like [laughs nervously])
@@ -53,7 +47,7 @@ examples: |
   Speaker B: [skeptical] That sounds too good to be true.
   Speaker A: [laughs] I know, right? But here's the thing...
   Speaker B: [amazed] No way, that actually works?
-  Speaker A: [confident] Exactly. And the implications are huge.
+  Speaker A: [proud] Exactly. And the implications are huge.
 
 # Checklist items for script quality (duration-aware)
 checklist: |

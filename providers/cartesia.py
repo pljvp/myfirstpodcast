@@ -138,13 +138,13 @@ class CartesiaProvider:
             clean_before = re.sub(tag_pattern, '', text_before).strip()
 
             if clean_before:
-                # Map emotions to SSML format
+                # Map emotions to API format
                 mapped_emotions = []
                 for t in current_emotions:
                     t_lower = t.lower()
-                    ssml_emotion = self._get_ssml_emotion_map().get(t_lower)
-                    if ssml_emotion:
-                        mapped_emotions.append(ssml_emotion)
+                    api_emotion = self._get_api_emotion_map().get(t_lower)
+                    if api_emotion:
+                        mapped_emotions.append(api_emotion)
                 segments.append((mapped_emotions, clean_before))
 
             # This tag starts a new segment
@@ -159,222 +159,213 @@ class CartesiaProvider:
             mapped_emotions = []
             for t in current_emotions:
                 t_lower = t.lower()
-                ssml_emotion = self._get_ssml_emotion_map().get(t_lower)
-                if ssml_emotion:
-                    mapped_emotions.append(ssml_emotion)
+                api_emotion = self._get_api_emotion_map().get(t_lower)
+                if api_emotion:
+                    mapped_emotions.append(api_emotion)
             segments.append((mapped_emotions, clean_remaining))
 
         return segments if segments else [([], text.strip())]
 
-    def _get_ssml_emotion_map(self):
+    def _get_api_emotion_map(self):
         """
-        Return mapping from script tags to Cartesia SSML emotion values.
+        Return mapping from script tags to Cartesia API emotion format.
 
-        SSML tags give access to 60+ emotions vs only 5 via API parameter.
-        Format: <emotion value="excited" /> prepended to transcript
+        API uses 5 base emotions with intensity levels:
+        - positivity: lowest, low, medium, high, highest
+        - anger: lowest, low, medium, high, highest
+        - sadness: lowest, low, medium, high, highest
+        - surprise: lowest, low, medium, high, highest
+        - curiosity: lowest, low, medium, high, highest
 
-        Primary emotions (best results): neutral, angry, excited, content, sad, scared
-        Extended: 50+ additional emotions
+        Returns: dict mapping tag -> (emotion, intensity) or None
         """
         return {
-            # === PRIMARY EMOTIONS (best quality) ===
-            'excited': 'excited',
-            'angry': 'angry',
-            'content': 'content',
-            'sad': 'sad',
-            'scared': 'scared',
-            'neutral': 'neutral',
+            # === POSITIVITY (happy, excited, content) ===
+            'excited': ('positivity', 'highest'),
+            'happy': ('positivity', 'high'),
+            'enthusiastic': ('positivity', 'highest'),
+            'content': ('positivity', 'medium'),
+            'cheerful': ('positivity', 'high'),
+            'friendly': ('positivity', 'medium'),
+            'warm': ('positivity', 'medium'),
+            'calm': ('positivity', 'low'),
+            'peaceful': ('positivity', 'low'),
+            'grateful': ('positivity', 'high'),
+            'affectionate': ('positivity', 'high'),
+            'amused': ('positivity', 'medium'),
+            'satisfied': ('positivity', 'medium'),
+            'hopeful': ('positivity', 'medium'),
+            'playful': ('positivity', 'high'),
+            'encouraging': ('positivity', 'medium'),
+            'relieved': ('positivity', 'medium'),
+            'delighted': ('positivity', 'high'),
+            'ecstatic': ('positivity', 'highest'),
+            'energetic': ('positivity', 'highest'),
+            'passionate': ('positivity', 'highest'),
+            'animated': ('positivity', 'high'),
+            'laughs': ('positivity', 'high'),
+            'chuckles': ('positivity', 'medium'),
+            'giggles': ('positivity', 'high'),
+            'proud': ('positivity', 'medium'),
+            'confident': ('positivity', 'medium'),
+            'warmly': ('positivity', 'medium'),
+            'tender': ('positivity', 'medium'),
+            'loving': ('positivity', 'high'),
+            'adoring': ('positivity', 'high'),
 
-            # === POSITIVE EMOTIONS ===
-            'happy': 'happy',
-            'enthusiastic': 'enthusiastic',
-            'elated': 'elated',
-            'euphoric': 'euphoric',
-            'triumphant': 'triumphant',
-            'energetic': 'excited',  # maps to primary
-            'passionate': 'enthusiastic',
-            'animated': 'excited',
-            'dramatic': 'excited',
-            'friendly': 'content',
-            'warm': 'affectionate',
-            'peaceful': 'peaceful',
-            'serene': 'serene',
-            'calm': 'calm',
-            'grateful': 'grateful',
-            'affectionate': 'affectionate',
-            'cheerful': 'happy',
-            'amused': 'joking',
-            'satisfied': 'content',
-            'hopeful': 'anticipation',
-            'playful': 'flirtatious',
-            'encouraging': 'trust',
-            'warmly': 'affectionate',
+            # === CURIOSITY (interested, questioning) ===
+            'curious': ('curiosity', 'high'),
+            'questioning': ('curiosity', 'medium'),
+            'interested': ('curiosity', 'medium'),
+            'thoughtful': ('curiosity', 'medium'),
+            'contemplative': ('curiosity', 'medium'),
+            'analytical': ('curiosity', 'medium'),
+            'pondering': ('curiosity', 'medium'),
+            'reflective': ('curiosity', 'low'),
+            'intrigued': ('curiosity', 'high'),
+            'fascinated': ('curiosity', 'highest'),
+            'captivated': ('curiosity', 'high'),
+            'hmm': ('curiosity', 'low'),
+            'carefully': ('curiosity', 'low'),
+            'skeptical': ('curiosity', 'medium'),
+            'wary': ('curiosity', 'low'),
+            'suspicious': ('curiosity', 'medium'),
+            'doubtful': ('curiosity', 'medium'),
+            'pensive': ('curiosity', 'medium'),
+            'absorbed': ('curiosity', 'high'),
 
-            # === CURIOSITY/THINKING ===
-            'curious': 'curious',
-            'questioning': 'curious',
-            'interested': 'curious',
-            'confused': 'confused',
-            'uncertain': 'hesitant',
-            'thoughtful': 'contemplative',
-            'contemplative': 'contemplative',
-            'analytical': 'contemplative',
-            'pondering': 'contemplative',
-            'reflective': 'contemplative',
-            'carefully': 'contemplative',
-            'hmm': 'contemplative',
+            # === SURPRISE (shocked, amazed) ===
+            'surprised': ('surprise', 'high'),
+            'shocked': ('surprise', 'highest'),
+            'amazed': ('surprise', 'highest'),
+            'gasps': ('surprise', 'high'),
+            'wow': ('surprise', 'high'),
+            'alarmed': ('surprise', 'high'),
+            'realizing': ('surprise', 'medium'),
+            'impressed': ('surprise', 'medium'),
+            'astonished': ('surprise', 'highest'),
+            'stunned': ('surprise', 'highest'),
+            'awestruck': ('surprise', 'highest'),
+            'mesmerized': ('surprise', 'high'),
+            'bewildered': ('surprise', 'medium'),
+            'confused': ('surprise', 'low'),
+            'perplexed': ('surprise', 'medium'),
 
-            # === SURPRISE ===
-            'surprised': 'surprised',
-            'shocked': 'amazed',
-            'amazed': 'amazed',
-            'gasps': 'surprised',
-            'wow': 'amazed',
-            'alarmed': 'alarmed',
-            'realizing': 'surprised',
-            'impressed': 'amazed',
+            # === SADNESS (worried, disappointed) ===
+            'sad': ('sadness', 'high'),
+            'sadly': ('sadness', 'high'),
+            'disappointed': ('sadness', 'medium'),
+            'hurt': ('sadness', 'high'),
+            'guilty': ('sadness', 'medium'),
+            'worried': ('sadness', 'medium'),
+            'concerned': ('sadness', 'medium'),
+            'nervous': ('sadness', 'medium'),
+            'anxious': ('sadness', 'medium'),
+            'stressed': ('sadness', 'medium'),
+            'tense': ('sadness', 'medium'),
+            'somber': ('sadness', 'high'),
+            'sighs': ('sadness', 'low'),
+            'quietly': ('sadness', 'low'),
+            'resigned': ('sadness', 'medium'),
+            'wistful': ('sadness', 'low'),
+            'nostalgic': ('sadness', 'low'),
+            'melancholic': ('sadness', 'high'),
+            'dejected': ('sadness', 'high'),
+            'regretful': ('sadness', 'medium'),
+            'longing': ('sadness', 'medium'),
+            'yearning': ('sadness', 'medium'),
+            'dismayed': ('sadness', 'medium'),
+            'apprehensive': ('sadness', 'medium'),
+            'uneasy': ('sadness', 'low'),
+            'distressed': ('sadness', 'high'),
+            'remorseful': ('sadness', 'medium'),
+            'mortified': ('sadness', 'high'),
+            'uncertain': ('sadness', 'low'),
+            'hesitant': ('sadness', 'low'),
+            'insecure': ('sadness', 'medium'),
+            'apologetic': ('sadness', 'low'),
+            'sympathetic': ('sadness', 'low'),
+            'understanding': ('sadness', 'low'),
+            'bored': ('sadness', 'low'),
+            'tired': ('sadness', 'low'),
+            'weary': ('sadness', 'medium'),
+            'exhausted': ('sadness', 'medium'),
+            'drained': ('sadness', 'medium'),
+            'bashful': ('sadness', 'low'),
+            'shy': ('sadness', 'low'),
+            'timid': ('sadness', 'low'),
+            'sheepish': ('sadness', 'low'),
 
-            # === SADNESS/CONCERN ===
-            'disappointed': 'disappointed',
-            'dejected': 'dejected',
-            'melancholic': 'melancholic',
-            'hurt': 'hurt',
-            'guilty': 'guilty',
-            'sadly': 'sad',
-            'worried': 'anxious',
-            'concerned': 'anxious',
-            'nervous': 'anxious',
-            'anxious': 'anxious',
-            'stressed': 'anxious',  # common improvised tag
-            'tense': 'anxious',
-            'somber': 'sad',
-            'sighs': 'resigned',
-            'quietly': 'sad',
-            'resigned': 'resigned',
-            'wistful': 'wistful',
-            'nostalgic': 'nostalgic',
+            # === ANGER (frustrated, intense) ===
+            'angry': ('anger', 'high'),
+            'mad': ('anger', 'high'),
+            'outraged': ('anger', 'highest'),
+            'frustrated': ('anger', 'medium'),
+            'annoyed': ('anger', 'medium'),
+            'agitated': ('anger', 'medium'),
+            'defensive': ('anger', 'medium'),
+            'sarcastic': ('anger', 'low'),
+            'ironic': ('anger', 'low'),
+            'contempt': ('anger', 'medium'),
+            'dismissive': ('anger', 'low'),
+            'determined': ('anger', 'medium'),
+            'emphatic': ('anger', 'medium'),
+            'urgent': ('anger', 'medium'),
+            'urgently': ('anger', 'medium'),
+            'pressing': ('anger', 'medium'),
+            'groans': ('anger', 'low'),
+            'intensely': ('anger', 'high'),
+            'indignant': ('anger', 'high'),
+            'resentful': ('anger', 'medium'),
+            'bitter': ('anger', 'medium'),
+            'exasperated': ('anger', 'medium'),
+            'irritated': ('anger', 'medium'),
+            'cynical': ('anger', 'low'),
+            'mocking': ('anger', 'low'),
+            'bold': ('anger', 'low'),
+            'assertive': ('anger', 'medium'),
+            'resolute': ('anger', 'medium'),
+            'steadfast': ('anger', 'medium'),
+            'panicked': ('anger', 'high'),
+            'frantic': ('anger', 'high'),
+            'desperate': ('anger', 'high'),
+            'scared': ('anger', 'medium'),
+            'horrified': ('anger', 'high'),
+            'terrified': ('anger', 'highest'),
+            'gulps': ('anger', 'low'),
 
-            # === ANGER/INTENSITY ===
-            'mad': 'mad',
-            'outraged': 'outraged',
-            'intensely': 'angry',
-            'skeptical': 'skeptical',
-            'frustrated': 'frustrated',
-            'annoyed': 'frustrated',
-            'agitated': 'agitated',
-            'defensive': 'threatened',
-            'sarcastic': 'sarcastic',
-            'ironic': 'ironic',
-            'contempt': 'contempt',
-            'dismissive': 'contempt',
-            'urgently': 'determined',
-            'determined': 'determined',
-            'pressing': 'determined',
-            'emphatic': 'determined',
-            'groans': 'frustrated',
+            # === NEUTRAL (no emotion parameter) ===
+            'neutral': None,
+            'professional': None,
+            'formal': None,
+            'serious': None,
+            'precisely': None,
+            'indifferent': None,
+            'nonchalant': None,
+            'casual': None,
+            'matter-of-fact': None,
+            'distant': None,
+            'switching gears': None,
 
-            # === NEUTRAL/PROFESSIONAL ===
-            'professional': 'neutral',
-            'formal': 'neutral',
-            'serious': 'neutral',
-            'precisely': 'neutral',
-            'confident': 'confident',
-            'proud': 'proud',
-            'distant': 'distant',
+            # === MIXED/SPECIAL (map to closest) ===
+            'dramatic': ('positivity', 'highest'),
+            'teasing': ('positivity', 'medium'),
+            'mischievous': ('positivity', 'medium'),
+            'coy': ('positivity', 'low'),
+            'smug': ('positivity', 'medium'),
+            'cocky': ('positivity', 'medium'),
+            'building': ('curiosity', 'medium'),
+            'building emotion': ('positivity', 'high'),
+            'confirming': ('positivity', 'low'),
+            'agreeing': ('positivity', 'low'),
+            'final push': ('anger', 'medium'),
+            'reverent': ('curiosity', 'medium'),
+            'lethargic': ('sadness', 'low'),
+            'apathetic': ('sadness', 'low'),
+            'uhh': ('sadness', 'low'),
+            'chuckling': ('positivity', 'medium'),
 
-            # === VOCAL REACTIONS ===
-            'laughs': 'happy',
-            'chuckles': 'joking',
-            'giggles': 'happy',
-            'chuckling': 'joking',
-            'gulps': 'scared',
-            'uhh': 'hesitant',
-            'hesitant': 'hesitant',
-            'insecure': 'insecure',
-            'apologetic': 'apologetic',
-            'sympathetic': 'sympathetic',
-            'understanding': 'sympathetic',
-            'teasing': 'flirtatious',
-            'mocking': 'sarcastic',
-            'bored': 'bored',
-            'tired': 'tired',
-            'panicked': 'panicked',
-
-            # === MULTI-WORD TAGS ===
-            'switching gears': 'neutral',
-            'building': 'anticipation',
-            'building emotion': 'excited',
-            'confirming': 'trust',
-            'agreeing': 'trust',
-            'final push': 'determined',
-
-            # === COMMON IMPROVISED TAGS ===
-            'dramatic': 'excited',
-            'urgent': 'determined',
-            'relieved': 'content',
-            'exasperated': 'frustrated',
-            'bewildered': 'confused',
-            'intrigued': 'curious',
-            'dismayed': 'disappointed',
-            'horrified': 'scared',
-            'terrified': 'scared',
-            'delighted': 'happy',
-            'ecstatic': 'euphoric',
-            'irritated': 'frustrated',
-            'perplexed': 'confused',
-            'astonished': 'amazed',
-            'stunned': 'amazed',
-            'apprehensive': 'anxious',
-            'uneasy': 'anxious',
-            'distressed': 'anxious',
-            'frantic': 'panicked',
-            'desperate': 'panicked',
-            'mortified': 'guilty',
-            'sheepish': 'apologetic',
-            'smug': 'proud',
-            'cocky': 'confident',
-            'dismissive': 'contempt',
-            'indignant': 'angry',
-            'resentful': 'angry',
-            'bitter': 'angry',
-            'remorseful': 'apologetic',
-            'regretful': 'sad',
-            'longing': 'wistful',
-            'yearning': 'wistful',
-            'tender': 'affectionate',
-            'loving': 'affectionate',
-            'adoring': 'affectionate',
-            'reverent': 'contemplative',
-            'awestruck': 'amazed',
-            'mesmerized': 'amazed',
-            'captivated': 'curious',
-            'fascinated': 'curious',
-            'absorbed': 'contemplative',
-            'pensive': 'contemplative',
-            'wary': 'skeptical',
-            'suspicious': 'skeptical',
-            'doubtful': 'skeptical',
-            'cynical': 'sarcastic',
-            'mischievous': 'flirtatious',
-            'coy': 'flirtatious',
-            'bashful': 'hesitant',
-            'shy': 'hesitant',
-            'timid': 'hesitant',
-            'bold': 'confident',
-            'assertive': 'determined',
-            'resolute': 'determined',
-            'steadfast': 'determined',
-            'weary': 'tired',
-            'exhausted': 'tired',
-            'drained': 'tired',
-            'lethargic': 'bored',
-            'apathetic': 'bored',
-            'indifferent': 'neutral',
-            'nonchalant': 'neutral',
-            'casual': 'neutral',
-            'matter-of-fact': 'neutral',
-
-            # === ELEVENLABS-ONLY (no SSML equivalent) ===
+            # === ELEVENLABS-ONLY (ignored for Cartesia) ===
             'interrupting': None,
             'overlapping': None,
             'interjecting': None,
@@ -442,22 +433,22 @@ class CartesiaProvider:
 
         Returns:
             Tuple of (emotions_list, clean_text)
+            emotions_list contains tuples: (emotion_name, intensity) or None for neutral
         """
         emotions = []
 
         # Find all [tag] patterns
         tags = re.findall(r'\[([^\]]+)\]', text)
 
-        # Use SSML emotion map for 60+ emotions
-        emotion_map = self._get_ssml_emotion_map()
+        # Use API emotion map (5 base emotions + intensity)
+        emotion_map = self._get_api_emotion_map()
 
         for tag in tags:
             tag_lower = tag.lower()
-            ssml_emotion = emotion_map.get(tag_lower)
-            if ssml_emotion:
-                emotions.append(ssml_emotion)
+            api_emotion = emotion_map.get(tag_lower)
+            if api_emotion:  # Can be tuple or None
+                emotions.append(api_emotion)
             # Note: Tags not in map are ignored for Cartesia
-            # They may be valid for ElevenLabs
 
         # Remove tags from text
         clean_text = re.sub(r'\[([^\]]+)\]', '', text).strip()
@@ -465,16 +456,16 @@ class CartesiaProvider:
         return emotions, clean_text
     
     def _create_segment(self, speaker, text, emotions, voice_ids):
-        """Create a Cartesia dialogue segment with SSML emotion tags
+        """Create a Cartesia dialogue segment with API emotion controls
 
         Args:
             speaker: 'speaker_a' or 'speaker_b'
             text: Clean dialogue text
-            emotions: List of SSML emotion values (e.g., ['excited', 'happy'])
+            emotions: List of (emotion_name, intensity) tuples
             voice_ids: Voice ID mapping (can be string or dict with 'id' key)
 
         Returns:
-            Dict in Cartesia format with SSML-tagged transcript
+            Dict in Cartesia format with emotion in __experimental_controls
         """
         voice_config = voice_ids[speaker]
 
@@ -484,22 +475,22 @@ class CartesiaProvider:
         else:
             voice_id = voice_config
 
-        # Build transcript with SSML emotion tag prepended
-        # Format: <emotion value="excited" /> Text here
-        transcript = text
-        if emotions:
-            # Use first emotion (SSML works best with one emotion per segment)
-            primary_emotion = emotions[0]
-            transcript = f'<emotion value="{primary_emotion}" /> {text}'
-
+        # Build segment with clean transcript (no SSML)
         segment = {
-            "voice_id": voice_id,  # Must be STRING for Cartesia API
-            "transcript": transcript,
+            "voice_id": voice_id,
+            "transcript": text,
             "__experimental_controls": {}
         }
 
-        # Store original emotion for debug logging (not sent to API)
-        segment["_ssml_emotion"] = emotions[0] if emotions else "neutral"
+        # Add emotion to API controls if present
+        # Format: ["emotion_name:intensity"] e.g., ["positivity:high"]
+        if emotions:
+            primary_emotion = emotions[0]  # (emotion_name, intensity) tuple
+            emotion_str = f"{primary_emotion[0]}:{primary_emotion[1]}"
+            segment["__experimental_controls"]["emotion"] = [emotion_str]
+            segment["_api_emotion"] = emotion_str  # For debug logging
+        else:
+            segment["_api_emotion"] = "neutral"
 
         return segment
     
@@ -619,9 +610,9 @@ class CartesiaProvider:
         
         for i, segment in enumerate(dialogue, 1):
             char_count = len(segment['transcript'])
-            ssml_emotion = segment.get('_ssml_emotion', 'neutral')
-            print(f"[Segment {i}/{len(dialogue)}] {char_count} chars <{ssml_emotion}>")
-            
+            api_emotion = segment.get('_api_emotion', 'neutral')
+            print(f"[Segment {i}/{len(dialogue)}] {char_count} chars [{api_emotion}]")
+
             # Save debug info
             if project_name:
                 debug_dir = Path(f"./projects/{project_name}/debug")
@@ -634,7 +625,7 @@ class CartesiaProvider:
                         'segment_number': i,
                         'character_count': char_count,
                         'transcript': segment['transcript'],
-                        'ssml_emotion': segment.get('_ssml_emotion', 'neutral'),
+                        'api_emotion': segment.get('_api_emotion', 'neutral'),
                         'voice_id': segment['voice_id'],
                         'controls': segment.get('__experimental_controls', {})
                     }, f, indent=2)
