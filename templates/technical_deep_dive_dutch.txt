@@ -5,14 +5,14 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [analytical] De architectuur is fascinerend.
-Speaker B: [interrupting] [curious] Wacht, hoe schaalt dat?
+Speaker B: [curious] Wacht, hoe schaalt dat?
 Speaker A: [explaining] Laat me dit doorlopen...
 
 ❌ WRONG FORMAT (DO NOT USE):
@@ -26,22 +26,16 @@ Speaker A: *analytical* De architectuur is fascinerend.
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (Voor technische uitdagingen):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions (Technical/Analytical focus):
-[analytical] [thoughtful] [curious] [skeptical] [impressed]
-[confused] [realizing] [explaining] [questioning] [concerned]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[hmm] [sighs] [pauses] [chuckles] [gasps]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery (Voor technische precisie):
-[carefully] [precisely] [slowly] [emphasizing]
-[hesitates] [clarifying] [correcting]
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -59,7 +53,7 @@ CHARACTER DYNAMICS
 - Gelijkwaardig technisch competent
 - Stelt moeilijke vragen: [skeptical] [questioning]
 - Eist precisie: [curious] [pressing]
-- Vangt aannames: [interrupting] [realizing]
+- Vangt aannames: [realizing]
 - Brengt alternatieve perspectieven
 - GEEN stereotypen (geen "junior developer")
 
@@ -201,7 +195,7 @@ Erken onzekerheid:
 Speaker A: [analytical] Het consensus mechanisme gebruikt een PBFT variant.
 Speaker B: [curious] Byzantine fault tolerance—hoeveel nodes kunnen kwaadaardig zijn?
 Speaker A: [explaining] Tot een derde, min één. Dus met 10 nodes...
-Speaker B: [interrupting] [realizing] Drie kunnen gecompromitteerd zijn en het werkt nog?
+Speaker B: [realizing] Drie kunnen gecompromitteerd zijn en het werkt nog?
 Speaker A: [confirming] Precies. Dat is de theoretische limiet.
 
 ===================================
@@ -217,12 +211,12 @@ Speaker A: [thoughtful] Dat brengt complexiteit met zich mee...
 **2. EDGE CASES:**
 
 Speaker B: [skeptical] Maar wat als de cache koud is?
-Speaker A: [pauses] [carefully] Goede vraag. In dat scenario...
+Speaker A: [carefully] Goede vraag. In dat scenario...
 
 **3. REALISATIES:**
 
 Speaker A: [analytical] Dus het lock-free algoritme betekent—
-Speaker B: [interrupting] [realizing] Wacht, dat is ABA probleem terrein!
+Speaker B: [realizing] Wacht, dat is ABA probleem terrein!
 Speaker A: [impressed] Precies! En daarom gebruiken ze...
 
 **4. TRADEOFF ANALYSE:**
@@ -234,7 +228,7 @@ Speaker A: [analytical] Hangt af van je requirements...
 **5. COLLABORATIEF PROBLEEM-OPLOSSEN:**
 
 Speaker B: [confused] Ik zie niet hoe dat schaalt voorbij 1000 nodes.
-Speaker A: [hesitates] Hmm... [pauses] Tenzij ze sharden?
+Speaker A: [hesitant] Hmm... Tenzij ze sharden?
 Speaker B: [curious] Dat zou logisch zijn. Laat me checken...
 
 ===================================
@@ -444,7 +438,7 @@ FINAL CHECKLIST
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
-✅ 3-5 [interrupting] moments (technische uitdagingen)
+✅ 3-5 moments (technische uitdagingen)
 ✅ Heavy use of [analytical], [thoughtful], [explaining]
 ✅ Technisch precieze taal
 ✅ 10-15 hoogwaardige technische bronnen

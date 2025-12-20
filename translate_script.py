@@ -101,7 +101,7 @@ Original script:
     try:
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=16000,
+            max_tokens=20000,  # Increased for longer podcasts (25+ min)
             temperature=0.3,
             messages=[{"role": "user", "content": prompt}]
         )

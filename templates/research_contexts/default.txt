@@ -1,8 +1,8 @@
-Research Context for protocols
+Research Context for {project_name}
 
 
 === RESEARCH INSTRUCTIONS ===
-Number of sources to find: 5-10
+(Source count is configured in the UI - focus on quality over quantity)
 
 === CONTEXT AND FOCUS AREAS ===
 (Describe what Claude should focus on during research)

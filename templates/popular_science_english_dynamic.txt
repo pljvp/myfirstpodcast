@@ -5,14 +5,14 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [excited] This is absolutely incredible!
-Speaker B: [interrupting] [curious] Wait, tell me more!
+Speaker B: [curious] Wait, tell me more!
 Speaker A: [laughs] Okay, so...
 
 ❌ WRONG FORMAT (DO NOT USE):
@@ -21,45 +21,26 @@ Speaker A: (excited) This is absolutely incredible!
 Speaker A: *excited* This is absolutely incredible!
 
 **MULTIPLE TAGS:**
-- Space between: [interrupting] [excited] Exactly!
+- Space between: [excited] [curious] Exactly!
 - Or adjacent: [nervous][hesitant] I don't know...
 - Always lowercase in brackets
 
 **TAG PLACEMENT:**
-- Start of line: [whispers] Listen to this...
+- Start of line: [curious] Listen to this...
 - Mid-sentence: That's [laughs] just perfect!
 - Multiple in line: [excited] And then [gasps] it happened!
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-**CRITICAL - USE THESE EXTENSIVELY:**
+**USE THESE TAGS EXTENSIVELY:**
 
-Interruption & Overlap (5-10 times per podcast):
-[interrupting] - Cuts into other speaker
-[overlapping] - Brief overlap
-[interjecting] - Quick insertion
-
-Emotions (Use liberally):
-[excited] [curious] [skeptical] [surprised] [thoughtful]
-[confused] [amused] [impressed] [frustrated] [nervous]
-
-Reactions (10+ times per podcast):
-[laughs] [chuckles] [giggles] [sighs] [gasps]
-[gulps] [groans] [hmm] [uhh]
-
-Delivery:
-[whispers] [shouting] [fast-paced] [slowly] [hesitates]
-[pause] [quietly] [loudly]
+{PROVIDER_EMOTION_TAGS}
 
 **EXAMPLES OF PROPER USAGE:**
 
-Speaker A: [excited] [fast-paced] Okay, I just read something and I swear—
-Speaker B: [interrupting] [curious] Wait! Is this about quantum physics?
-Speaker A: [laughs] [overlapping] Yes! But listen—
-Speaker B: [skeptical] This sounds too good to be true...
-Speaker A: [enthusiastic] No, really! [pauses] So imagine...
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -67,7 +48,7 @@ CHARACTER DYNAMICS
 
 **Speaker A - The Enthusiastic Explainer (LEAD VOICE - FEMALE):**
 - Confident and strong, even when uncertain
-- Gets quickly excited: [excited] [fast-paced]
+- Gets quickly excited: [excited] [enthusiastic]
 - Explains competently with analogies
 - Witty and sharp in reactions
 - Laughs at own enthusiasm: [laughs]
@@ -76,14 +57,14 @@ CHARACTER DYNAMICS
 **Speaker B - The Curious Skeptic (MALE):**
 - Friendly and attentive
 - Asks critical questions: [skeptical] [curious]
-- Interrupts when excited: [interrupting]
+- Jumps in when excited with quick responses
 - Witty and playfully provocative
 - Reacts emotionally: [gasps], [laughs]
 - NO stereotypical roles (no "student")
 
 **RELATIONSHIP - IMPORTANT:**
 - Friends who are casual with each other
-- Interrupt naturally
+- Jump in naturally during exciting moments
 - Both intelligent and equal
 - Playfully disagree
 - Challenge each other
@@ -155,9 +136,9 @@ Speaker B: [emotion tags] Response here...
 **CORRECT EXAMPLE:**
 
 Speaker A: [excited] You won't believe this!
-Speaker B: [curious] [interjecting] What?!
-Speaker A: [laughs] [fast-paced] So I just read that—
-Speaker B: [interrupting] [overlapping] About quantum computers?!
+Speaker B: [curious] What?!
+Speaker A: [laughs] So I just read that—
+Speaker B: About quantum computers?!
 Speaker A: [amused] Yes! But crazier than you think...
 
 ===================================
@@ -172,30 +153,29 @@ STORY ARC - SURPRISE-DRIVEN
 - Jump straight to most surprising fact/revelation
 - Example: [excited] Okay, imagine this: Your DNA is now programmable like a computer!
 - Hook with "you won't believe this" energy
-- [Use: [excited], [fast-paced], [overlapping]]
+- Use high-energy emotion tags
 
 **OPTION 2 - "Did You Know" (use sparingly, not every episode):**
 - Example: [curious] Did you know that...
 - Still must hook immediately with surprising fact
 - Don't overuse - keep fresh and varied
-- [Use: [curious], [excited]]
 
 **BUILD TENSION (2-3 min):**
 - Why is this surprising/important?
 - What changed recently?
-- [Use: [curious], [skeptical], [thoughtful]]
+- Use curious/skeptical/thoughtful emotions
 
 **EXPLORATION (8-10 min):**
 - 3-4 key concepts with revelations
 - Each has a "wait, what?!" moment
 - Build understanding layer by layer
-- [Use: [interrupting], [laughs], [gasps], [pauses]]
+- Use reactions: [laughs], [gasps], emotional variety
 
 **RESOLUTION (2-3 min):**
 - Pull back to implications
 - What does this mean for us?
 - End with wonder, not just summary
-- [Use: [thoughtful], [impressed], [quietly]]
+- Use reflective emotions
 
 **AVOID:**
 - Linear timeline presentation
@@ -234,35 +214,35 @@ Filler words (natural):
 **EXAMPLE OF AUTHENTIC STYLE:**
 
 Speaker A: [curious] Okay, but how does that actually work?
-Speaker B: [excited] [fast-paced] Dude, it's wild! Imagine you've got this biological programming language—
-Speaker A: [interrupting] [skeptical] Wait, wait... [pauses] A *programming* language?
-Speaker B: [laughs] [overlapping] Yes! Seriously! It's like [hesitates] um, how do I explain this...
+Speaker B: [excited] Dude, it's wild! Imagine you've got this biological programming language—
+Speaker A: [skeptical] Wait, wait... A *programming* language?
+Speaker B: [laughs] Yes! Seriously! It's like— um, how do I explain this...
 
 ===================================
-DYNAMIC DIALOGUE TECHNIQUES  
+DYNAMIC DIALOGUE TECHNIQUES
 ===================================
 
-**1. NATURAL INTERRUPTIONS (5-10 per podcast):**
+**1. QUICK EXCHANGES (create natural back-and-forth):**
 
-Speaker A: [explaining] So, if I understand this right—
-Speaker B: [interrupting] [excited] Exactly! That's the point!
+Speaker A: [curious] So, if I understand this right—
+Speaker B: [excited] Exactly! That's the point!
 
 Speaker A: [curious] But how can—
-Speaker B: [interjecting] [fast-paced] Let me explain real quick!
+Speaker B: [enthusiastic] Let me explain real quick!
 
-**2. OVERLAPPING EXCITEMENT:**
+**2. SHARED EXCITEMENT:**
 
-Speaker A: [overlapping] [excited] This is insane!
-Speaker B: [overlapping] [laughs] I know, right?!
+Speaker A: [excited] This is insane!
+Speaker B: [laughs] I know, right?!
 
 **3. PLAYFUL DISAGREEMENTS:**
 
 Speaker A: [skeptical] Hold on, that can't—
-Speaker B: [amused] [interrupting] It can! Just wait!
+Speaker B: [amused] It can! Just wait!
 
 **4. FALSE STARTS:**
 
-Speaker A: [hesitates] So I'd say— no, wait... [pauses] actually...
+Speaker A: [hesitant] So I'd say— no, wait... actually...
 
 **5. BACK-REFERENCES:**
 
@@ -272,36 +252,36 @@ Speaker B: [excited] That explains Y!
 
 **6. SHARED REALIZATIONS:**
 
-Speaker A: [slowly] Wait... does that mean...
-Speaker B: [excited] [overlapping] Yes! Exactly!
+Speaker A: [contemplative] Wait... does that mean...
+Speaker B: [excited] Yes! Exactly!
 Both: [laughs]
 
 **7. CONVERSATIONAL REPAIR:**
 
 Speaker A: [confused] I don't quite get—
-Speaker B: [helpful] Okay, let me put it differently...
+Speaker B: [sympathetic] Okay, let me put it differently...
 
 ===================================
 EMOTION & ENERGY VARIATION
 ===================================
 
-**VARY THE PACING:**
+**VARY THE ENERGY:**
 
-Fast-paced excitement:
-[excited] [fast-paced] And then it happened and suddenly everything changed!
+High-energy excitement:
+[excited] [enthusiastic] And then it happened and suddenly everything changed!
 
 Thoughtful moments:
-[thoughtful] [slowly] When you think about it... [pauses] it's actually...
+[thoughtful] [contemplative] When you think about it... it's actually...
 
 Build to revelation:
-[curious] So... [pauses] [excited] that means... [gasps] Wait!
+[curious] So... [excited] that means... [gasps] Wait!
 
 **EMOTIONAL ARCS:**
 
 Start: [curious]
-Build: [interested] → [surprised]
-Peak: [excited] [fast-paced]
-Reflect: [thoughtful] [impressed]
+Build: [curious] → [surprised]
+Peak: [excited] [enthusiastic]
+Reflect: [thoughtful] [contemplative]
 
 ===================================
 CONTENT REQUIREMENTS
@@ -476,21 +456,19 @@ Your job: Create ONLY the dialogue.
 Word count applies to dialogue ONLY.
 
 ===================================
-FINAL CHECKLIST
-=================================== BEFORE SUBMISSION
+FINAL CHECKLIST ({PROVIDER_TAG})
 ===================================
 
 Before you submit, verify:
 
 ✅ ALL emotion/reaction tags use [square brackets]
-✅ At least 5-10 [interrupting] or [overlapping] moments
-✅ 10+ reaction tags ([laughs], [sighs], [gasps])
+{PROVIDER_CHECKLIST}
 ✅ Using casual, conversational tone
 ✅ Contractions throughout (don't, can't, it's)
 ✅ Starts with surprising fact (not definition)
 ✅ 3-4 "revelation" moments
 ✅ Concrete examples from research
-✅ Generate {word_count} words (±5% acceptable) met
+✅ Generate {word_count} words (±5% acceptable)
 ✅ Pure dialogue (no stage directions outside tags)
 ✅ Speaker A/B labels on every line
 ✅ Multiple tags use spaces: [tag1] [tag2] not tag1, tag2

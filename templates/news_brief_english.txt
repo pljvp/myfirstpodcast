@@ -5,15 +5,15 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [energetic] This is breaking news!
-Speaker B: [interrupting] [excited] Wait, tell me more!
-Speaker A: [fast-paced] So, this morning...
+Speaker B: [excited] Wait, tell me more!
+Speaker A: So, this morning...
 
 ❌ WRONG FORMAT (DO NOT USE):
 Speaker A: energetic This is breaking news!
@@ -21,30 +21,21 @@ Speaker A: (energetic) This is breaking news!
 Speaker A: *energetic* This is breaking news!
 
 **MULTIPLE TAGS:**
-- Space between: [interrupting] [excited] Exactly!
+- Space between: [excited] Exactly!
 - Or adjacent: [nervous][hesitant] I don't know...
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (USE FREQUENTLY - news is fast!):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions (Energy-focused):
-[energetic] [excited] [curious] [surprised] [shocked]
-[concerned] [skeptical] [impressed] [urgent]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[laughs] [gasps] [sighs] [wow] [hmm]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery (CRITICAL for news pacing):
-[fast-paced] - Rapid delivery (USE OFTEN!)
-[urgently] - Breaking news energy
-[dramatically] - Big reveals
-[quietly] - Serious moments
-[loudly] - Emphasis
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -52,7 +43,7 @@ CHARACTER DYNAMICS
 
 **Speaker A - The Energetic News Host (LEAD VOICE - FEMALE):**
 - Confident, dynamic, strong
-- Fast and energetic: [energetic] [fast-paced]
+- Fast and energetic: [energetic]
 - Delivers news with momentum
 - Witty when appropriate
 - NO stereotypes
@@ -129,11 +120,11 @@ STORY ARC - NEWS FORMAT
 **OPENING (15-20 seconds):** BREAKING NEWS ENERGY
 
 **Start with the headline:**
-Speaker A: [energetic] [fast-paced] Okay, you need to hear this!
+Speaker A: [energetic] Okay, you need to hear this!
 Speaker B: [curious] [excited] What happened?
 Speaker A: [urgently] So, this morning it was announced...
 
-[Use: [energetic], [fast-paced], [urgently]]
+[Use: [energetic],, [urgently]]
 
 **BUILD (1-2 min):**
 - What happened?
@@ -184,8 +175,8 @@ Contractions:
 
 **FAST-PACED STYLE:**
 
-Speaker A: [fast-paced] Okay, listen—this morning, just after nine, it was announced...
-Speaker B: [interrupting] [surprised] Seriously?
+Speaker A: Okay, listen—this morning, just after nine, it was announced...
+Speaker B: [surprised] Seriously?
 Speaker A: [energetic] Yes! And here's the crazy part...
 
 ===================================
@@ -194,19 +185,19 @@ DYNAMIC DIALOGUE TECHNIQUES
 
 **1. RAPID-FIRE QUESTIONS:**
 
-Speaker A: [fast-paced] The numbers just came in—
-Speaker B: [interrupting] [urgently] How many?
+Speaker A: The numbers just came in—
+Speaker B: [urgently] How many?
 Speaker A: [dramatically] 50 percent more than expected!
 
 **2. SHARED SHOCK:**
 
 Speaker A: [shocked] And guess who said that...
 Speaker B: [gasps] Not—
-Speaker A: [overlapping] [excited] Yes!
+Speaker A: [excited] Yes!
 
 **3. BREAKING NEWS ENERGY:**
 
-Speaker A: [urgently] [fast-paced] Okay, brace yourself!
+Speaker A: [urgently] Okay, brace yourself!
 Speaker B: [energetic] What's going on?!
 
 **4. QUICK CONTEXT:**
@@ -221,13 +212,13 @@ ENERGY & PACING
 **FAST THROUGHOUT:**
 
 High energy opening:
-[energetic] [fast-paced] Okay, you HAVE to hear this!
+[energetic] Okay, you HAVE to hear this!
 
 Maintain momentum:
 [excited] And then—listen—it turned out...
 
 Build to reveals:
-[dramatically] And here's the kicker... [pauses] [shocked] 
+[dramatically] And here's the kicker... [shocked] 
 
 Keep it tight:
 - Short sentences
@@ -409,8 +400,8 @@ FINAL CHECKLIST
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
-✅ 5-10 [interrupting] or [overlapping] moments
-✅ Heavy use of [fast-paced], [energetic], [urgently]
+✅ 5-10 or moments
+✅ Heavy use of, [energetic], [urgently]
 ✅ Casual, conversational tone
 ✅ Recent sources (within 7 days if possible)
 ✅ All 5 W's covered

@@ -1,0 +1,63 @@
+# Cartesia Provider Template Hooks
+# Used for script generation - substitutes {PROVIDER_*} placeholders in templates
+
+provider_name: cartesia
+provider_tag: CRTS
+
+# Main emotion/audio tag instructions
+# NOTE: Dialogue is LEADING. Emotions are SUPPORTIVE - they enhance delivery, not drive content.
+emotion_tags: |
+  Cartesia uses 5 base emotions with intensity. Use ONE tag per line.
+  Choose tags that SUPPORT the dialogue's natural emotion.
+
+  **POSITIVITY (happy, excited, content):**
+  [excited] [happy] [enthusiastic] [cheerful] [content] [friendly]
+  [warm] [grateful] [playful] [amused] [laughs] [proud]
+
+  **CURIOSITY (interested, thinking):**
+  [curious] [interested] [thoughtful] [intrigued] [fascinated] [skeptical]
+
+  **SURPRISE (shocked, amazed):**
+  [surprised] [amazed] [shocked] [gasps] [impressed] [confused]
+
+  **SADNESS (worried, disappointed):**
+  [sad] [disappointed] [worried] [concerned] [nervous] [anxious]
+  [sighs] [resigned] [nostalgic] [hesitant]
+
+  **ANGER (frustrated, intense):**
+  [angry] [frustrated] [annoyed] [defensive] [determined] [urgent]
+  [panicked] [scared]
+
+  **NEUTRAL (no emotion):**
+  [neutral] [serious] [calm]
+
+  RULES:
+  - ONE emotion tag per line (no compounds like [laughs nervously])
+  - Place tag at START of line: Speaker A: [excited] Text here
+  - NOT every line needs a tag - use when emotion shifts
+
+  AVOID (ElevenLabs only):
+  [interrupting] [overlapping] [whispers] [slowly] [fast-paced] [pause]
+
+# Example dialogue snippets
+examples: |
+  Speaker A: [excited] I just discovered something incredible!
+  Speaker B: [curious] Wait, what did you find?
+  Speaker A: [enthusiastic] So you know how everyone thought...
+  Speaker B: [skeptical] That sounds too good to be true.
+  Speaker A: [laughs] I know, right? But here's the thing...
+  Speaker B: [amazed] No way, that actually works?
+  Speaker A: [proud] Exactly. And the implications are huge.
+
+# Checklist items for script quality (duration-aware)
+checklist: |
+  - Dialogue drives the conversation, emotions support it
+  - Use ONE emotion tag per line (never compound tags)
+  - Include {variety_count}+ distinct emotion tags
+  - Mix intensities: calm moments AND high-energy moments
+  - Use [laughs], [sighs], [gasps] sparingly for authenticity
+  - Not every line needs an emotion tag
+
+# Variety count formula: base + (duration_minutes / 3)
+variety_base: 8
+variety_per_3min: 1

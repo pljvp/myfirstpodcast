@@ -5,14 +5,14 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [excited] Das ist ja unglaublich!
-Speaker B: [interrupting] [curious] Warte, erzähl mir mehr!
+Speaker B: [curious] Warte, erzähl mir mehr!
 Speaker A: [laughs] Okay, also...
 
 ❌ WRONG FORMAT (DO NOT USE):
@@ -21,45 +21,26 @@ Speaker A: (excited) Das ist ja unglaublich!
 Speaker A: *excited* Das ist ja unglaublich!
 
 **MULTIPLE TAGS:**
-- Space between: [interrupting] [excited] Genau!
+- Space between: [excited] Genau!
 - Or adjacent: [nervous][hesitant] Ich weiß nicht...
 - Always lowercase in brackets
 
 **TAG PLACEMENT:**
-- Start of line: [whispers] Hör mal zu...
+- Start of line: [curious] Hör mal zu...
 - Mid-sentence: Das ist [laughs] einfach perfekt!
 - Multiple in line: [excited] Und dann [gasps] ist es passiert!
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-**CRITICAL - USE THESE EXTENSIVELY:**
+**USE THESE TAGS EXTENSIVELY:**
 
-Interruption & Overlap (5-10 times per podcast):
-[interrupting] - Cuts into other speaker
-[overlapping] - Brief overlap
-[interjecting] - Quick insertion
-
-Emotions (Use liberally):
-[excited] [curious] [skeptical] [surprised] [thoughtful]
-[confused] [amused] [impressed] [frustrated] [nervous]
-
-Reactions (10+ times per podcast):
-[laughs] [chuckles] [giggles] [sighs] [gasps]
-[gulps] [groans] [hmm] [uhh]
-
-Delivery:
-[whispers] [shouting] [fast-paced] [slowly] [hesitates]
-[pause] [quietly] [loudly]
+{PROVIDER_EMOTION_TAGS}
 
 **EXAMPLES OF PROPER USAGE:**
 
-Speaker A: [excited] [fast-paced] Okay, ich hab da was gelesen und ich schwöre—
-Speaker B: [interrupting] [curious] Warte mal! Hat das mit Quantenphysik zu tun?
-Speaker A: [laughs] [overlapping] Ja! Aber hör mal—
-Speaker B: [skeptical] Das klingt zu gut, um wahr zu sein...
-Speaker A: [enthusiastic] Nein, echt! [pauses] Also, stell dir vor...
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -67,7 +48,7 @@ CHARACTER DYNAMICS
 
 **Speaker A - Die Begeisterte Erklärerin (LEAD VOICE - FEMALE):**
 - Selbstbewusst und stark, auch bei Unsicherheit
-- Begeistert sich schnell: [excited] [fast-paced]
+- Begeistert sich schnell: [excited]
 - Erklärt kompetent mit Analogien
 - Witzig und scharf in Reaktionen
 - Lacht über eigene Begeisterung: [laughs]
@@ -76,7 +57,7 @@ CHARACTER DYNAMICS
 **Speaker B - Der Neugierige Skeptiker (MALE):**
 - Freundlich und aufmerksam
 - Stellt kritische Fragen: [skeptical] [curious]
-- Unterbricht bei Begeisterung: [interrupting]
+- Unterbricht bei Begeisterung:
 - Witzig und spielerisch provokant
 - Reagiert emotional: [gasps], [laughs]
 - KEINE Rollenklischees (kein "Student")
@@ -155,9 +136,9 @@ Speaker B: [emotion tags] Response here...
 **CORRECT EXAMPLE:**
 
 Speaker A: [excited] Du glaubst mir das jetzt nicht!
-Speaker B: [curious] [interjecting] Was denn?
-Speaker A: [laughs] [fast-paced] Also ich hab grad gelesen, dass—
-Speaker B: [interrupting] [overlapping] Über Quantencomputer?!
+Speaker B: [curious] Was denn?
+Speaker A: [laughs] Also ich hab grad gelesen, dass—
+Speaker B: Über Quantencomputer?!
 Speaker A: [amused] Ja! Aber krasser als du denkst...
 
 ===================================
@@ -172,7 +153,7 @@ STORY ARC - SURPRISE-DRIVEN
 - Jump straight to most surprising fact/revelation
 - Example: [excited] Okay, stell dir vor: Deine DNA ist jetzt programmierbar wie ein Computer!
 - Hook with "you won't believe this" energy
-- [Use: [excited], [fast-paced], [overlapping]]
+- Use high-energy emotion tags
 
 **OPTION 2 - "Did You Know" (use sparingly, not every episode):**
 - Example: [curious] Weißt du eigentlich, dass...
@@ -183,19 +164,19 @@ STORY ARC - SURPRISE-DRIVEN
 **BUILD TENSION (2-3 min):**
 - Why is this surprising/important?
 - What changed recently?
-- [Use: [curious], [skeptical], [thoughtful]]
+- Use curious/skeptical/thoughtful emotions
 
 **EXPLORATION (8-10 min):**
 - 3-4 key concepts with revelations
 - Each has a "wait, what?!" moment
 - Build understanding layer by layer
-- [Use: [interrupting], [laughs], [gasps], [pauses]]
+- Use reactions: [laughs], [gasps], emotional variety
 
 **RESOLUTION (2-3 min):**
 - Pull back to implications
 - What does this mean for us?
 - End with wonder, not just summary
-- [Use: [thoughtful], [impressed], [quietly]]
+- Use reflective emotions
 
 **AVOID:**
 - Linear timeline presentation
@@ -235,35 +216,35 @@ Filler words (natural):
 **EXAMPLE OF AUTHENTIC STYLE:**
 
 Speaker A: [curious] Okay, aber wie funktioniert das genau?
-Speaker B: [excited] [fast-paced] Boah, also das ist echt krass! Stell dir vor, du hast so 'ne Art biologische Programmiersprache—
-Speaker A: [interrupting] [skeptical] Warte, warte... [pauses] Eine *Programmiersprache*?
-Speaker B: [laughs] [overlapping] Ja! Echt jetzt! Es ist wie [hesitates] hmm, wie erkläre ich das...
+Speaker B: [excited] Boah, also das ist echt krass! Stell dir vor, du hast so 'ne Art biologische Programmiersprache—
+Speaker A: [skeptical] Warte, warte... Eine *Programmiersprache*?
+Speaker B: [laughs] Ja! Echt jetzt! Es ist wie [hesitant] hmm, wie erkläre ich das...
 
 ===================================
 DYNAMIC DIALOGUE TECHNIQUES  
 ===================================
 
-**1. NATURAL INTERRUPTIONS (5-10 per podcast):**
+**1. QUICK EXCHANGES (create natural back-and-forth):**
 
 Speaker A: [explaining] Also, wenn ich das richtig verstehe—
-Speaker B: [interrupting] [excited] Genau! Genau das ist der Punkt!
+Speaker B: [excited] Genau! Genau das ist der Punkt!
 
 Speaker A: [curious] Aber wie kann das—
-Speaker B: [interjecting] [fast-paced] Lass mich kurz erklären!
+Speaker B: Lass mich kurz erklären!
 
 **2. OVERLAPPING EXCITEMENT:**
 
-Speaker A: [overlapping] [excited] Das ist ja krass!
-Speaker B: [overlapping] [laughs] Ich weiß, oder?!
+Speaker A: [excited] Das ist ja krass!
+Speaker B: [laughs] Ich weiß, oder?!
 
 **3. PLAYFUL DISAGREEMENTS:**
 
 Speaker A: [skeptical] Moment mal, das kann doch nicht—
-Speaker B: [amused] [interrupting] Doch! Warte ab!
+Speaker B: [amused] Doch! Warte ab!
 
 **4. FALSE STARTS:**
 
-Speaker A: [hesitates] Also ich würde sagen— nee, warte... [pauses] eher...
+Speaker A: [hesitant] Also ich würde sagen— nee, warte... eher...
 
 **5. BACK-REFERENCES:**
 
@@ -273,8 +254,8 @@ Speaker B: [excited] Genau das erklärt jetzt Y!
 
 **6. SHARED REALIZATIONS:**
 
-Speaker A: [slowly] Warte mal... heißt das etwa...
-Speaker B: [excited] [overlapping] Ja! Genau!
+Speaker A: Warte mal... heißt das etwa...
+Speaker B: [excited] Ja! Genau!
 Both: [laughs]
 
 **7. CONVERSATIONAL REPAIR:**
@@ -289,19 +270,19 @@ EMOTION & ENERGY VARIATION
 **VARY THE PACING:**
 
 Fast-paced excitement:
-[excited] [fast-paced] Und dann ist das passiert und plötzlich war alles anders!
+[excited] Und dann ist das passiert und plötzlich war alles anders!
 
 Thoughtful moments:
-[thoughtful] [slowly] Wenn man darüber nachdenkt... [pauses] ist das eigentlich...
+[thoughtful] Wenn man darüber nachdenkt... ist das eigentlich...
 
 Build to revelation:
-[curious] Also... [pauses] [excited] das heißt doch... [gasps] Moment!
+[curious] Also... [excited] das heißt doch... [gasps] Moment!
 
 **EMOTIONAL ARCS:**
 
 Start: [curious]
 Build: [interested] → [surprised]
-Peak: [excited] [fast-paced]
+Peak: [excited]
 Reflect: [thoughtful] [impressed]
 
 ===================================
@@ -477,14 +458,13 @@ Your job: Create ONLY the dialogue.
 Word count applies to dialogue ONLY.
 
 ===================================
-FINAL CHECKLIST
-=================================== BEFORE SUBMISSION
+FINAL CHECKLIST ({PROVIDER_TAG})
 ===================================
 
 Before you submit, verify:
 
 ✅ ALL emotion/reaction tags use [square brackets]
-✅ At least 5-10 [interrupting] or [overlapping] moments
+{PROVIDER_CHECKLIST}
 ✅ 10+ reaction tags ([laughs], [sighs], [gasps])
 ✅ Using "Du" form throughout (NEVER "Sie")
 ✅ Colloquialisms and natural language

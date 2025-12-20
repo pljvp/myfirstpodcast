@@ -5,14 +5,14 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [excited] Dit is ongelooflijk!
-Speaker B: [interrupting] [curious] Wacht, vertel me meer!
+Speaker B: [curious] Wacht, vertel me meer!
 Speaker A: [laughs] Oké, dus...
 
 ❌ WRONG FORMAT (DO NOT USE):
@@ -21,28 +21,21 @@ Speaker A: (excited) Dit is ongelooflijk!
 Speaker A: *excited* Dit is ongelooflijk!
 
 **MULTIPLE TAGS:**
-- Space between: [interrupting] [excited] Precies!
+- Space between: [excited] Precies!
 - Or adjacent: [nervous][hesitant] Ik weet het niet...
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (5-10 times per podcast):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions:
-[excited] [curious] [skeptical] [surprised] [thoughtful]
-[confused] [amused] [impressed] [frustrated] [nervous]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[laughs] [chuckles] [giggles] [sighs] [gasps]
-[gulps] [groans] [hmm] [uhh]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery:
-[whispers] [shouting] [fast-paced] [slowly] [hesitates]
-[pause] [quietly] [loudly]
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -50,7 +43,7 @@ CHARACTER DYNAMICS
 
 **Speaker A - De Enthousiaste Uitlegger (HOOFDSTEM - VROUWELIJK):**
 - Zelfverzekerd en sterk, ook bij onzekerheid
-- Wordt snel enthousiast: [excited] [fast-paced]
+- Wordt snel enthousiast: [excited]
 - Legt deskundig uit met analogieën
 - Geestig en scherp in reacties
 - Lacht om eigen enthousiasme: [laughs]
@@ -59,7 +52,7 @@ CHARACTER DYNAMICS
 **Speaker B - De Nieuwsgierige Scepticus (MANNELIJK):**
 - Vriendelijk en aandachtig
 - Stelt kritische vragen: [skeptical] [curious]
-- Onderbreekt bij enthousiasme: [interrupting]
+- Onderbreekt bij enthousiasme:
 - Geestig en speels provocerend
 - Reageert emotioneel: [gasps], [laughs]
 - GEEN stereotypen (geen "student")
@@ -124,7 +117,7 @@ STORY ARC - SURPRISE-DRIVEN
 - Spring meteen naar het meest verrassende feit
 - Voorbeeld: [excited] Oké, stel je voor: Je DNA is nu programmeerbaar zoals een computer!
 - Hook met "dit ga je niet geloven" energie
-- [Use: [excited], [fast-paced], [overlapping]]
+- Use high-energy emotion tags
 
 **OPTIE 2 - "Wist Je Dat" (spaarzaam gebruiken, niet elke aflevering):**
 - Voorbeeld: [curious] Wist je dat...
@@ -134,16 +127,16 @@ STORY ARC - SURPRISE-DRIVEN
 
 **BUILD TENSION (2-3 min):**
 - Why is this surprising?
-- [Use: [curious], [skeptical], [thoughtful]]
+- Use curious/skeptical/thoughtful emotions
 
 **EXPLORATION (8-10 min):**
 - 3-4 key concepts
 - "Wacht, wat?!" moments
-- [Use: [interrupting], [laughs], [gasps]]
+- Use reactions: [laughs], [gasps], emotional variety
 
 **RESOLUTION (2-3 min):**
 - Pull back to implications
-- [Use: [thoughtful], [impressed], [quietly]]
+- Use reflective emotions
 
 ===================================
 AUTHENTIC DUTCH LANGUAGE STYLE
@@ -314,12 +307,13 @@ Your job: Create ONLY the dialogue.
 Word count applies to dialogue ONLY.
 
 ===================================
-FINAL CHECKLIST
-===================================
+FINAL CHECKLIST ({PROVIDER_TAG})
 ===================================
 
+Before you submit, verify:
+
 ✅ ALL emotion/reaction tags use [square brackets]
-✅ At least 5-10 [interrupting] or [overlapping] moments
+{PROVIDER_CHECKLIST}
 ✅ 10+ reaction tags
 ✅ Using casual, conversational Dutch
 ✅ Contractions throughout

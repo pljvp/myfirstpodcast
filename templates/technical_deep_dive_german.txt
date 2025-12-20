@@ -5,14 +5,14 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [analytical] Die Architektur ist faszinierend.
-Speaker B: [interrupting] [curious] Warte, wie skaliert das?
+Speaker B: [curious] Warte, wie skaliert das?
 Speaker A: [explaining] Lass mich das durchgehen...
 
 ❌ WRONG FORMAT (DO NOT USE):
@@ -26,22 +26,16 @@ Speaker A: *analytical* Die Architektur ist faszinierend.
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (Für technische Herausforderungen):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions (Technical/Analytical focus):
-[analytical] [thoughtful] [curious] [skeptical] [impressed]
-[confused] [realizing] [explaining] [questioning] [concerned]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[hmm] [sighs] [pauses] [chuckles] [gasps]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery (Für technische Präzision):
-[carefully] [precisely] [slowly] [emphasizing]
-[hesitates] [clarifying] [correcting]
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -59,7 +53,7 @@ CHARACTER DYNAMICS
 - Gleichwertig technisch kompetent
 - Stellt harte Fragen: [skeptical] [questioning]
 - Fordert Präzision: [curious] [pressing]
-- Erkennt Annahmen: [interrupting] [realizing]
+- Erkennt Annahmen: [realizing]
 - Bringt alternative Perspektiven
 - KEINE Stereotypen (kein "Junior-Entwickler")
 
@@ -202,7 +196,7 @@ Anerkenne Unsicherheit:
 Speaker A: [analytical] Der Konsensus-Mechanismus nutzt eine PBFT-Variante.
 Speaker B: [curious] Byzantine Fault Tolerance—wie viele Nodes können bösartig sein?
 Speaker A: [explaining] Bis zu einem Drittel, minus eins. Also bei 10 Nodes...
-Speaker B: [interrupting] [realizing] Drei könnten kompromittiert sein und es funktioniert noch?
+Speaker B: [realizing] Drei könnten kompromittiert sein und es funktioniert noch?
 Speaker A: [confirming] Genau. Das ist das theoretische Limit.
 
 ===================================
@@ -218,12 +212,12 @@ Speaker A: [thoughtful] Das bringt Komplexität mit...
 **2. RANDFÄLLE:**
 
 Speaker B: [skeptical] Aber was wenn der Cache kalt ist?
-Speaker A: [pauses] [carefully] Gute Frage. In dem Szenario...
+Speaker A: [carefully] Gute Frage. In dem Szenario...
 
 **3. REALISIERUNGEN:**
 
 Speaker A: [analytical] Also der Lock-Free-Algorithmus bedeutet—
-Speaker B: [interrupting] [realizing] Warte, das ist ABA-Problem-Territorium!
+Speaker B: [realizing] Warte, das ist ABA-Problem-Territorium!
 Speaker A: [impressed] Genau! Und deswegen nutzen sie...
 
 **4. TRADEOFF-ANALYSE:**
@@ -235,7 +229,7 @@ Speaker A: [analytical] Kommt auf deine Requirements an...
 **5. KOLLABORATIVES PROBLEM-SOLVING:**
 
 Speaker B: [confused] Ich seh nicht wie das über 1000 Nodes skaliert.
-Speaker A: [hesitates] Hmm... [pauses] Es sei denn sie sharden?
+Speaker A: [hesitant] Hmm... Es sei denn sie sharden?
 Speaker B: [curious] Das würde Sinn machen. Lass mich checken...
 
 ===================================
@@ -445,7 +439,7 @@ FINAL CHECKLIST
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
-✅ 3-5 [interrupting] moments (technische Herausforderungen)
+✅ 3-5 moments (technische Herausforderungen)
 ✅ Heavy use of [analytical], [thoughtful], [explaining]
 ✅ Technisch präzise Sprache
 ✅ DU-FORM throughout (NIE "Sie"!)

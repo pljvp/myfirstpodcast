@@ -5,15 +5,15 @@ TOPIC: {topic}
 PROJECT: {project_name}
 
 ===================================
-CRITICAL: ELEVENLABS V3 AUDIO TAGS
+CRITICAL: AUDIO TAG FORMAT
 ===================================
 
 **AUDIO TAGS MUST USE SQUARE BRACKETS!**
 
 ✅ CORRECT FORMAT:
 Speaker A: [energetic] Dit is breaking news!
-Speaker B: [interrupting] [excited] Wacht, vertel meer!
-Speaker A: [fast-paced] Dus, vanochtend...
+Speaker B: [excited] Wacht, vertel meer!
+Speaker A: Dus, vanochtend...
 
 ❌ WRONG FORMAT (DO NOT USE):
 Speaker A: energetic Dit is breaking news!
@@ -21,30 +21,21 @@ Speaker A: (energetic) Dit is breaking news!
 Speaker A: *energetic* Dit is breaking news!
 
 **MULTIPLE TAGS:**
-- Space between: [interrupting] [excited] Precies!
+- Space between: [excited] Precies!
 - Or adjacent: [nervous][hesitant] Ik weet het niet...
 - Always lowercase in brackets
 
 ===================================
-AVAILABLE AUDIO TAGS
+AVAILABLE AUDIO TAGS ({PROVIDER_TAG})
 ===================================
 
-Interruption & Overlap (GEBRUIK VAAK - nieuws is snel!):
-[interrupting] [overlapping] [interjecting]
+**USE THESE TAGS EXTENSIVELY:**
 
-Emotions (Energy-focused):
-[energetic] [excited] [curious] [surprised] [shocked]
-[concerned] [skeptical] [impressed] [urgent]
+{PROVIDER_EMOTION_TAGS}
 
-Reactions:
-[laughs] [gasps] [sighs] [wow] [hmm]
+**EXAMPLES OF PROPER USAGE:**
 
-Delivery (KRITISCH voor nieuws tempo):
-[fast-paced] - Snelle aflevering (VAAK GEBRUIKEN!)
-[urgently] - Breaking news energie
-[dramatically] - Grote onthullingen
-[quietly] - Serieuze momenten
-[loudly] - Nadruk
+{PROVIDER_EXAMPLES}
 
 ===================================
 CHARACTER DYNAMICS
@@ -52,7 +43,7 @@ CHARACTER DYNAMICS
 
 **Speaker A - De Energieke Nieuwspresentator (HOOFDSTEM - VROUWELIJK):**
 - Zelfverzekerd, dynamisch, sterk
-- Snel en energiek: [energetic] [fast-paced]
+- Snel en energiek: [energetic]
 - Brengt nieuws met vaart
 - Geestig waar passend
 - GEEN stereotypen
@@ -129,11 +120,11 @@ STORY ARC - NEWS FORMAT
 **OPENING (15-20 seconds):** BREAKING NEWS ENERGIE
 
 **Start met de kop:**
-Speaker A: [energetic] [fast-paced] Oké, dit moet je gehoord hebben!
+Speaker A: [energetic] Oké, dit moet je gehoord hebben!
 Speaker B: [curious] [excited] Wat dan?
 Speaker A: [urgently] Dus, vanochtend werd aangekondigd...
 
-[Use: [energetic], [fast-paced], [urgently]]
+[Use: [energetic],, [urgently]]
 
 **BUILD (1-2 min):**
 - Wat is er gebeurd?
@@ -184,8 +175,8 @@ Contractions:
 
 **FAST-PACED STYLE:**
 
-Speaker A: [fast-paced] Oké, luister—vanochtend, net na negenen, werd aangekondigd...
-Speaker B: [interrupting] [surprised] Echt waar?
+Speaker A: Oké, luister—vanochtend, net na negenen, werd aangekondigd...
+Speaker B: [surprised] Echt waar?
 Speaker A: [energetic] Ja! En het gekke is...
 
 ===================================
@@ -194,19 +185,19 @@ DYNAMIC DIALOGUE TECHNIQUES
 
 **1. RAPID-FIRE VRAGEN:**
 
-Speaker A: [fast-paced] De cijfers zijn net binnen—
-Speaker B: [interrupting] [urgently] Hoeveel?
+Speaker A: De cijfers zijn net binnen—
+Speaker B: [urgently] Hoeveel?
 Speaker A: [dramatically] 50 procent meer dan verwacht!
 
 **2. GEDEELDE SHOCK:**
 
 Speaker A: [shocked] En raad eens wie dat zei...
 Speaker B: [gasps] Niet—
-Speaker A: [overlapping] [excited] Wel!
+Speaker A: [excited] Wel!
 
 **3. BREAKING NEWS ENERGIE:**
 
-Speaker A: [urgently] [fast-paced] Oké, hou je vast!
+Speaker A: [urgently] Oké, hou je vast!
 Speaker B: [energetic] Wat is er aan de hand?!
 
 **4. SNELLE CONTEXT:**
@@ -221,13 +212,13 @@ ENERGY & PACING
 **SNEL DOOR EN DOOR:**
 
 Hoge energie opening:
-[energetic] [fast-paced] Oké, dit MOET je horen!
+[energetic] Oké, dit MOET je horen!
 
 Behoud momentum:
 [excited] En toen—luister—bleek...
 
 Build naar onthullingen:
-[dramatically] En nu komt het... [pauses] [shocked] 
+[dramatically] En nu komt het... [shocked] 
 
 Hou het strak:
 - Korte zinnen
@@ -409,8 +400,8 @@ FINAL CHECKLIST
 ===================================
 
 ✅ ALL emotion tags use [square brackets]
-✅ 5-10 [interrupting] or [overlapping] moments
-✅ Heavy use of [fast-paced], [energetic], [urgently]
+✅ 5-10 or moments
+✅ Heavy use of, [energetic], [urgently]
 ✅ Casual, conversational tone
 ✅ Recent sources (within 7 days if possible)
 ✅ All 5 W's covered
