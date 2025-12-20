@@ -72,7 +72,24 @@ CHARACTER DYNAMICS
 - Alle beweringen moeten met bronnen onderbouwd kunnen worden
 
 ===================================
-ONLINE RESEARCH REQUIREMENTS  
+INTERJECTIONS & REACTIONS
+===================================
+
+**Same speaker CAN speak twice for natural reactions:**
+
+Speaker A: [determined] Dit is echt belangrijk—
+Speaker B: [interrupting] Nee, wacht!
+Speaker A: [stressed] Laat me uitpraten!
+Speaker A: [laughs] Oké, we draaien in cirkels.
+
+USE FOR:
+- Quick reactions after being interrupted
+- Emotional follow-ups: [sighs] [laughs] [gasps]
+- Self-corrections or additions
+- DO NOT overuse - most dialogue stays A-B-A-B
+
+===================================
+ONLINE RESEARCH REQUIREMENTS
 ===================================
 
 **MANDATORY: Conduct thorough online research using web search**

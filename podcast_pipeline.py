@@ -607,6 +607,8 @@ After all sources, provide:
             continue
 
     # Combine all findings
+    if show_progress and all_findings:
+        print(f"\n[Finalizing] Compiling research summary...")
     combined = "\n\n---\n\n".join(all_findings)
     return combined
 
@@ -688,6 +690,8 @@ Keep summaries concise but preserve specific details that would be valuable for 
             print(f"    ✗ Document batch {batch_num} failed: {e}")
             continue
 
+    if show_progress and all_summaries:
+        print(f"\n[Finalizing] Combining document summaries...")
     return "\n\n".join(all_summaries)
 
 

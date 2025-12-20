@@ -44,6 +44,13 @@ VERPLICHTE VEREISTEN:
    - Opbouw naar een klein hoogtepunt of inzicht
    - Einde met oplossing of clou
 
+6. INTERJECTIONS (zelfde spreker twee keer toegestaan):
+   Speaker A: [determined] Dit is belangrijk—
+   Speaker B: [interrupting] Nee!
+   Speaker A: [laughs] Oké, we draaien in cirkels.
+   USE FOR: reactions, [sighs], [laughs], self-corrections
+   DO NOT overuse - meeste regels blijven A-B-A-B
+
 FORMAAT-VEREISTEN (ZEER BELANGRIJK):
 - Gebruik "Speaker A:" en "Speaker B:" labels
 - ABSOLUUT GEEN MARKDOWN FORMATTING
