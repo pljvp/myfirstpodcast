@@ -2,15 +2,15 @@ Research Context for {project_name}
 
 
 === MUST-INCLUDE SOURCES ===
-(Optional: Specific URLs or sources that MUST be referenced)
+(URLs that MUST be fetched and used as primary sources)
 URLs:
 -
 
-Names/Authors to focus on:
+Authors/Experts to focus on:
 -
 
 === MANDATORY TOPICS ===
-(Topics that MUST be covered - not just suggestions, but requirements)
+(Topics that MUST be covered - these are requirements, not suggestions)
 1.
 2.
 3.
@@ -22,7 +22,7 @@ Examples:
 - Focus on developments from 2000-2025
 - Include both academic and industry perspectives
 - Look for practical applications and case studies
-- Find credible sources (academic papers, industry reports, reputable news, podcasts, youtube, medium)
+- Find credible sources (academic papers, industry reports, reputable news)
 
 === SPECIFIC QUESTIONS TO ANSWER ===
 1.
