@@ -695,7 +695,7 @@ Keep summaries concise but preserve specific details that would be valuable for 
     return "\n\n".join(all_summaries)
 
 
-def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config):
+def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config, research_context=""):
     """
     Generate a structured outline for the podcast.
     Returns outline text that guides script generation.
@@ -720,6 +720,9 @@ TOPIC: {topic}
 STYLE: {style_description}
 LANGUAGE: {language}
 NUMBER OF SECTIONS: {num_sections} (each ~{words_per_section} words)
+
+AUDIENCE & REQUIREMENTS:
+{research_context if research_context else "General audience. No specific requirements."}
 
 RESEARCH FINDINGS:
 {research_summary[:8000] if research_summary else "No web research provided."}
@@ -1274,7 +1277,8 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
         style_description=style_description,
         language=language,
         api_key=api_key,
-        config=config
+        config=config,
+        research_context=research_context
     )
 
     if not outline:

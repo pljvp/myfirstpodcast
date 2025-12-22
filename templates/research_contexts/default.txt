@@ -1,8 +1,19 @@
 Research Context for {project_name}
 
 
-=== RESEARCH INSTRUCTIONS ===
-(Source count is configured in the UI - focus on quality over quantity)
+=== MUST-INCLUDE SOURCES ===
+(Optional: Specific URLs or sources that MUST be referenced)
+URLs:
+-
+
+Names/Authors to focus on:
+-
+
+=== MANDATORY TOPICS ===
+(Topics that MUST be covered - not just suggestions, but requirements)
+1.
+2.
+3.
 
 === CONTEXT AND FOCUS AREAS ===
 (Describe what Claude should focus on during research)
@@ -14,10 +25,16 @@ Examples:
 - Find credible sources (academic papers, industry reports, reputable news, podcasts, youtube, medium)
 
 === SPECIFIC QUESTIONS TO ANSWER ===
-1. 
+1.
 2.
 3.
 
-=== AUDIENCE CONSIDERATIONS ===
-(What level of technical detail? What background can we assume?)
+=== TARGET AUDIENCE ===
+Age group: (e.g., "8-12 year olds", "young professionals", "seniors")
+Prior knowledge: (e.g., "none", "basic understanding", "expert level")
+Tone: (e.g., "playful and fun", "professional", "inspirational")
+Special notes: (e.g., "avoid jargon", "use analogies from sports", "include humor")
+
+=== RESEARCH INSTRUCTIONS ===
+(Source count is configured in the UI - focus on quality over quantity)
 
