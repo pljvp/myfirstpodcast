@@ -565,61 +565,96 @@ def parse_must_include_urls(research_context):
 
 def parse_target_audience(research_context):
     """
-    Extract target audience information from research context.
+    Extract LISTENER audience information from the PODCAST LISTENER PROFILE section.
+    IMPORTANT: This section defines WHO LISTENS, not what the topic is about.
+    A podcast about kids education != a podcast FOR kids.
+
     Returns dict with age_group, prior_knowledge, tone, special_notes, and is_child_audience flag.
+    Defaults to adult audience if no listener age specified.
     """
+    # Default to adult audience
     audience_info = {
-        'age_group': None,
-        'prior_knowledge': None,
+        'age_group': 'adults',
+        'prior_knowledge': 'general',
         'tone': None,
         'special_notes': None,
         'is_child_audience': False,
-        'min_age': None,
-        'max_age': None
+        'is_default_adult': True,  # Flag to indicate default was used
+        'min_age': 25,
+        'max_age': 55
     }
 
-    # Find the TARGET AUDIENCE section
+    # Find the PODCAST LISTENER PROFILE section (or legacy TARGET AUDIENCE)
     audience_match = re.search(
-        r'=== TARGET AUDIENCE ===\s*(.*?)(?:===|\Z)',
+        r'=== PODCAST LISTENER PROFILE ===\s*(.*?)(?:===|\Z)',
         research_context,
         re.DOTALL | re.IGNORECASE
     )
 
+    # Fallback to legacy section name
     if not audience_match:
-        return audience_info
+        audience_match = re.search(
+            r'=== TARGET AUDIENCE ===\s*(.*?)(?:===|\Z)',
+            research_context,
+            re.DOTALL | re.IGNORECASE
+        )
+
+    if not audience_match:
+        return audience_info  # Return adult defaults
 
     audience_section = audience_match.group(1)
 
-    # Extract age group
-    age_match = re.search(r'Age group:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+    def is_placeholder(text):
+        """Check if text is just a placeholder/example"""
+        if not text:
+            return True
+        text = text.strip()
+        # Check for empty, placeholder patterns, or example text
+        if text in ['', '-', '(', ')']:
+            return True
+        if text.startswith('(e.g.,') or text.startswith('(eg.'):
+            return True
+        if text.startswith('e.g.,') or text.startswith('eg.'):
+            return True
+        return False
+
+    # Extract listener age group (try both field names)
+    age_match = re.search(r'Listener age group:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+    if not age_match:
+        age_match = re.search(r'Age group:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+
     if age_match:
         age_text = age_match.group(1).strip()
-        audience_info['age_group'] = age_text
 
-        # Try to extract numeric ages
-        age_numbers = re.findall(r'\d+', age_text)
-        if age_numbers:
-            ages = [int(a) for a in age_numbers]
-            audience_info['min_age'] = min(ages)
-            audience_info['max_age'] = max(ages) if len(ages) > 1 else min(ages)
+        # Skip if it's just placeholder text
+        if not is_placeholder(age_text):
+            audience_info['age_group'] = age_text
+            audience_info['is_default_adult'] = False
 
-            # Determine if child audience (under 16)
-            if audience_info['max_age'] and audience_info['max_age'] <= 16:
-                audience_info['is_child_audience'] = True
+            # Try to extract numeric ages
+            age_numbers = re.findall(r'\d+', age_text)
+            if age_numbers:
+                ages = [int(a) for a in age_numbers]
+                audience_info['min_age'] = min(ages)
+                audience_info['max_age'] = max(ages) if len(ages) > 1 else min(ages)
+
+                # Determine if child audience (max age 16 or under)
+                if audience_info['max_age'] and audience_info['max_age'] <= 16:
+                    audience_info['is_child_audience'] = True
 
     # Extract prior knowledge
     knowledge_match = re.search(r'Prior knowledge:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
-    if knowledge_match:
+    if knowledge_match and not is_placeholder(knowledge_match.group(1)):
         audience_info['prior_knowledge'] = knowledge_match.group(1).strip()
 
     # Extract tone
     tone_match = re.search(r'Tone:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
-    if tone_match:
+    if tone_match and not is_placeholder(tone_match.group(1)):
         audience_info['tone'] = tone_match.group(1).strip()
 
     # Extract special notes
     notes_match = re.search(r'Special notes:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
-    if notes_match:
+    if notes_match and not is_placeholder(notes_match.group(1)):
         audience_info['special_notes'] = notes_match.group(1).strip()
 
     return audience_info
@@ -878,26 +913,31 @@ def generate_outline(topic, duration, word_count, research_summary, doc_summary,
 
     client = Anthropic(api_key=api_key)
 
-    # Parse target audience from research context
-    audience_info = parse_target_audience(research_context) if research_context else {}
+    # Parse target audience from research context (defaults to adults if not specified)
+    audience_info = parse_target_audience(research_context) if research_context else {
+        'age_group': 'adults', 'is_default_adult': True, 'is_child_audience': False,
+        'prior_knowledge': 'general', 'tone': None, 'special_notes': None,
+        'min_age': 25, 'max_age': 55
+    }
 
     # Build audience-specific instructions
     audience_instructions = ""
     if audience_info.get('is_child_audience'):
+        # Explicit child listener audience (from PODCAST LISTENER PROFILE section)
         age_group = audience_info.get('age_group', 'children')
         min_age = audience_info.get('min_age', 8)
         max_age = audience_info.get('max_age', 12)
 
         if show_progress:
-            print(f"    [AUDIENCE] Detected child audience: {age_group}")
+            print(f"    [LISTENERS] Child audience: {age_group} (ages {min_age}-{max_age})")
 
         audience_instructions = f"""
-=== CRITICAL: CHILD AUDIENCE ADAPTATION ===
-Target audience: {age_group}
+=== CRITICAL: CHILD LISTENER ADAPTATION ===
+PODCAST LISTENERS: {age_group} (ages {min_age}-{max_age})
 
 MANDATORY REQUIREMENTS:
-1. Write the podcast TO {age_group}, NOT ABOUT them
-   - The hosts speak DIRECTLY to children as their audience
+1. Write the podcast TO these listeners, NOT ABOUT them
+   - The hosts speak DIRECTLY to {age_group} as their audience
    - NOT: "Let's discuss how children can learn about..."
    - YES: "Hey! Have you ever wondered why..."
 
@@ -918,19 +958,27 @@ MANDATORY REQUIREMENTS:
    - Use storytelling over lecturing
    - Include fun facts that kids would want to share with friends
    - Avoid scary, violent, or anxiety-inducing content
-=== END CHILD AUDIENCE REQUIREMENTS ===
+=== END CHILD LISTENER REQUIREMENTS ===
 """
-    elif audience_info.get('age_group'):
-        audience_instructions = f"""
-=== AUDIENCE TARGETING ===
-Target: {audience_info.get('age_group')}
-Prior knowledge: {audience_info.get('prior_knowledge', 'general')}
-Tone: {audience_info.get('tone', 'informative')}
-Notes: {audience_info.get('special_notes', 'none')}
+    elif not audience_info.get('is_default_adult'):
+        # Explicit non-child audience specified
+        if show_progress:
+            print(f"    [LISTENERS] Target audience: {audience_info.get('age_group')}")
 
-Adapt vocabulary, pacing, and examples to match this specific audience.
-=== END AUDIENCE TARGETING ===
+        audience_instructions = f"""
+=== LISTENER TARGETING ===
+Podcast listeners: {audience_info.get('age_group')}
+Prior knowledge: {audience_info.get('prior_knowledge', 'general')}
+Tone: {audience_info.get('tone', 'conversational') or 'conversational'}
+Notes: {audience_info.get('special_notes', 'none') or 'none'}
+
+Adapt vocabulary, pacing, and examples to match these listeners.
+=== END LISTENER TARGETING ===
 """
+    else:
+        # Default adult audience
+        if show_progress:
+            print(f"    [LISTENERS] Default: general adult audience")
 
     # Calculate sections based on word count
     words_per_call = config.get('script_generation', {}).get('words_per_call', 2000)
@@ -1022,24 +1070,27 @@ def generate_script_section(section_num, total_sections, outline, previous_secti
 
     client = Anthropic(api_key=api_key)
 
-    # Parse target audience from research context
-    audience_info = parse_target_audience(research_context) if research_context else {}
+    # Parse target audience from research context (defaults to adults)
+    audience_info = parse_target_audience(research_context) if research_context else {
+        'age_group': 'adults', 'is_default_adult': True, 'is_child_audience': False
+    }
 
     # Build audience-specific vocabulary constraints
     audience_constraints = ""
     if audience_info.get('is_child_audience'):
+        # Explicit child listener audience
         age_group = audience_info.get('age_group', 'children')
         min_age = audience_info.get('min_age', 8)
         max_age = audience_info.get('max_age', 12)
 
         audience_constraints = f"""
-=== CHILD AUDIENCE VOCABULARY CONSTRAINTS ===
-Target: {age_group}
+=== CHILD LISTENER VOCABULARY CONSTRAINTS ===
+LISTENERS: {age_group} (ages {min_age}-{max_age})
 
 MANDATORY WRITING RULES:
-1. Write TO children, NOT about children
-   - Speakers address children directly as listeners
-   - Use "you" and "we" to include children
+1. Write TO these listeners, NOT about children in general
+   - Speakers address listeners directly
+   - Use "you" and "we" to include them
 
 2. Vocabulary for ages {min_age}-{max_age}:
    - Simple, concrete words only
@@ -1056,14 +1107,16 @@ MANDATORY WRITING RULES:
    - Keep energy playful but not overwhelming
 === END VOCABULARY CONSTRAINTS ===
 """
-    elif audience_info.get('age_group'):
+    elif not audience_info.get('is_default_adult'):
+        # Explicit non-child audience
         audience_constraints = f"""
-=== AUDIENCE ADAPTATION ===
-Target: {audience_info.get('age_group')}
-Tone: {audience_info.get('tone', 'conversational')}
-Adapt vocabulary and examples to this audience.
-=== END AUDIENCE ADAPTATION ===
+=== LISTENER ADAPTATION ===
+Listeners: {audience_info.get('age_group')}
+Tone: {audience_info.get('tone', 'conversational') or 'conversational'}
+Adapt vocabulary and examples to these listeners.
+=== END LISTENER ADAPTATION ===
 """
+    # No constraints for default adult audience - use standard conversational style
 
     # Context from previous section for continuity
     continuity_context = ""

@@ -29,8 +29,12 @@ Examples:
 2.
 3.
 
-=== TARGET AUDIENCE ===
-Age group: (e.g., "8-12 year olds", "young professionals", "seniors")
+=== PODCAST LISTENER PROFILE ===
+(WHO is listening to this podcast? This defines the audience - NOT the topic subject)
+(NOTE: A podcast ABOUT children's education is different from a podcast FOR children)
+(If left empty, defaults to: general adult audience)
+
+Listener age group: (e.g., "8-12", "teenagers", "young adults", "30-50", "seniors")
 Prior knowledge: (e.g., "none", "basic understanding", "expert level")
 Tone: (e.g., "playful and fun", "professional", "inspirational")
 Special notes: (e.g., "avoid jargon", "use analogies from sports", "include humor")
