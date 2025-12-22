@@ -722,7 +722,7 @@ class CartesiaProvider:
             for idx, next_segment in enumerate(audio_segments[1:], 2):
                 if idx % 50 == 0 or idx == total_chunks:
                     print(f"\r[Merging] Joined {idx}/{total_chunks} segments...", end="", flush=True)
-                combined_audio_segment = combined_audio_segment + next_segment
+                combined_audio_segment = combined_audio_segment.append(next_segment, crossfade=10)
 
             print()  # New line after progress
 
