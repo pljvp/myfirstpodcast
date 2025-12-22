@@ -33,11 +33,14 @@ Examples:
 (WHO is listening to this podcast? This defines the audience - NOT the topic subject)
 (NOTE: A podcast ABOUT children's education is different from a podcast FOR children)
 (If left empty, defaults to: general adult audience)
+(LISTENER AGE GROUP examples: "8-12", "teenagers", "young adults", "30-50", "seniors")
+(TONE examples: "playful and fun", "professional", "inspirational")
+(SPECIAL NOTES examples: "avoid jargon", "use analogies from sports", "include humor")
 
-Listener age group: (e.g., "8-12", "teenagers", "young adults", "30-50", "seniors")
-Prior knowledge: (e.g., "none", "basic understanding", "expert level")
-Tone: (e.g., "playful and fun", "professional", "inspirational")
-Special notes: (e.g., "avoid jargon", "use analogies from sports", "include humor")
+Listener age group:
+Prior knowledge:
+Tone:
+Special notes:
 
 === RESEARCH INSTRUCTIONS ===
 (Source count is configured in the UI - focus on quality over quantity)
