@@ -2320,13 +2320,12 @@ def main():
     gen_config = config.get('script_generation', {})
     if gen_config.get('enable_multi_call', False) and not is_test_mode:
         default_sources = gen_config.get('default_web_sources', 8)
-        max_sources = gen_config.get('max_web_sources', 20)
         print(f"\nWeb research sources (more sources = more thorough, more API calls)")
-        source_input = input(f"Number of sources to research (1-{max_sources}, default {default_sources}): ").strip()
+        source_input = input(f"Number of sources to research (default {default_sources}): ").strip()
         if source_input:
             try:
                 web_source_count = int(source_input)
-                web_source_count = max(1, min(max_sources, web_source_count))
+                web_source_count = max(1, web_source_count)  # minimum 1, no max cap
             except ValueError:
                 web_source_count = default_sources
         else:

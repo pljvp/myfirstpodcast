@@ -693,7 +693,7 @@ class CartesiaProvider:
             import io
 
             total_chunks = len(audio_chunks)
-            print(f"\n[Merging] Processing {total_chunks} audio segments...")
+            print(f"\n[Merging] Processing {total_chunks} audio segments...", flush=True)
 
             # Convert each chunk to AudioSegment first
             audio_segments = []
@@ -717,7 +717,7 @@ class CartesiaProvider:
             print()  # New line after progress
 
             # Concatenate with 10ms crossfade to eliminate clicks
-            print(f"[Merging] Joining segments with crossfade...")
+            print(f"[Merging] Joining segments with crossfade...", flush=True)
             combined_audio_segment = audio_segments[0]
             for idx, next_segment in enumerate(audio_segments[1:], 2):
                 if idx % 50 == 0 or idx == total_chunks:
@@ -727,7 +727,7 @@ class CartesiaProvider:
             print()  # New line after progress
 
             # Export to MP3
-            print(f"[Finalizing] Exporting to MP3...")
+            print(f"[Finalizing] Exporting to MP3...", flush=True)
             mp3_buffer = io.BytesIO()
             combined_audio_segment.export(mp3_buffer, format="mp3", bitrate="192k")
             combined_audio = mp3_buffer.getvalue()
