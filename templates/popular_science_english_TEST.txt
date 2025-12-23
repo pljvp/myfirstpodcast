@@ -44,6 +44,13 @@ MANDATORY REQUIREMENTS:
    - Build to a small climax or realization
    - End with resolution or punchline
 
+6. INTERJECTIONS (same speaker twice allowed):
+   Speaker A: [determined] This is important—
+   Speaker B: [interrupting] No!
+   Speaker A: [laughs] Okay, we're going in circles.
+   USE FOR: reactions, [sighs], [laughs], self-corrections
+   DO NOT overuse - most lines stay A-B-A-B
+
 FORMAT REQUIREMENTS (VERY IMPORTANT):
 - Use "Speaker A:" and "Speaker B:" labels
 - ABSOLUTELY NO MARKDOWN FORMATTING

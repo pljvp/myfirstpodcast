@@ -1,8 +1,19 @@
 Research Context for {project_name}
 
 
-=== RESEARCH INSTRUCTIONS ===
-(Source count is configured in the UI - focus on quality over quantity)
+=== MUST-INCLUDE SOURCES ===
+(URLs that MUST be fetched and used as primary sources)
+URLs:
+-
+
+Authors/Experts to focus on:
+-
+
+=== MANDATORY TOPICS ===
+(Topics that MUST be covered - these are requirements, not suggestions)
+1.
+2.
+3.
 
 === CONTEXT AND FOCUS AREAS ===
 (Describe what Claude should focus on during research)
@@ -11,13 +22,26 @@ Examples:
 - Focus on developments from 2000-2025
 - Include both academic and industry perspectives
 - Look for practical applications and case studies
-- Find credible sources (academic papers, industry reports, reputable news, podcasts, youtube, medium)
+- Find credible sources (academic papers, industry reports, reputable news)
 
 === SPECIFIC QUESTIONS TO ANSWER ===
-1. 
+1.
 2.
 3.
 
-=== AUDIENCE CONSIDERATIONS ===
-(What level of technical detail? What background can we assume?)
+=== PODCAST LISTENER PROFILE ===
+(WHO is listening to this podcast? This defines the audience - NOT the topic subject)
+(NOTE: A podcast ABOUT children's education is different from a podcast FOR children)
+(If left empty, defaults to: general adult audience)
+(LISTENER AGE GROUP examples: "8-12", "teenagers", "young adults", "30-50", "seniors")
+(TONE examples: "playful and fun", "professional", "inspirational")
+(SPECIAL NOTES examples: "avoid jargon", "use analogies from sports", "include humor")
+
+Listener age group:
+Prior knowledge:
+Tone:
+Special notes:
+
+=== RESEARCH INSTRUCTIONS ===
+(Source count is configured in the UI - focus on quality over quantity)
 

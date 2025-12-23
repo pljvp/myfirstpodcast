@@ -685,22 +685,26 @@ class CartesiaProvider:
                 except Exception as e:
                     print(f"[ERROR] {type(e).__name__}: {e}")
                     return None, 0
-        
+
         # Combine audio chunks with crossfading to eliminate clicks
         if audio_chunks:
             import numpy as np
             from pydub import AudioSegment
             import io
-            
+
+            total_chunks = len(audio_chunks)
+            print(f"\n[Merging] Processing {total_chunks} audio segments...", flush=True)
+
             # Convert each chunk to AudioSegment first
             audio_segments = []
-            for chunk in audio_chunks:
+            for idx, chunk in enumerate(audio_chunks, 1):
+                print(f"\r[Merging] Converting segment {idx}/{total_chunks}...", end="", flush=True)
                 # Convert raw bytes to float32 numpy array
                 pcm_float_array = np.frombuffer(chunk, dtype=np.float32)
-                
+
                 # Convert float32 to int16
                 pcm_int16_array = (pcm_float_array * 32767).astype(np.int16)
-                
+
                 # Create AudioSegment
                 segment = AudioSegment(
                     data=pcm_int16_array.tobytes(),
@@ -709,19 +713,27 @@ class CartesiaProvider:
                     channels=1
                 )
                 audio_segments.append(segment)
-            
+
+            print()  # New line after progress
+
             # Concatenate with 10ms crossfade to eliminate clicks
+            print(f"[Merging] Joining segments with crossfade...", flush=True)
             combined_audio_segment = audio_segments[0]
-            for next_segment in audio_segments[1:]:
+            for idx, next_segment in enumerate(audio_segments[1:], 2):
+                if idx % 50 == 0 or idx == total_chunks:
+                    print(f"\r[Merging] Joined {idx}/{total_chunks} segments...", end="", flush=True)
                 combined_audio_segment = combined_audio_segment.append(next_segment, crossfade=10)
-            
+
+            print()  # New line after progress
+
             # Export to MP3
+            print(f"[Finalizing] Exporting to MP3...", flush=True)
             mp3_buffer = io.BytesIO()
             combined_audio_segment.export(mp3_buffer, format="mp3", bitrate="192k")
             combined_audio = mp3_buffer.getvalue()
-            
+
             return combined_audio, total_chars
-                
+
             return None, 0
     
     def add_silence_padding(self, audio_bytes, intro_ms=1300, outro_ms=500):

@@ -539,9 +539,184 @@ def display_generation_plan(duration, doc_count, web_source_count, config):
     return confirm != 'n'
 
 
+def parse_must_include_urls(research_context):
+    """
+    Extract URLs from the MUST-INCLUDE SOURCES section of research context.
+    Returns list of URLs to fetch.
+    """
+    urls = []
+
+    # Find the MUST-INCLUDE SOURCES section
+    must_include_match = re.search(
+        r'=== MUST-INCLUDE SOURCES ===.*?(?:URLs?:)(.*?)(?:Authors?|Experts?|===|\Z)',
+        research_context,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if must_include_match:
+        urls_section = must_include_match.group(1)
+        # Extract URLs using regex
+        url_pattern = r'https?://[^\s\n<>"\')]+(?<![.,;!?)\]])'
+        found_urls = re.findall(url_pattern, urls_section)
+        urls.extend(found_urls)
+
+    return urls
+
+
+def parse_target_audience(research_context):
+    """
+    Extract LISTENER audience information from the PODCAST LISTENER PROFILE section.
+    IMPORTANT: This section defines WHO LISTENS, not what the topic is about.
+    A podcast about kids education != a podcast FOR kids.
+
+    Returns dict with age_group, prior_knowledge, tone, special_notes, and is_child_audience flag.
+    Defaults to adult audience if no listener age specified.
+    """
+    # Default to adult audience
+    audience_info = {
+        'age_group': 'adults',
+        'prior_knowledge': 'general',
+        'tone': None,
+        'special_notes': None,
+        'is_child_audience': False,
+        'is_default_adult': True,  # Flag to indicate default was used
+        'min_age': 25,
+        'max_age': 55
+    }
+
+    # Find the PODCAST LISTENER PROFILE section (or legacy TARGET AUDIENCE)
+    audience_match = re.search(
+        r'=== PODCAST LISTENER PROFILE ===\s*(.*?)(?:===|\Z)',
+        research_context,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    # Fallback to legacy section name
+    if not audience_match:
+        audience_match = re.search(
+            r'=== TARGET AUDIENCE ===\s*(.*?)(?:===|\Z)',
+            research_context,
+            re.DOTALL | re.IGNORECASE
+        )
+
+    if not audience_match:
+        return audience_info  # Return adult defaults
+
+    audience_section = audience_match.group(1)
+
+    def is_placeholder(text):
+        """Check if text is just a placeholder/example"""
+        if not text:
+            return True
+        text = text.strip()
+        # Check for empty, placeholder patterns, or example text
+        if text in ['', '-', '(', ')']:
+            return True
+        if text.startswith('(e.g.,') or text.startswith('(eg.'):
+            return True
+        if text.startswith('e.g.,') or text.startswith('eg.'):
+            return True
+        return False
+
+    # Extract listener age group (try both field names)
+    age_match = re.search(r'Listener age group:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+    if not age_match:
+        age_match = re.search(r'Age group:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+
+    if age_match:
+        age_text = age_match.group(1).strip()
+
+        # Skip if it's just placeholder text
+        if not is_placeholder(age_text):
+            audience_info['age_group'] = age_text
+            audience_info['is_default_adult'] = False
+
+            # Try to extract numeric ages
+            age_numbers = re.findall(r'\d+', age_text)
+            if age_numbers:
+                ages = [int(a) for a in age_numbers]
+                audience_info['min_age'] = min(ages)
+                audience_info['max_age'] = max(ages) if len(ages) > 1 else min(ages)
+
+                # Determine if child audience (max age 16 or under)
+                if audience_info['max_age'] and audience_info['max_age'] <= 16:
+                    audience_info['is_child_audience'] = True
+
+    # Extract prior knowledge
+    knowledge_match = re.search(r'Prior knowledge:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+    if knowledge_match and not is_placeholder(knowledge_match.group(1)):
+        audience_info['prior_knowledge'] = knowledge_match.group(1).strip()
+
+    # Extract tone
+    tone_match = re.search(r'Tone:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+    if tone_match and not is_placeholder(tone_match.group(1)):
+        audience_info['tone'] = tone_match.group(1).strip()
+
+    # Extract special notes
+    notes_match = re.search(r'Special notes:\s*(.+?)(?:\n|$)', audience_section, re.IGNORECASE)
+    if notes_match and not is_placeholder(notes_match.group(1)):
+        audience_info['special_notes'] = notes_match.group(1).strip()
+
+    return audience_info
+
+
+def fetch_must_include_sources(urls, show_progress=True):
+    """
+    Fetch content from MUST-INCLUDE URLs.
+    Returns formatted content string.
+    """
+    if not urls:
+        return ""
+
+    if show_progress:
+        print(f"\n[PRE-RESEARCH] Fetching {len(urls)} must-include source(s)...")
+
+    fetched_content = []
+
+    for i, url in enumerate(urls, 1):
+        if show_progress:
+            print(f"    Fetching [{i}/{len(urls)}]: {url[:60]}...")
+
+        try:
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (compatible; PodcastResearch/1.0)'
+            }
+            response = requests.get(url, headers=headers, timeout=15)
+            response.raise_for_status()
+
+            # Basic HTML to text conversion
+            content = response.text
+            # Remove script and style tags
+            content = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.DOTALL | re.IGNORECASE)
+            content = re.sub(r'<style[^>]*>.*?</style>', '', content, flags=re.DOTALL | re.IGNORECASE)
+            # Remove HTML tags but keep text
+            content = re.sub(r'<[^>]+>', ' ', content)
+            # Clean up whitespace
+            content = re.sub(r'\s+', ' ', content).strip()
+            # Limit to reasonable length (first ~8000 chars)
+            content = content[:8000]
+
+            fetched_content.append(f"""### MUST-INCLUDE SOURCE: {url}
+CONTENT:
+{content}
+""")
+            if show_progress:
+                print(f"    ✓ Fetched ({len(content)} chars)")
+
+        except Exception as e:
+            if show_progress:
+                print(f"    ✗ Failed to fetch: {e}")
+            fetched_content.append(f"""### MUST-INCLUDE SOURCE: {url}
+STATUS: Failed to fetch - {e}
+""")
+
+    return "\n\n".join(fetched_content)
+
+
 def research_web_sources(topic, research_context, source_count, api_key, config):
     """
     Conduct web research in multiple calls if needed.
+    First fetches any MUST-INCLUDE URLs, then conducts broader research.
     Returns combined research findings.
     """
     gen_config = config.get('script_generation', {})
@@ -550,9 +725,23 @@ def research_web_sources(topic, research_context, source_count, api_key, config)
 
     client = Anthropic(api_key=api_key)
 
+    # PHASE 0: Fetch MUST-INCLUDE URLs first
+    must_include_urls = parse_must_include_urls(research_context)
+    prefetched_content = ""
+    if must_include_urls:
+        prefetched_content = fetch_must_include_sources(must_include_urls, show_progress)
+
     total_calls = math.ceil(source_count / sources_per_call)
     all_findings = []
     all_sources = []
+
+    # Build the mandatory focus instruction
+    mandatory_instruction = ""
+    if "MANDATORY TOPICS" in research_context:
+        mandatory_instruction = """
+CRITICAL: The MANDATORY TOPICS listed below are REQUIREMENTS, not suggestions.
+You MUST find sources that SPECIFICALLY address each mandatory topic.
+Do NOT return generic sources - focus EXCLUSIVELY on the specified topics and authors."""
 
     for call_num in range(1, total_calls + 1):
         sources_this_call = min(sources_per_call, source_count - (call_num - 1) * sources_per_call)
@@ -560,17 +749,33 @@ def research_web_sources(topic, research_context, source_count, api_key, config)
         if show_progress:
             print(f"\n[RESEARCH] Call {call_num}/{total_calls}: Finding {sources_this_call} sources...")
 
+        # Build the prompt with pre-fetched content if available
+        prefetch_section = ""
+        if prefetched_content and call_num == 1:
+            prefetch_section = f"""
+=== PRE-FETCHED MUST-INCLUDE SOURCES ===
+The following sources have been pre-fetched and MUST be summarized first.
+Extract all key insights from these before searching for additional sources.
+
+{prefetched_content}
+
+=== END PRE-FETCHED SOURCES ===
+"""
+
         prompt = f"""You are a research assistant. Search the web and find {sources_this_call} high-quality, recent sources about:
 
 TOPIC: {topic}
+{mandatory_instruction}
 
 RESEARCH FOCUS:
 {research_context}
+{prefetch_section}
 
 For each source:
 1. Search for recent (2024-2025 preferred) authoritative content
-2. Extract key insights, facts, statistics, and expert opinions
-3. Note any controversies or different perspectives
+2. Focus EXCLUSIVELY on the mandatory topics and specified authors/experts
+3. Extract key insights, facts, statistics, and expert opinions
+4. Note any controversies or different perspectives
 
 OUTPUT FORMAT:
 ### SOURCE 1: [Title]
@@ -607,6 +812,8 @@ After all sources, provide:
             continue
 
     # Combine all findings
+    if show_progress and all_findings:
+        print(f"\n[Finalizing] Compiling research summary...")
     combined = "\n\n---\n\n".join(all_findings)
     return combined
 
@@ -688,13 +895,16 @@ Keep summaries concise but preserve specific details that would be valuable for 
             print(f"    ✗ Document batch {batch_num} failed: {e}")
             continue
 
+    if show_progress and all_summaries:
+        print(f"\n[Finalizing] Combining document summaries...")
     return "\n\n".join(all_summaries)
 
 
-def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config):
+def generate_outline(topic, duration, word_count, research_summary, doc_summary, style_description, language, api_key, config, research_context=""):
     """
     Generate a structured outline for the podcast.
     Returns outline text that guides script generation.
+    Auto-detects audience from research_context and adapts accordingly.
     """
     show_progress = config.get('script_generation', {}).get('show_progress', True)
 
@@ -702,6 +912,73 @@ def generate_outline(topic, duration, word_count, research_summary, doc_summary,
         print(f"\n[OUTLINE] Generating story arc and section breakdown...")
 
     client = Anthropic(api_key=api_key)
+
+    # Parse target audience from research context (defaults to adults if not specified)
+    audience_info = parse_target_audience(research_context) if research_context else {
+        'age_group': 'adults', 'is_default_adult': True, 'is_child_audience': False,
+        'prior_knowledge': 'general', 'tone': None, 'special_notes': None,
+        'min_age': 25, 'max_age': 55
+    }
+
+    # Build audience-specific instructions
+    audience_instructions = ""
+    if audience_info.get('is_child_audience'):
+        # Explicit child listener audience (from PODCAST LISTENER PROFILE section)
+        age_group = audience_info.get('age_group', 'children')
+        min_age = audience_info.get('min_age', 8)
+        max_age = audience_info.get('max_age', 12)
+
+        if show_progress:
+            print(f"    [LISTENERS] Child audience: {age_group} (ages {min_age}-{max_age})")
+
+        audience_instructions = f"""
+=== CRITICAL: CHILD LISTENER ADAPTATION ===
+PODCAST LISTENERS: {age_group} (ages {min_age}-{max_age})
+
+MANDATORY REQUIREMENTS:
+1. Write the podcast TO these listeners, NOT ABOUT them
+   - The hosts speak DIRECTLY to {age_group} as their audience
+   - NOT: "Let's discuss how children can learn about..."
+   - YES: "Hey! Have you ever wondered why..."
+
+2. VOCABULARY CONSTRAINTS for ages {min_age}-{max_age}:
+   - Use simple, concrete words (avoid abstract concepts)
+   - Maximum sentence length: 15-20 words
+   - Explain any complex terms immediately with relatable examples
+   - Use analogies from school, games, family, sports, animals
+
+3. ENGAGEMENT STYLE:
+   - Include interactive moments ("Can you guess what happened next?")
+   - Use humor appropriate for {min_age}-{max_age} year olds
+   - Share relatable scenarios from a child's daily life
+   - Keep energy high but not overwhelming
+
+4. CONTENT ADAPTATION:
+   - Break complex ideas into small, digestible pieces
+   - Use storytelling over lecturing
+   - Include fun facts that kids would want to share with friends
+   - Avoid scary, violent, or anxiety-inducing content
+=== END CHILD LISTENER REQUIREMENTS ===
+"""
+    elif not audience_info.get('is_default_adult'):
+        # Explicit non-child audience specified
+        if show_progress:
+            print(f"    [LISTENERS] Target audience: {audience_info.get('age_group')}")
+
+        audience_instructions = f"""
+=== LISTENER TARGETING ===
+Podcast listeners: {audience_info.get('age_group')}
+Prior knowledge: {audience_info.get('prior_knowledge', 'general')}
+Tone: {audience_info.get('tone', 'conversational') or 'conversational'}
+Notes: {audience_info.get('special_notes', 'none') or 'none'}
+
+Adapt vocabulary, pacing, and examples to match these listeners.
+=== END LISTENER TARGETING ===
+"""
+    else:
+        # Default adult audience
+        if show_progress:
+            print(f"    [LISTENERS] Default: general adult audience")
 
     # Calculate sections based on word count
     words_per_call = config.get('script_generation', {}).get('words_per_call', 2000)
@@ -716,6 +993,10 @@ TOPIC: {topic}
 STYLE: {style_description}
 LANGUAGE: {language}
 NUMBER OF SECTIONS: {num_sections} (each ~{words_per_section} words)
+{audience_instructions}
+
+AUDIENCE & REQUIREMENTS:
+{research_context if research_context else "General audience. No specific requirements."}
 
 RESEARCH FINDINGS:
 {research_summary[:8000] if research_summary else "No web research provided."}
@@ -773,13 +1054,14 @@ Be specific. Include actual facts from the research. This outline will guide mul
 
 
 def generate_script_section(section_num, total_sections, outline, previous_section_end,
-                           target_words, style_template, language, api_key, config, provider='elevenlabs'):
+                           target_words, style_template, language, api_key, config, provider='elevenlabs', research_context=""):
     """
     Generate a single section of the podcast script.
     Returns the section text.
 
     Args:
         provider: 'elevenlabs' or 'cartesia' - determines emotion tag instructions
+        research_context: original research context for audience targeting
     """
     show_progress = config.get('script_generation', {}).get('show_progress', True)
 
@@ -787,6 +1069,54 @@ def generate_script_section(section_num, total_sections, outline, previous_secti
         print(f"\n[SCRIPT] Generating section {section_num}/{total_sections} (~{target_words} words)...")
 
     client = Anthropic(api_key=api_key)
+
+    # Parse target audience from research context (defaults to adults)
+    audience_info = parse_target_audience(research_context) if research_context else {
+        'age_group': 'adults', 'is_default_adult': True, 'is_child_audience': False
+    }
+
+    # Build audience-specific vocabulary constraints
+    audience_constraints = ""
+    if audience_info.get('is_child_audience'):
+        # Explicit child listener audience
+        age_group = audience_info.get('age_group', 'children')
+        min_age = audience_info.get('min_age', 8)
+        max_age = audience_info.get('max_age', 12)
+
+        audience_constraints = f"""
+=== CHILD LISTENER VOCABULARY CONSTRAINTS ===
+LISTENERS: {age_group} (ages {min_age}-{max_age})
+
+MANDATORY WRITING RULES:
+1. Write TO these listeners, NOT about children in general
+   - Speakers address listeners directly
+   - Use "you" and "we" to include them
+
+2. Vocabulary for ages {min_age}-{max_age}:
+   - Simple, concrete words only
+   - Maximum 15-20 words per sentence
+   - Explain complex terms with kid-friendly examples
+
+3. Speaker adaptation:
+   - Speaker A: Enthusiastic teacher/friend who explains clearly
+   - Speaker B: Curious friend who asks what kids would ask
+
+4. Engagement:
+   - Include moments like "Can you guess?" or "Have you ever noticed?"
+   - Use fun facts kids would share with friends
+   - Keep energy playful but not overwhelming
+=== END VOCABULARY CONSTRAINTS ===
+"""
+    elif not audience_info.get('is_default_adult'):
+        # Explicit non-child audience
+        audience_constraints = f"""
+=== LISTENER ADAPTATION ===
+Listeners: {audience_info.get('age_group')}
+Tone: {audience_info.get('tone', 'conversational') or 'conversational'}
+Adapt vocabulary and examples to these listeners.
+=== END LISTENER ADAPTATION ===
+"""
+    # No constraints for default adult audience - use standard conversational style
 
     # Context from previous section for continuity
     continuity_context = ""
@@ -810,6 +1140,7 @@ Continue naturally from this point. Do NOT repeat content.
 
 MINIMUM: {target_words} words for this section (do not write less)
 LANGUAGE: {language}
+{audience_constraints}
 
 {section_instruction}
 
@@ -870,13 +1201,14 @@ Generate the script section now (start directly with "Speaker A:" or "Speaker B:
         return None, None
 
 
-def generate_script_multi_call(topic, duration, word_count, outline, style_template, language, api_key, config, provider='elevenlabs'):
+def generate_script_multi_call(topic, duration, word_count, outline, style_template, language, api_key, config, provider='elevenlabs', research_context=""):
     """
     Orchestrate multi-call script generation using the outline.
     Returns complete script text.
 
     Args:
         provider: 'elevenlabs' or 'cartesia' - determines emotion tag instructions
+        research_context: original research context for audience targeting
     """
     gen_config = config.get('script_generation', {})
     words_per_call = gen_config.get('words_per_call', 2000)
@@ -905,7 +1237,8 @@ def generate_script_multi_call(topic, duration, word_count, outline, style_templ
             language=language,
             api_key=api_key,
             config=config,
-            provider=provider
+            provider=provider,
+            research_context=research_context
         )
 
         if not section_text:
@@ -1270,7 +1603,8 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
         style_description=style_description,
         language=language,
         api_key=api_key,
-        config=config
+        config=config,
+        research_context=research_context
     )
 
     if not outline:
@@ -1299,7 +1633,8 @@ def run_multi_call_generation(topic, duration, word_count, research_context, sou
         language=language,
         api_key=api_key,
         config=config,
-        provider=provider
+        provider=provider,
+        research_context=research_context
     )
 
     if not sections:
@@ -2316,13 +2651,12 @@ def main():
     gen_config = config.get('script_generation', {})
     if gen_config.get('enable_multi_call', False) and not is_test_mode:
         default_sources = gen_config.get('default_web_sources', 8)
-        max_sources = gen_config.get('max_web_sources', 20)
         print(f"\nWeb research sources (more sources = more thorough, more API calls)")
-        source_input = input(f"Number of sources to research (1-{max_sources}, default {default_sources}): ").strip()
+        source_input = input(f"Number of sources to research (default {default_sources}): ").strip()
         if source_input:
             try:
                 web_source_count = int(source_input)
-                web_source_count = max(1, min(max_sources, web_source_count))
+                web_source_count = max(1, web_source_count)  # minimum 1, no max cap
             except ValueError:
                 web_source_count = default_sources
         else:
