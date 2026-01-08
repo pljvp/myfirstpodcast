@@ -84,5 +84,17 @@ English:
 - 2024 → "twenty twenty-four"
 
 Always write years phonetically, not as digits!
+
+===================================
+TTS - NO ALL CAPS
+===================================
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: The formula is YES-AND!
+✅ CORRECT: The formula is "yes-and"!
+
+Use emotion tags for emphasis: [excited] The formula is yes-and!
 ===================================
 

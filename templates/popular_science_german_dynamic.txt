@@ -429,6 +429,22 @@ Always write them phonetically, not as digits!
 ✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
 
 ===================================
+TTS PRONUNCIATION - NO ALL CAPS
+===================================
+
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: Die Formel ist JA-UND!
+❌ WRONG: Du musst LOSLASSEN und UMDENKEN!
+✅ CORRECT: Die Formel ist "Ja-und"!
+✅ CORRECT: Du musst loslassen und umdenken!
+
+For emphasis, use:
+- Emotion tags: [excited] Die Formel ist Ja-und!
+- Repetition: Ja-und. Ja-und! Das ist das Geheimnis!
+- Framing: Das Zauberwort ist... Ja-und.
 
 ===================================
 OUTPUT FORMAT - CRITICAL

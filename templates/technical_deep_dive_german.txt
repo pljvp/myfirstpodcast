@@ -392,6 +392,19 @@ Always write them phonetically, not as digits!
 ✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
 
 ===================================
+TTS PRONUNCIATION - NO ALL CAPS
+===================================
+
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: Die API gibt ein JSON-OBJEKT zurück!
+❌ WRONG: Der ALGORITHMUS funktioniert nicht!
+✅ CORRECT: Die API gibt ein Json-Objekt zurück!
+✅ CORRECT: Der Algorithmus funktioniert nicht!
+
+For emphasis, use emotion tags: [analytical] Die API gibt ein Json-Objekt zurück.
 
 ===================================
 OUTPUT FORMAT - CRITICAL

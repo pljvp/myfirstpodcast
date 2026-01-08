@@ -244,7 +244,7 @@ YEAR PRONUNCIATION GUIDE
 ✅ CORRECT: "nineteen seventy-two" OR "neunzehnhundertzweiundsiebzig"
 
 2000-2009:
-❌ WRONG: "2001" → spoken as "two thousand and one"  
+❌ WRONG: "2001" → spoken as "two thousand and one"
 ✅ CORRECT: "two thousand one" OR "zweitausendundeins"
 
 2010-2099:
@@ -255,7 +255,7 @@ YEAR PRONUNCIATION GUIDE
 
 English:
 - 1900 → "nineteen hundred"
-- 1984 → "nineteen eighty-four"  
+- 1984 → "nineteen eighty-four"
 - 2000 → "two thousand"
 - 2001 → "two thousand one"
 - 2024 → "twenty twenty-four"
@@ -282,6 +282,22 @@ Always write them phonetically, not as digits!
 ✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
 
 ===================================
+TTS PRONUNCIATION - NO ALL CAPS
+===================================
+
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: De formule is JA-UND!
+❌ WRONG: Je moet LOSLATEN en OMDENKEN!
+✅ CORRECT: De formule is "ja-und"!
+✅ CORRECT: Je moet loslaten en omdenken!
+
+For emphasis, use:
+- Emotion tags: [excited] De formule is ja-und!
+- Repetition: Ja-und. Ja-und! Dat is het geheim!
+- Framing: Het sleutelwoord is... ja-und.
 
 ===================================
 OUTPUT FORMAT - CRITICAL

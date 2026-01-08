@@ -85,4 +85,16 @@ Dutch:
 - 2024 → "tweeduizend vierentwintig"
 
 Altijd jaren als woorden schrijven, niet als cijfers!
+
+===================================
+TTS - GEEN HOOFDLETTERS
+===================================
+**KRITIEK: NOOIT ALL CAPS voor nadruk!**
+
+TTS systemen spellen hoofdletterwoorden letter-voor-letter uit.
+
+❌ FOUT: De formule is JA-UND!
+✅ CORRECT: De formule is "ja-und"!
+
+Gebruik emotie-tags voor nadruk: [excited] De formule is ja-und!
 ===================================
