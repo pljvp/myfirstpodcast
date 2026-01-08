@@ -353,6 +353,19 @@ Always write them phonetically, not as digits!
 ✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
 
 ===================================
+TTS PRONUNCIATION - NO ALL CAPS
+===================================
+
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: Het nieuws is BELANGRIJK!
+❌ WRONG: De BEURS daalt!
+✅ CORRECT: Het nieuws is belangrijk!
+✅ CORRECT: De beurs daalt!
+
+For emphasis, use emotion tags: [urgent] Het nieuws is belangrijk!
 
 ===================================
 OUTPUT FORMAT - CRITICAL

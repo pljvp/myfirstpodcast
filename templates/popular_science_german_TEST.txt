@@ -85,5 +85,17 @@ German:
 - 2024 → "zweitausendvierundzwanzig"
 
 Immer Jahre als Wörter schreiben, nicht als Ziffern!
+
+===================================
+TTS - KEINE GROSSBUCHSTABEN
+===================================
+**KRITISCH: NIEMALS ALL CAPS für Betonung!**
+
+TTS Systeme buchstabieren Großbuchstaben-Wörter.
+
+❌ FALSCH: Die Formel ist JA-UND!
+✅ RICHTIG: Die Formel ist "Ja-und"!
+
+Verwende Emotions-Tags für Betonung: [excited] Die Formel ist Ja-und!
 ===================================
 

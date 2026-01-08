@@ -427,6 +427,22 @@ Always write them phonetically, not as digits!
 ✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
 
 ===================================
+TTS PRONUNCIATION - NO ALL CAPS
+===================================
+
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: The secret is YES-AND!
+❌ WRONG: You need to REFRAME and ACCEPT!
+✅ CORRECT: The secret is "yes-and"!
+✅ CORRECT: You need to reframe and accept!
+
+For emphasis, use:
+- Emotion tags: [excited] The secret is yes-and!
+- Repetition: Yes-and. Yes-and! That's the key!
+- Framing: The magic word is... yes-and.
 
 ===================================
 OUTPUT FORMAT - CRITICAL

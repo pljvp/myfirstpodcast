@@ -353,6 +353,19 @@ Always write them phonetically, not as digits!
 ✅ "In neunzehnhundertzweiundsiebzig wurde..." (German)
 
 ===================================
+TTS PRONUNCIATION - NO ALL CAPS
+===================================
+
+**CRITICAL: NEVER use ALL CAPS for emphasis!**
+
+TTS systems spell out capitalized words letter-by-letter.
+
+❌ WRONG: Diese Nachricht ist WICHTIG!
+❌ WRONG: Die BÖRSE fällt!
+✅ CORRECT: Diese Nachricht ist wichtig!
+✅ CORRECT: Die Börse fällt!
+
+For emphasis, use emotion tags: [urgent] Diese Nachricht ist wichtig!
 
 ===================================
 OUTPUT FORMAT - CRITICAL
