@@ -309,38 +309,42 @@ All standard emotion tags also supported:
                 self._save_debug_chunk(chunk, i, project_name)
             
             payload = {"inputs": chunk}
-            
+
             # Retry logic
-            for attempt in range(3):
+            max_attempts = 5
+            retry_delays = [5, 15, 30, 60]  # seconds between attempts
+            for attempt in range(max_attempts):
                 try:
                     if attempt > 0:
-                        print(f"[RETRY] Attempt {attempt + 1}/3...")
-                        time.sleep(2 * attempt)
-                    
+                        delay = retry_delays[min(attempt - 1, len(retry_delays) - 1)]
+                        print(f"[RETRY] Attempt {attempt + 1}/{max_attempts} (waiting {delay}s)...")
+                        time.sleep(delay)
+
                     response = requests.post(
-                        self.api_url, 
-                        headers=headers, 
-                        json=payload, 
-                        stream=True, 
-                        timeout=120
+                        self.api_url,
+                        headers=headers,
+                        json=payload,
+                        stream=True,
+                        timeout=300
                     )
-                    
+
                     if response.status_code != 200:
                         print(f"[ERROR] Status {response.status_code}: {response.text}")
-                        if response.status_code == 500 and attempt < 2:
+                        if response.status_code == 500 and attempt < max_attempts - 1:
                             continue
                         response.raise_for_status()
-                    
+
                     # Collect audio
                     chunk_audio = b''.join(response.iter_content(chunk_size=8192))
                     audio_parts.append(chunk_audio)
                     print(f"  ✓ Generated ({len(chunk_audio) / 1024 / 1024:.1f} MB)")
                     break
-                    
+
                 except (requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
                     print(f"[ERROR] {type(e).__name__}: {str(e)}")
-                    if attempt < 2:
+                    if attempt < max_attempts - 1:
                         continue
+                    print(f"[FATAL] Chunk {i} failed after {max_attempts} attempts")
                     return None, 0
         
         # Concatenate
